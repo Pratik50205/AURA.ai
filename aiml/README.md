@@ -1,124 +1,145 @@
-# AURA AI/ML — Intelligent Tool Discovery & Recommendation
+# AURA AI/ML — Neural Semantic Recommendation Engine
 
-AI-powered tool discovery and recommendation engine that understands natural-language queries and returns the most relevant AI tools using semantic retrieval and learned ranking.
+The intelligence core for **AURA.ai**, providing high-dimensional vector search, domain-aware query expansion, and supervised neural ranking to match natural language queries with curated AI tools in sub-40 milliseconds.
 
-## Architecture
+---
 
+## Architecture Flow
+
+```text
+User Query → Query Preprocessing & Slang Expansion → Sentence Transformer Encoding
+    → FAISS FlatIP Vector Index → Top-20 Candidates → PyTorch MLP Feature Ranker → Top-K Results
 ```
-User Query → Query Processing → Semantic Embedding → FAISS Retrieval
-    → Top-N Candidates → Re-ranking → Quality Signals → Top-K Results
-```
+
+---
 
 ## Quick Start
 
 ```bash
-# 1. Install dependencies (CPU-optimized)
+# 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Run Interactive CLI (Recommended - instant ~50ms responses)
+# 2. Interactive CLI (Animated spinner & pre-warmed vector memory)
 python main.py
 
-# 3. Or run a single query from CLI
-python -m src.inference.recommend "I need to remove backgrounds from images"
+# 3. Single-query execution from terminal
+python main.py "best AI tool for coding"
 
-# 4. Start REST API server (optional)
-python -m uvicorn src.inference.api:app --reload --port 8000
-# Open Swagger docs at http://localhost:8000/docs
+# 4. Start production REST API server
+python -m uvicorn src.inference.api:app --port 8000
 ```
 
-## Project Structure
+Interactive OpenAPI Swagger documentation will be available at:
+`http://localhost:8000/docs`
 
-```
+---
+
+## Directory Structure
+
+```text
 aiml/
-├── main.py                      # Interactive CLI + FastAPI entry
-├── configs/config.yaml          # Central configuration
+├── main.py                      # Interactive CLI terminal application (<50ms query loop)
+├── configs/config.yaml          # Central ML and pipeline configuration
 ├── data/
-│   ├── processed/               # Curated dataset (108 tools, 210 queries)
-│   ├── embeddings/              # Pre-computed 384-dim tool vectors
-│   ├── indexes/                 # FAISS vector search index
-│   └── splits/                  # Consolidated train/val/test partitions
-├── models/                      # Trained MLP ranker weights
-├── reports/                     # Evaluation reports & benchmarks
+│   ├── processed/               # Curated dataset (108 tools, 210 queries, 930 pairs)
+│   ├── embeddings/              # 384-dimensional dense tool vectors (.npy)
+│   ├── indexes/                 # FAISS FlatIP cosine index file
+│   └── splits/                  # Leakage-free train (70%), val (15%), test (15%) partitions
+├── models/                      # Trained PyTorch MLP Ranker checkpoint (mlp_ranker.pt)
+├── reports/                     # Benchmark evaluation reports and ablation studies
 ├── src/
-│   ├── data/                    # Data pipeline (ingest, normalize, validate)
-│   ├── retrieval/               # Embedding + FAISS index retrieval
-│   ├── ranking/                 # MLP ranker + Cross-Encoder reranker
-│   ├── evaluation/              # Metrics and experiment comparison
-│   ├── inference/               # Query expansion + recommendation API
-│   └── utils/                   # Config loader, path resolution
-├── tests/                       # Unit tests (34 tests)
-└── README.md
+│   ├── data/                    # Ingestion, normalization, validation, and enrichment
+│   ├── retrieval/               # Embedding generation, FAISS indexer, and BM25 baseline
+│   ├── ranking/                 # Feature engineering, MLP ranker, and cross-encoder
+│   ├── evaluation/              # IR metrics (Precision@K, Recall@K, MRR, NDCG@K)
+│   ├── inference/               # Query preprocessing, FastAPI endpoints, CLI UI
+│   └── utils/                   # Path resolution and YAML config parser
+└── tests/                       # Automated Pytest suite (34 passing tests)
 ```
 
-> **Full documentation**: See `../docs/` for PRD, architecture deep-dive, and walkthrough.
+---
 
-## Dataset
+## Dataset Statistics
 
-- **100+ curated AI tools** across 12+ categories
-- **500+ natural-language queries** (diverse formulations)
-- **1000+ query-tool relevance pairs** (graded 0–3)
-- Hard negatives for ranking training
-- Leakage-safe train/validation/test splits
+- **Curated AI Tools**: 108 normalized tools spanning 23 categories.
+- **Natural Language Queries**: 210 diverse formulations.
+- **Relevance Judgments**: 930 graded query-tool pairs (labels 0–3).
+- **Split Distribution**: 134 train / 28 validation / 30 held-out test queries (zero data leakage).
 
-## Experiments
+---
 
-| Experiment | Description |
-|---|---|
-| Exp 0 | BM25 keyword baseline |
-| Exp 1 | Sentence-Transformer + FAISS |
-| Exp 2 | Embedding + metadata-aware ranking |
-| Exp 3 | Embedding + MLP ranker |
-| Exp 4 | Embedding + Cross-Encoder reranker |
+## Benchmark Evaluation Results
 
-## Evaluation Metrics
+Evaluated across the 30 isolated test queries:
 
-- Precision@1/3/5, Recall@5/10
-- MRR, NDCG@5/10
-- Top-K hit rates
-- Inference latency
+| Metric | Semantic Retrieval (AURA) | BM25 Baseline | Relative Improvement |
+|---|---|---|---|
+| **Precision@1** | **0.833** | 0.600 | **+38.8%** |
+| **NDCG@5** | **0.774** | 0.521 | **+48.6%** |
+| **Mean Reciprocal Rank (MRR)** | **0.873** | 0.770 | **+13.4%** |
+| **Recall@5** | **0.789** | 0.703 | **+12.2%** |
+| **Inference Latency** | **32.5 ms** | 0.9 ms | Real-time interactive grade |
 
-## Inference API
+---
 
-```python
-from src.inference.recommend import recommend_tools
+## Query Preprocessing & Expansion
 
-results = recommend_tools("I need to remove backgrounds from images", top_k=5)
+A boundary-enforced semantic expansion layer translates informal user abbreviations before vector encoding:
+
+- `\bppt[xs]?\b` $\rightarrow$ `ppt presentation slides`
+- `\bbg\b` $\rightarrow$ `background`
+- `\bcv\b` $\rightarrow$ `resume cv`
+- `\b(sub|subs)\b` $\rightarrow$ `subtitles captions`
+- `\b(tts|stt|vo)\b` $\rightarrow$ `voiceover text-to-speech`
+- `\b(pic|pics|pfp)\b` $\rightarrow$ `picture photo avatar`
+
+---
+
+## REST API Specification
+
+### `POST /recommend`
+Request:
+```json
+{
+  "query": "best AI tool for coding",
+  "top_k": 5,
+  "use_reranker": false
+}
 ```
 
 Response:
 ```json
 {
-  "query": "I need to remove backgrounds from images",
+  "query": "best AI tool for coding",
   "results": [
-    {"tool_id": "t17", "name": "Remove.bg", "score": 0.95, "reason": "..."}
+    {
+      "rank": 1,
+      "tool_id": "t28",
+      "name": "Cursor",
+      "category": "Code Assistant",
+      "description": "AI-first code editor built on VS Code...",
+      "url": "https://cursor.sh",
+      "semantic_score": 0.659,
+      "reason": "Top semantic match for coding with 95/100 trust score."
+    }
   ],
-  "model_version": "aura-retriever-v1"
+  "model_version": "aura-retriever-v1",
+  "latency_ms": 39.1,
+  "num_candidates_considered": 20
 }
 ```
 
-## Query Preprocessing & Expansion
+---
 
-AURA incorporates a non-destructive query expansion layer that translates colloquial domain abbreviations into rich semantic concepts before vector encoding:
+## Automated Unit Testing
 
-- `ppt`, `deck`, `powerpoint` $\rightarrow$ `presentation slides ppt`
-- `bg` $\rightarrow$ `background`
-- `pic`, `pics`, `pfp` $\rightarrow$ `picture photo avatar`
-- `vid`, `vids` $\rightarrow$ `video`
-- `sub`, `subs` $\rightarrow$ `subtitles captions`
-- `vo`, `tts`, `stt` $\rightarrow$ `voiceover / text-to-speech / speech-to-text`
-- `cv` $\rightarrow$ `resume cv`
-- `ui`, `ux` $\rightarrow$ `user interface / user experience design`
+Run all 34 unit tests:
+```bash
+python -m pytest
+```
 
-All patterns use strict word boundaries (`\b`) to prevent false-positive alterations on standard English words (e.g. `subscribe`, `canvas`, `david`).
-
-## Configuration
-
-All settings in `configs/config.yaml`:
-- Model selection (CPU-optimized defaults)
-- Retrieval parameters
-- Ranking hyperparameters
-- Data paths and split ratios
+---
 
 ## License
 
-Internal project — see dataset provenance records for source data licensing.
+Internal major academic project.

@@ -451,6 +451,14 @@ Use these exact answers during your project review or presentation:
 #### Q5: "What loss function and optimizer did you use to train the MLP Ranker?"
 > **Answer:** We used Binary Cross-Entropy Loss (`BCELoss`) with the Adam optimizer (`lr=0.001`, weight decay `1e-4`). The training data includes positive relevance pairs and mined hard negatives (tools in the same category that are not relevant to the specific query).
 
+#### Q6: "How does the AURA Assistant Chatbot work, and how is it different from standard search?"
+> **Answer:** Rather than just returning an isolated list of links, the AURA Assistant acts as a conversational discovery copilot. It parses user intent, detects side-by-side comparison requests (e.g. *"Compare Cursor vs Copilot"*), executes semantic vector search through FAISS, and dynamically constructs a side-by-side comparison matrix with verified trust scores, pricing models, and budget winners directly inside the conversation.
+
+#### Q7: "How does AURA achieve sub-40 millisecond response times in production?"
+> **Answer:** We pre-warm the SentenceTransformer model and mount the normalized FAISS `FlatIP` index directly into RAM on ASGI server startup (`@app.on_event('startup')`). Because vector distance calculations occur purely in memory without disk I/O or cold-start model weights loading, query processing executes in ~32ms.
+
 ---
 
 *Document prepared for AURA Major Project Presentation & Viva Defense.*
+*Official GitHub Repository: https://github.com/Pratik50205/AURA.ai*
+
