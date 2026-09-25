@@ -81,57 +81,68 @@ User Query (Chat or Search Bar)
 
 ---
 
-## Project Structure
+## System Architecture & Folder Layout
+
+The project is structured into **3 core modules**:
 
 ```text
-AURA/
-├── README.md                          # Root system overview & documentation
-├── docker-compose.yml                 # Multi-container full-stack orchestration
-├── .env.example                       # Environment variables template
+┌─────────────────────────────────┐      REST API      ┌─────────────────────────────────┐
+│       AURA.ai (Frontend)        │ ◄────────────────► │         aiml (Backend)          │
+│   Next.js 16 • React 19 • UI    │    (Port 8000)     │  PyTorch • FAISS • Embeddings   │
+│   • Interactive Discovery       │                    │  • Sentence Transformers        │
+│   • AI Assistant Chatbot Copilot│                    │  • 384-d Vector Retrieval       │
+│   • Dual Theme & Settings       │                    │  • Interactive Terminal CLI     │
+└─────────────────────────────────┘                    └─────────────────────────────────┘
+                 │                                                      │
+                 └───────────────────────┬──────────────────────────────┘
+                                         ▼
+                               ┌───────────────────┐
+                               │  docs/ & scripts/ │
+                               │  System Specs &   │
+                               │  Synchronization  │
+                               └───────────────────┘
+```
+
+### Module Breakdown
+
+| Directory | Core Role | Primary Technologies | Key Entry Point |
+|---|---|---|---|
+| **`AURA.ai/`** | **Full-Stack Web App** | Next.js 16, React 19, Tailwind CSS 4, Framer Motion | Run `npm run dev` (Port 3000) |
+| **`aiml/`** | **Neural Intelligence Engine** | Python 3.14, PyTorch, FAISS, Sentence-Transformers | Run `python main.py` or FastAPI (Port 8000) |
+| **`docs/`** | **Engineering Hub** | Markdown Documentation | Read `ARCHITECTURE.md` & `WALKTHROUGH.md` |
+| **`scripts/`** | **Sync Utilities** | Node.js, Python | Syncs ML dataset with frontend catalog |
+
+---
+
+### Clean Directory Map
+
+```text
+major project/
 │
-├── docs/                              # Technical documentation hub
-│   ├── ARCHITECTURE.md                # Neural pipeline and engineering guide
+├── AURA.ai/                           # Frontend Web Application
+│   ├── src/app/                       # App Router pages (Dashboard, Discover, Saved, Settings)
+│   ├── src/app/api/assistant/         # Conversational AI assistant endpoint
+│   ├── src/components/                # UI components (AuraAssistantModal, ToolCard, Header)
+│   ├── src/data/tools.ts              # 108 verified AI tools catalog
+│   └── package.json                   # Frontend dependencies
+│
+├── aiml/                              # AI/ML Recommendation Engine
+│   ├── main.py                        # Terminal CLI search (animated circulating cursor)
+│   ├── src/inference/api.py           # FastAPI recommendation server
+│   ├── src/retrieval/                 # FAISS vector indexing & SentenceTransformer embedder
+│   ├── src/ranking/                   # PyTorch MLP ranker & cross-encoder
+│   ├── data/processed/                # Curated dataset (108 tools, 210 queries, 930 pairs)
+│   ├── tests/                         # 34 automated unit tests
+│   └── requirements.txt               # Python dependencies
+│
+├── docs/                              # Project Documentation Hub
+│   ├── ARCHITECTURE.md                # System deep-dive & Viva question cheat-sheet
+│   ├── WALKTHROUGH.md                 # Step-by-step demonstration walkthrough
 │   ├── PRD.md                         # Product Requirements Document
-│   ├── WALKTHROUGH.md                 # End-to-end model and testing walkthrough
-│   └── TASK_TRACKER.md                # Project progress roadmap
+│   └── TASK_TRACKER.md                # Roadmap & task completion tracker
 │
-├── aiml/                              # Neural Recommendation Engine (Python)
-│   ├── main.py                        # Interactive CLI with animated spinner
-│   ├── configs/config.yaml            # Model & dataset parameters
-│   ├── data/
-│   │   ├── processed/                 # Curated dataset (108 tools, 210 queries, 930 pairs)
-│   │   ├── embeddings/                # 384-dim normalized tool vector tensors
-│   │   ├── indexes/                   # FAISS FlatIP vector index file
-│   │   └── splits/                    # Leakage-free train/val/test partitions
-│   ├── models/                        # PyTorch MLP Ranker checkpoint (mlp_ranker.pt)
-│   ├── reports/                       # Benchmark evaluation reports
-│   ├── src/
-│   │   ├── data/                      # Ingestion, validation, enrichment pipeline
-│   │   ├── retrieval/                 # Vector embeddings & FAISS index builder
-│   │   ├── ranking/                   # Feature extraction, MLP ranker, reranker
-│   │   ├── evaluation/                # IR Metrics (P@K, R@K, MRR, NDCG@K)
-│   │   └── inference/                 # FastAPI REST API & query expansion
-│   └── tests/                         # Automated unit test suite (34 passing)
-│
-├── AURA.ai/                           # Modern Frontend Web App (Next.js 16)
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── (auth)/                # Authentication routes (login, register)
-│   │   │   ├── (dashboard)/           # Dashboard, Discover, Saved, Settings
-│   │   │   └── api/                   # API routes (/api/assistant, /api/recommend)
-│   │   ├── components/
-│   │   │   ├── AuraAssistantModal.tsx # Interactive Chatbot Copilot drawer
-│   │   │   ├── Header.tsx             # Universal search, theme toggle, profile
-│   │   │   ├── Sidebar.tsx            # Clean persistent navigation
-│   │   │   └── ToolCard.tsx           # Rich interactive tool card
-│   │   ├── data/                      # Synced 108 tool catalog
-│   │   └── lib/                       # NextAuth, Prisma, recommendation helpers
-│   ├── public/                        # SVG brand assets and logos
-│   └── prisma/                        # Database schema & migrations
-│
-└── scripts/                           # Maintenance & data synchronization
-    ├── enrich-dataset.py              # Semantic document builder
-    └── sync-frontend-tools.mjs        # Dataset sync from ML to frontend
+├── docker-compose.yml                 # Multi-container full-stack launcher
+└── README.md                          # Main project guide
 ```
 
 ---
