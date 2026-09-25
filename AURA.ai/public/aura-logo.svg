@@ -1,0 +1,29 @@
+<svg width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Smooth, Premium App Gradient -->
+    <linearGradient id="appGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D9042B" /> <!-- Deep Premium Red -->
+      <stop offset="50%" stop-color="#FF3344" /> <!-- Vibrant Red -->
+      <stop offset="100%" stop-color="#FF7B00" /> <!-- Clean Orange -->
+    </linearGradient>
+  </defs>
+  
+  <!-- Transparent Background -->
+  <rect width="600" height="600" fill="transparent"/>
+  
+  <!-- The App Icon (Squircle) -->
+  <rect x="200" y="120" width="200" height="200" rx="50" fill="url(#appGradient)"/>
+  
+  <!-- The Geometric Falcon 'A' -->
+  <!-- Swept-back wings forming an upward 'A' shape, representing speed and architecture -->
+  <path d="M 300 150 L 365 270 L 320 250 L 300 200 L 280 250 L 235 270 Z" fill="#FFFFFF"/>
+  
+  <!-- The AI Core (Acting as the tail/crossbar of the A) -->
+  <circle cx="300" cy="270" r="10" fill="#FFFFFF"/>
+  
+  <!-- Modern Corporate Wordmark (Updated to ALL CAPS) -->
+  <text x="300" y="400" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="800" font-size="52" fill="#1A1A1A" text-anchor="middle" letter-spacing="8">AURA</text>
+  
+  <!-- Clean Subtitle -->
+  <text x="300" y="435" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="600" font-size="12" fill="#888888" text-anchor="middle" letter-spacing="4">AI UTILITY RECOMMENDATION</text>
+</svg>

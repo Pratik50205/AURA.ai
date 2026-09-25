@@ -1,0 +1,76 @@
+{
+  "tools": {
+    "total_tools": 108,
+    "duplicate_ids": [],
+    "tools_with_errors": 0,
+    "total_errors": 0,
+    "missing_urls": 0,
+    "short_descriptions": 0,
+    "category_distribution": {
+      "Video Generation": 10,
+      "Audio & Voice": 9,
+      "Writing Assistant": 9,
+      "Productivity": 9,
+      "Image Generation": 8,
+      "AI Chatbot": 7,
+      "Design": 7,
+      "Code Assistant": 7,
+      "Image Editing": 5,
+      "Research": 5,
+      "Data & Analytics": 5,
+      "Music Generation": 4,
+      "Marketing & SEO": 4,
+      "3D Generation": 3,
+      "Customer Service": 3,
+      "Video Editing": 2,
+      "Automation": 2,
+      "Education": 2,
+      "AI Platform": 2,
+      "Website Builder": 2,
+      "AI Search": 1,
+      "Translation": 1,
+      "Legal": 1
+    },
+    "errors_detail": {}
+  },
+  "queries": {
+    "total_queries": 210,
+    "duplicate_ids": [],
+    "short_queries": 0,
+    "missing_intent": 0,
+    "intent_distribution": {
+      "text_to_image": 5,
+      "website_building": 4,
+      "image_background_removal": 3,
+      "text_to_speech": 3,
+      "speech_to_text": 3,
+      "music_generation": 3,
+      "text_to_video": 3,
+      "translation": 3,
+      "presentation_creation": 3,
+      "citation_analysis": 3,
+      "ui_design": 3,
+      "workflow_automation": 3,
+      "customer_service": 3,
+      "ai_search": 3,
+      "image_object_removal": 2,
+      "image_upscaling": 2,
+      "content_writing": 2,
+      "email_writing": 2,
+      "social_media_content": 2,
+      "general_chatbot": 2
+    }
+  },
+  "qrels": {
+    "total_qrel_records": 192,
+    "total_pairs": 930,
+    "invalid_tool_references": [],
+    "invalid_query_references": [],
+    "label_distribution": {
+      "3": 328,
+      "1": 214,
+      "0": 248,
+      "2": 140
+    }
+  }
+}

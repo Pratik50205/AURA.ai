@@ -1,0 +1,982 @@
+[
+  {
+    "query_id": "q075",
+    "relevant_tools": [
+      "t12"
+    ],
+    "hard_negatives": [
+      "t49",
+      "t5",
+      "t108"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t12",
+        "label": 3
+      },
+      {
+        "tool_id": "t49",
+        "label": 0
+      },
+      {
+        "tool_id": "t5",
+        "label": 0
+      },
+      {
+        "tool_id": "t108",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q059",
+    "relevant_tools": [
+      "t41",
+      "t42",
+      "t43"
+    ],
+    "hard_negatives": [
+      "t1",
+      "t12",
+      "t38"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t41",
+        "label": 3
+      },
+      {
+        "tool_id": "t42",
+        "label": 3
+      },
+      {
+        "tool_id": "t43",
+        "label": 2
+      },
+      {
+        "tool_id": "t1",
+        "label": 1
+      },
+      {
+        "tool_id": "t12",
+        "label": 0
+      },
+      {
+        "tool_id": "t38",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q147",
+    "relevant_tools": [
+      "t29"
+    ],
+    "hard_negatives": [
+      "t27",
+      "t30",
+      "t28"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t29",
+        "label": 3
+      },
+      {
+        "tool_id": "t27",
+        "label": 0
+      },
+      {
+        "tool_id": "t30",
+        "label": 0
+      },
+      {
+        "tool_id": "t28",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q018",
+    "relevant_tools": [
+      "t1",
+      "t35"
+    ],
+    "hard_negatives": [
+      "t33",
+      "t76",
+      "t32"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t1",
+        "label": 3
+      },
+      {
+        "tool_id": "t35",
+        "label": 2
+      },
+      {
+        "tool_id": "t33",
+        "label": 1
+      },
+      {
+        "tool_id": "t76",
+        "label": 2
+      },
+      {
+        "tool_id": "t32",
+        "label": 1
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q050",
+    "relevant_tools": [
+      "t59",
+      "t102"
+    ],
+    "hard_negatives": [
+      "t40",
+      "t16",
+      "t57"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t59",
+        "label": 3
+      },
+      {
+        "tool_id": "t102",
+        "label": 2
+      },
+      {
+        "tool_id": "t40",
+        "label": 1
+      },
+      {
+        "tool_id": "t16",
+        "label": 1
+      },
+      {
+        "tool_id": "t57",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q093",
+    "relevant_tools": [
+      "t60"
+    ],
+    "hard_negatives": [
+      "t61",
+      "t91",
+      "t5"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t60",
+        "label": 3
+      },
+      {
+        "tool_id": "t61",
+        "label": 2
+      },
+      {
+        "tool_id": "t91",
+        "label": 1
+      },
+      {
+        "tool_id": "t5",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q076",
+    "relevant_tools": [
+      "t47",
+      "t77"
+    ],
+    "hard_negatives": [
+      "t48",
+      "t34",
+      "t32"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t47",
+        "label": 3
+      },
+      {
+        "tool_id": "t77",
+        "label": 3
+      },
+      {
+        "tool_id": "t48",
+        "label": 2
+      },
+      {
+        "tool_id": "t34",
+        "label": 1
+      },
+      {
+        "tool_id": "t32",
+        "label": 1
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q021",
+    "relevant_tools": [
+      "t1",
+      "t2",
+      "t3"
+    ],
+    "hard_negatives": [
+      "t79",
+      "t80",
+      "t81"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t1",
+        "label": 3
+      },
+      {
+        "tool_id": "t2",
+        "label": 3
+      },
+      {
+        "tool_id": "t3",
+        "label": 3
+      },
+      {
+        "tool_id": "t79",
+        "label": 2
+      },
+      {
+        "tool_id": "t80",
+        "label": 2
+      },
+      {
+        "tool_id": "t81",
+        "label": 2
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q097",
+    "relevant_tools": [
+      "t95",
+      "t96"
+    ],
+    "hard_negatives": [
+      "t84",
+      "t12",
+      "t42"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t95",
+        "label": 3
+      },
+      {
+        "tool_id": "t96",
+        "label": 3
+      },
+      {
+        "tool_id": "t84",
+        "label": 1
+      },
+      {
+        "tool_id": "t12",
+        "label": 0
+      },
+      {
+        "tool_id": "t42",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q032",
+    "relevant_tools": [
+      "t21"
+    ],
+    "hard_negatives": [
+      "t22",
+      "t23",
+      "t55"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t21",
+        "label": 3
+      },
+      {
+        "tool_id": "t22",
+        "label": 0
+      },
+      {
+        "tool_id": "t23",
+        "label": 1
+      },
+      {
+        "tool_id": "t55",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q138",
+    "relevant_tools": [
+      "t100",
+      "t46"
+    ],
+    "hard_negatives": [
+      "t44",
+      "t45",
+      "t4"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t100",
+        "label": 3
+      },
+      {
+        "tool_id": "t46",
+        "label": 3
+      },
+      {
+        "tool_id": "t44",
+        "label": 1
+      },
+      {
+        "tool_id": "t45",
+        "label": 1
+      },
+      {
+        "tool_id": "t4",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q118",
+    "relevant_tools": [
+      "t30",
+      "t29"
+    ],
+    "hard_negatives": [
+      "t27",
+      "t28",
+      "t31"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t30",
+        "label": 3
+      },
+      {
+        "tool_id": "t29",
+        "label": 2
+      },
+      {
+        "tool_id": "t27",
+        "label": 1
+      },
+      {
+        "tool_id": "t28",
+        "label": 0
+      },
+      {
+        "tool_id": "t31",
+        "label": 1
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q012",
+    "relevant_tools": [
+      "t14"
+    ],
+    "hard_negatives": [
+      "t101",
+      "t15",
+      "t12"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t14",
+        "label": 3
+      },
+      {
+        "tool_id": "t101",
+        "label": 1
+      },
+      {
+        "tool_id": "t15",
+        "label": 0
+      },
+      {
+        "tool_id": "t12",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q068",
+    "relevant_tools": [
+      "t51",
+      "t52",
+      "t10"
+    ],
+    "hard_negatives": [
+      "t12",
+      "t5",
+      "t6"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t51",
+        "label": 3
+      },
+      {
+        "tool_id": "t52",
+        "label": 3
+      },
+      {
+        "tool_id": "t10",
+        "label": 2
+      },
+      {
+        "tool_id": "t12",
+        "label": 0
+      },
+      {
+        "tool_id": "t5",
+        "label": 0
+      },
+      {
+        "tool_id": "t6",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q089",
+    "relevant_tools": [
+      "t53",
+      "t93"
+    ],
+    "hard_negatives": [
+      "t106",
+      "t54",
+      "t87"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t53",
+        "label": 3
+      },
+      {
+        "tool_id": "t93",
+        "label": 3
+      },
+      {
+        "tool_id": "t106",
+        "label": 2
+      },
+      {
+        "tool_id": "t54",
+        "label": 0
+      },
+      {
+        "tool_id": "t87",
+        "label": 1
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q092",
+    "relevant_tools": [
+      "t54",
+      "t70"
+    ],
+    "hard_negatives": [
+      "t69",
+      "t71",
+      "t1"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t54",
+        "label": 3
+      },
+      {
+        "tool_id": "t70",
+        "label": 2
+      },
+      {
+        "tool_id": "t69",
+        "label": 1
+      },
+      {
+        "tool_id": "t71",
+        "label": 1
+      },
+      {
+        "tool_id": "t1",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q025",
+    "relevant_tools": [
+      "t27",
+      "t29",
+      "t30"
+    ],
+    "hard_negatives": [
+      "t28",
+      "t31",
+      "t1"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t27",
+        "label": 3
+      },
+      {
+        "tool_id": "t29",
+        "label": 3
+      },
+      {
+        "tool_id": "t30",
+        "label": 3
+      },
+      {
+        "tool_id": "t28",
+        "label": 2
+      },
+      {
+        "tool_id": "t31",
+        "label": 1
+      },
+      {
+        "tool_id": "t1",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q098",
+    "relevant_tools": [
+      "t96",
+      "t95"
+    ],
+    "hard_negatives": [
+      "t84",
+      "t12",
+      "t49"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t96",
+        "label": 3
+      },
+      {
+        "tool_id": "t95",
+        "label": 3
+      },
+      {
+        "tool_id": "t84",
+        "label": 1
+      },
+      {
+        "tool_id": "t12",
+        "label": 0
+      },
+      {
+        "tool_id": "t49",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q191",
+    "relevant_tools": [
+      "t102"
+    ],
+    "hard_negatives": [
+      "t59",
+      "t67",
+      "t68"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t102",
+        "label": 3
+      },
+      {
+        "tool_id": "t59",
+        "label": 1
+      },
+      {
+        "tool_id": "t67",
+        "label": 1
+      },
+      {
+        "tool_id": "t68",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q201",
+    "relevant_tools": [
+      "t95",
+      "t96",
+      "t84"
+    ],
+    "hard_negatives": [
+      "t83",
+      "t12",
+      "t49"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t95",
+        "label": 3
+      },
+      {
+        "tool_id": "t96",
+        "label": 3
+      },
+      {
+        "tool_id": "t84",
+        "label": 2
+      },
+      {
+        "tool_id": "t83",
+        "label": 1
+      },
+      {
+        "tool_id": "t12",
+        "label": 0
+      },
+      {
+        "tool_id": "t49",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q087",
+    "relevant_tools": [
+      "t73"
+    ],
+    "hard_negatives": [
+      "t37",
+      "t80",
+      "t1"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t73",
+        "label": 3
+      },
+      {
+        "tool_id": "t37",
+        "label": 0
+      },
+      {
+        "tool_id": "t80",
+        "label": 1
+      },
+      {
+        "tool_id": "t1",
+        "label": 1
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q190",
+    "relevant_tools": [
+      "t49"
+    ],
+    "hard_negatives": [
+      "t50",
+      "t94",
+      "t12"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t49",
+        "label": 3
+      },
+      {
+        "tool_id": "t50",
+        "label": 1
+      },
+      {
+        "tool_id": "t94",
+        "label": 1
+      },
+      {
+        "tool_id": "t12",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q040",
+    "relevant_tools": [
+      "t16",
+      "t19",
+      "t20",
+      "t90"
+    ],
+    "hard_negatives": [
+      "t17",
+      "t57",
+      "t58"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t16",
+        "label": 3
+      },
+      {
+        "tool_id": "t19",
+        "label": 3
+      },
+      {
+        "tool_id": "t20",
+        "label": 3
+      },
+      {
+        "tool_id": "t90",
+        "label": 3
+      },
+      {
+        "tool_id": "t17",
+        "label": 1
+      },
+      {
+        "tool_id": "t57",
+        "label": 2
+      },
+      {
+        "tool_id": "t58",
+        "label": 2
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q169",
+    "relevant_tools": [
+      "t17",
+      "t18"
+    ],
+    "hard_negatives": [
+      "t57",
+      "t58",
+      "t16"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t17",
+        "label": 3
+      },
+      {
+        "tool_id": "t18",
+        "label": 3
+      },
+      {
+        "tool_id": "t57",
+        "label": 1
+      },
+      {
+        "tool_id": "t58",
+        "label": 1
+      },
+      {
+        "tool_id": "t16",
+        "label": 1
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q088",
+    "relevant_tools": [
+      "t73"
+    ],
+    "hard_negatives": [
+      "t37",
+      "t1",
+      "t80"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t73",
+        "label": 3
+      },
+      {
+        "tool_id": "t37",
+        "label": 0
+      },
+      {
+        "tool_id": "t1",
+        "label": 1
+      },
+      {
+        "tool_id": "t80",
+        "label": 1
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q195",
+    "relevant_tools": [
+      "t69",
+      "t70"
+    ],
+    "hard_negatives": [
+      "t71",
+      "t1",
+      "t80"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t69",
+        "label": 3
+      },
+      {
+        "tool_id": "t70",
+        "label": 3
+      },
+      {
+        "tool_id": "t71",
+        "label": 2
+      },
+      {
+        "tool_id": "t1",
+        "label": 0
+      },
+      {
+        "tool_id": "t80",
+        "label": 0
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q041",
+    "relevant_tools": [
+      "t16",
+      "t19",
+      "t20",
+      "t90"
+    ],
+    "hard_negatives": [
+      "t57",
+      "t58",
+      "t68"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t16",
+        "label": 3
+      },
+      {
+        "tool_id": "t19",
+        "label": 3
+      },
+      {
+        "tool_id": "t20",
+        "label": 3
+      },
+      {
+        "tool_id": "t90",
+        "label": 3
+      },
+      {
+        "tool_id": "t57",
+        "label": 2
+      },
+      {
+        "tool_id": "t58",
+        "label": 2
+      },
+      {
+        "tool_id": "t68",
+        "label": 1
+      }
+    ],
+    "source": "curated"
+  },
+  {
+    "query_id": "q002",
+    "relevant_tools": [
+      "t11",
+      "t13"
+    ],
+    "hard_negatives": [
+      "t101",
+      "t14",
+      "t12"
+    ],
+    "relevance": [
+      {
+        "tool_id": "t11",
+        "label": 3
+      },
+      {
+        "tool_id": "t13",
+        "label": 3
+      },
+      {
+        "tool_id": "t101",
+        "label": 1
+      },
+      {
+        "tool_id": "t14",
+        "label": 0
+      },
+      {
+        "tool_id": "t12",
+        "label": 1
+      }
+    ],
+    "source": "curated"
+  }
+]

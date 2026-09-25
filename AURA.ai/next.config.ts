@@ -1,0 +1,15 @@
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  output: "standalone",
+  devIndicators: false,
+  turbopack: {
+    root: process.cwd(),
+  },
+  experimental: {
+    optimizePackageImports: ["lucide-react", "framer-motion"],
+  },
+};
+
+export default nextConfig;
