@@ -333,8 +333,8 @@ def recommend_tools(
     Returns:
         Structured result dict with query, results, intent metadata, and latency.
     """
-    start_time = time.time()
     retriever = _get_retriever()
+    start_time = time.time()
 
     # Preprocess & expand colloquial abbreviations
     search_query = expand_query(query)

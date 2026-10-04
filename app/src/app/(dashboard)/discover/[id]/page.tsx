@@ -7,12 +7,13 @@ import {
   ArrowLeft, ExternalLink, Bookmark, Share2, Star,
   Shield, ShieldCheck, Users, Tag, DollarSign,
   ChevronDown, ChevronUp, Check, X, Copy,
-  AlertTriangle, Heart, Code, Image, Video, Music, FileText
+  AlertTriangle, Heart, Code, Image, Video, Music, FileText, MessageSquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getToolById, tools } from '@/data/tools';
 import { Tool } from '@/lib/site';
 import { useDashboard } from '@/app/(dashboard)/layout';
+import CommunityReviews from '@/components/tools/CommunityReviews';
 
 interface ToolDetailPageProps {
   params: Promise<{ id: string }>;
@@ -21,7 +22,7 @@ interface ToolDetailPageProps {
 export default function ToolDetailPage({ params }: ToolDetailPageProps) {
   const { savedTools, toggleSaveTool, isLightMode } = useDashboard();
   const [tool, setTool] = useState<Tool | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'prompts' | 'useCases' | 'pricing' | 'alternatives'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'prompts' | 'useCases' | 'pricing' | 'alternatives' | 'reviews'>('overview');
   const [expandedPrompt, setExpandedPrompt] = useState<string | null>(null);
   const [copiedPrompt, setCopiedPrompt] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState(false);
@@ -193,6 +194,7 @@ export default function ToolDetailPage({ params }: ToolDetailPageProps) {
               { id: 'useCases', label: 'Use Cases', icon: Star },
               { id: 'pricing', label: 'Pricing', icon: DollarSign },
               { id: 'alternatives', label: 'Alternatives', icon: Tag },
+              { id: 'reviews', label: 'Community Reviews', icon: MessageSquare },
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -561,6 +563,15 @@ export default function ToolDetailPage({ params }: ToolDetailPageProps) {
                 </div>
               )}
             </div>
+          )}
+
+          {/* Community Reviews Tab */}
+          {activeTab === 'reviews' && (
+            <CommunityReviews
+              toolId={tool.id}
+              toolName={tool.name}
+              isLightMode={isLightMode}
+            />
           )}
         </div>
       </motion.div>

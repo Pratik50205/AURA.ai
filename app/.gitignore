@@ -47,3 +47,10 @@ AGENTS.md
 CLAUDE.md
 .agents/
 
+# SQLite Database files
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+

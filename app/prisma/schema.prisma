@@ -19,6 +19,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   savedTools    SavedTool[]
+  reviews       Review[]
 }
 
 model Account {
@@ -65,4 +66,21 @@ model SavedTool {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, toolId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  toolId    String
+  userId    String
+  userName  String
+  userImage String?
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([toolId])
+  @@index([userId])
 }
