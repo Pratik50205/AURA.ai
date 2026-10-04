@@ -33,3 +33,9 @@ models/embeddings/
 
 # Logs
 *.log
+
+# Auto-generated agent files
+AGENTS.md
+CLAUDE.md
+.agents/
+

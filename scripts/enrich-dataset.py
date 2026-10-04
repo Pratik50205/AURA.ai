@@ -13,7 +13,10 @@ import json
 from pathlib import Path
 
 # Load original tools
-tools_path = Path("major project/aiml/data/processed/aura_tools.json")
+repo_root = Path(__file__).resolve().parent.parent
+tools_path = repo_root / "intelligence" / "data" / "processed" / "aura_tools.json"
+if not tools_path.exists():
+    tools_path = repo_root / "aiml" / "data" / "processed" / "aura_tools.json"
 with open(tools_path, "r", encoding="utf-8") as f:
     tools = json.load(f)
 

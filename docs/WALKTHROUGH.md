@@ -9,7 +9,7 @@ This guide walks through testing, demonstrating, and presenting the **AURA.ai** 
 The fastest way to demonstrate AURA's neural vector retrieval live in a terminal:
 
 ```bash
-cd aiml
+cd intelligence
 python main.py
 ```
 
@@ -31,7 +31,7 @@ python main.py
 To run the standalone ASGI recommendation server:
 
 ```bash
-cd aiml
+cd intelligence
 python -m uvicorn src.inference.api:app --port 8000
 ```
 
@@ -46,7 +46,7 @@ python -m uvicorn src.inference.api:app --port 8000
 Launch the Next.js frontend:
 
 ```bash
-cd AURA.ai
+cd app
 npm run dev
 ```
 
@@ -92,7 +92,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 Run all 34 automated unit tests:
 
 ```bash
-cd aiml
+cd intelligence
 python -m pytest
 ```
 
@@ -108,7 +108,7 @@ Expected Output:
 Verify that the Next.js frontend builds cleanly without TypeScript or routing errors:
 
 ```bash
-cd AURA.ai
+cd app
 npm run build
 ```
 

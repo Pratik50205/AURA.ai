@@ -1,4 +1,4 @@
-// Generated from aiml/data/processed/aura_tools.json. Run scripts/sync-frontend-tools.mjs after dataset changes.
+// Generated from intelligence/data/processed/aura_tools.json. Run scripts/sync-frontend-tools.mjs after dataset changes.
 
 import type { Tool, ToolCategory } from '@/lib/site';
 

@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { spawn } from 'child_process';
+import fs from 'fs';
 import path from 'path';
 import type { RecommendationResult } from '@/lib/recommendations';
 
 export const runtime = 'nodejs';
 
 const FALLBACK_MODEL = 'fallback';
-const AIML_SERVICE_URL = process.env.AURA_AIML_URL || 'http://127.0.0.1:8000';
+const AIML_SERVICE_URL = process.env.AURA_INTELLIGENCE_URL || process.env.AURA_AIML_URL || 'http://127.0.0.1:8000';
 const recommendationCache = new Map<string, { expiresAt: number; value: unknown }>();
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
@@ -62,14 +63,15 @@ async function requestFromWarmService(query: string, topK: number) {
 function runPythonRecommendation(query: string, topK: number) {
   return new Promise<any>((resolve, reject) => {
     const appRoot = process.cwd();
-    const aimlRoot = path.resolve(appRoot, '..', 'aiml');
+    const candidatePath = path.resolve(appRoot, '..', 'intelligence');
+    const intelligenceRoot = fs.existsSync(candidatePath) ? candidatePath : path.resolve(appRoot, '..', 'aiml');
     const pythonCommand = process.env.PYTHON || process.env.PYTHON_PATH || 'python';
 
     const script = `
 import json
 import sys
 
-root = r"${aimlRoot.replace(/\\/g, '\\\\')}"
+root = r"${intelligenceRoot.replace(/\\/g, '\\\\')}"
 sys.path.insert(0, root)
 
 from src.inference.recommend import recommend_tools
@@ -83,7 +85,7 @@ print(json.dumps(result))
 `;
 
     const child = spawn(/*turbopackIgnore: true*/ pythonCommand, ['-c', script], {
-      cwd: aimlRoot,
+      cwd: intelligenceRoot,
       env: { ...process.env, PYTHONUTF8: '1' },
     });
 

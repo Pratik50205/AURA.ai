@@ -1,9 +1,9 @@
 # AURA AI/ML — Master Development Task Tracker
 
 ## Phase 1 — Project Setup & Architecture
-- [x] Create project directory structure (`docs/`, `aiml/`, `AURA.ai/`, `scripts/`)
-- [x] Configure central parameters in `aiml/configs/config.yaml`
-- [x] Define root dependencies in `aiml/requirements.txt`
+- [x] Create project directory structure (`docs/`, `intelligence/`, `app/`, `scripts/`)
+- [x] Configure central parameters in `intelligence/configs/config.yaml`
+- [x] Define root dependencies in `intelligence/requirements.txt`
 - [x] Standardize Python module init files and configuration loader
 - [x] Establish pure GitHub-Flavored Markdown documentation standards
 

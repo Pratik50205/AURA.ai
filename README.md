@@ -87,7 +87,7 @@ The project is structured into **3 core modules**:
 
 ```text
 ┌─────────────────────────────────┐      REST API      ┌─────────────────────────────────┐
-│       AURA.ai (Frontend)        │ ◄────────────────► │         aiml (Backend)          │
+│       app/ (Web Application)    │ ◄────────────────► │  intelligence/ (Neural Engine)  │
 │   Next.js 16 • React 19 • UI    │    (Port 8000)     │  PyTorch • FAISS • Embeddings   │
 │   • Interactive Discovery       │                    │  • Sentence Transformers        │
 │   • AI Assistant Chatbot Copilot│                    │  • 384-d Vector Retrieval       │
@@ -107,8 +107,8 @@ The project is structured into **3 core modules**:
 
 | Directory | Core Role | Primary Technologies | Key Entry Point |
 |---|---|---|---|
-| **`AURA.ai/`** | **Full-Stack Web App** | Next.js 16, React 19, Tailwind CSS 4, Framer Motion | Run `npm run dev` (Port 3000) |
-| **`aiml/`** | **Neural Intelligence Engine** | Python 3.14, PyTorch, FAISS, Sentence-Transformers | Run `python main.py` or FastAPI (Port 8000) |
+| **`app/`** | **Full-Stack Web App** | Next.js 16, React 19, Tailwind CSS 4, Framer Motion | Run `npm run dev` (Port 3000) |
+| **`intelligence/`** | **Neural Intelligence Engine** | Python 3.14, PyTorch, FAISS, Sentence-Transformers | Run `python main.py` or FastAPI (Port 8000) |
 | **`docs/`** | **Engineering Hub** | Markdown Documentation | Read `ARCHITECTURE.md` & `WALKTHROUGH.md` |
 | **`scripts/`** | **Sync Utilities** | Node.js, Python | Syncs ML dataset with frontend catalog |
 
@@ -117,16 +117,17 @@ The project is structured into **3 core modules**:
 ### Clean Directory Map
 
 ```text
-major project/
+AURA.ai/
 │
-├── AURA.ai/                           # Frontend Web Application
+├── app/                               # Web Application (Frontend + Gateway + Auth)
 │   ├── src/app/                       # App Router pages (Dashboard, Discover, Saved, Settings)
 │   ├── src/app/api/assistant/         # Conversational AI assistant endpoint
+│   ├── src/app/api/recommend/         # Recommendations API proxy
 │   ├── src/components/                # UI components (AuraAssistantModal, ToolCard, Header)
 │   ├── src/data/tools.ts              # 108 verified AI tools catalog
 │   └── package.json                   # Frontend dependencies
 │
-├── aiml/                              # AI/ML Recommendation Engine
+├── intelligence/                      # AI/ML Neural Recommendation Engine
 │   ├── main.py                        # Terminal CLI search (animated circulating cursor)
 │   ├── src/inference/api.py           # FastAPI recommendation server
 │   ├── src/retrieval/                 # FAISS vector indexing & SentenceTransformer embedder
@@ -180,10 +181,10 @@ Evaluated across the isolated test partition of **30 natural language test queri
 ---
 
 ## Quick Start Guide
-
-### 1. Launch ML Backend
+ 
+### 1. Launch ML Backend (Intelligence Engine)
 ```bash
-cd aiml
+cd intelligence
 pip install -r requirements.txt
 
 # Run interactive terminal CLI (with animated cursor):
@@ -194,9 +195,9 @@ python -m uvicorn src.inference.api:app --port 8000
 ```
 API Documentation will be live at `http://127.0.0.1:8000/docs`.
 
-### 2. Launch Next.js Frontend
+### 2. Launch Next.js Frontend (Web App)
 ```bash
-cd AURA.ai
+cd app
 npm install
 npm run dev
 ```
@@ -204,7 +205,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### 3. Run Automated Unit Tests
 ```bash
-cd aiml
+cd intelligence
 python -m pytest
 ```
 
