@@ -63,14 +63,10 @@ class AuraRetriever:
         candidates = []
         for tool_id, score in results:
             tool = self.tools_map.get(tool_id, {})
-            candidates.append({
-                "tool_id": tool_id,
-                "name": tool.get("name", "Unknown"),
-                "category": tool.get("category", ""),
-                "description": tool.get("description", ""),
-                "url": tool.get("url"),
-                "semantic_score": round(score, 4),
-            })
+            candidate = dict(tool)
+            candidate["tool_id"] = tool_id
+            candidate["semantic_score"] = round(score, 4)
+            candidates.append(candidate)
 
         return candidates
 

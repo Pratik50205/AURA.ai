@@ -231,8 +231,8 @@ def display_recommendation_results(result: dict[str, Any]) -> None:
         name = tool.get("name", "Unknown")
         category = tool.get("category", "AI Tool")
 
-        score = tool.get("reranker_score")
-        if score is None:
+        score = tool.get("ranking_score")
+        if score is None or score <= 0.0:
             score = tool.get("semantic_score", 0.0)
         score_str, score_color = _render_score_bar(float(score))
 

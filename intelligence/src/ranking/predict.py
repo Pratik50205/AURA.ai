@@ -48,7 +48,9 @@ def predict_ranking(
 
     # Add ranking scores
     for i, c in enumerate(candidates):
-        c["ranking_score"] = round(float(scores[i]), 4)
+        score_val = round(float(scores[i]), 4)
+        c["neural_score"] = score_val
+        c["ranking_score"] = score_val
 
     # Sort by ranking score descending
     ranked = sorted(candidates, key=lambda x: x["ranking_score"], reverse=True)

@@ -4,7 +4,7 @@ import type { Tool } from '@/lib/site';
 
 export const runtime = 'nodejs';
 
-const AIML_SERVICE_URL = process.env.AURA_AIML_URL || 'http://127.0.0.1:8000';
+const AIML_SERVICE_URL = process.env.AURA_INTELLIGENCE_URL || process.env.AURA_AIML_URL || 'http://127.0.0.1:8000';
 
 function findToolByNameOrSlug(query: string): Tool | undefined {
   const q = query.toLowerCase().trim();
@@ -130,6 +130,8 @@ export async function POST(request: NextRequest) {
 
     // Filter by free if requested
     const wantsFree = lowerMessage.includes('free') || lowerMessage.includes('$0') || lowerMessage.includes('no cost');
+    const wantsPaid = lowerMessage.includes('pay') || lowerMessage.includes('paid') || lowerMessage.includes('subscription') || lowerMessage.includes('subscribe') || lowerMessage.includes('budget');
+
     if (wantsFree) {
       const freeTools = matchedTools.filter((t) => t.pricing.toLowerCase().includes('free'));
       if (freeTools.length > 0) {
@@ -144,10 +146,18 @@ export async function POST(request: NextRequest) {
     let responseText = '';
     if (topTools.length > 0) {
       const leadTool = topTools[0];
+      const popularPlan = leadTool.pricingDetails?.find(p => p.isPopular) || leadTool.pricingDetails?.find(p => p.price && !p.price.includes('$0')) || leadTool.pricingDetails?.[0];
+      const pricingBadge = popularPlan ? ` • ${popularPlan.plan}: ${popularPlan.price}` : ` • ${leadTool.pricing}`;
+
+      let customWhy = `*Why it fits:* It holds a **${leadTool.trustScore}/100 Trust Score** and specializes in ${leadTool.tags.slice(0, 3).join(', ')}.`;
+      if (wantsPaid && popularPlan) {
+        customWhy = `*Why it fits your subscription budget:* Its **${popularPlan.plan} tier (${popularPlan.price})** provides ${popularPlan.features?.slice(0, 2).join(', ') || 'full professional access'}.`;
+      }
+
       responseText = `Based on your request, I evaluated the AURA neural index and identified **${topTools.length} tools** tailored to your workflow.\n\n` +
-        `**Top recommendation: ${leadTool.name}** (${leadTool.category} • ${leadTool.pricing})\n` +
+        `**Top recommendation: ${leadTool.name}** (${leadTool.category}${pricingBadge})\n` +
         `${leadTool.description}\n\n` +
-        `*Why it fits:* It holds a **${leadTool.trustScore}/100 Trust Score** and specializes in ${leadTool.tags.slice(0, 3).join(', ')}.`;
+        customWhy;
     } else {
       responseText = `I couldn't find an exact match for that specific inquiry. Could you tell me more about what you're trying to build, your preferred budget, or your team workflow?`;
     }
