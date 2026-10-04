@@ -1,6 +1,13 @@
 """Optional FastAPI inference endpoint for AURA."""
 import logging
+import sys
+from pathlib import Path
 from typing import Any
+
+# Ensure intelligence directory is in sys.path so 'src' imports resolve properly
+_INTELLIGENCE_DIR = Path(__file__).resolve().parent.parent.parent
+if str(_INTELLIGENCE_DIR) not in sys.path:
+    sys.path.insert(0, str(_INTELLIGENCE_DIR))
 
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
@@ -10,7 +17,7 @@ from src.inference.recommend import recommend_tools
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="AURA AI/ML API",
+    title="AURA.ai Intelligence API",
     description="AI tool discovery and recommendation API",
     version="0.1.0",
 )
@@ -75,3 +82,10 @@ def recommend_get(
     """GET endpoint for quick queries."""
     result = recommend_tools(query=query, top_k=top_k, use_reranker=False)
     return result
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+

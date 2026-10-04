@@ -350,6 +350,7 @@ The system was evaluated on a held-out benchmark of **30 ground-truth test queri
 ### 1. Interactive Terminal Mode (Best for Live Viva / Demo)
 Runs in a continuous loop with models kept in RAM:
 ```pwsh
+cd intelligence
 python main.py
 ```
 - **Experience:** Type queries continuously at the `Query: ` prompt.
@@ -359,12 +360,14 @@ python main.py
 ### 2. Single Command CLI
 Run a single query directly:
 ```pwsh
+cd intelligence
 python -m src.inference.recommend "i need to remove backgrounds from pictures"
 ```
 
 ### 3. Production REST API Server
 Start the FastAPI server:
 ```pwsh
+cd intelligence
 python -m uvicorn src.inference.api:app --reload --port 8000
 ```
 - **Interactive Swagger Documentation:** Open browser at `http://localhost:8000/docs`
@@ -377,6 +380,7 @@ python -m uvicorn src.inference.api:app --reload --port 8000
 ### 4. Run Automated Unit Tests
 Verify pipeline integrity (all 34 tests pass):
 ```pwsh
+cd intelligence
 python -m pytest
 ```
 

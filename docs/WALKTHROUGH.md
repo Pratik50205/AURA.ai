@@ -14,7 +14,7 @@ python main.py
 ```
 
 ### What Happens:
-1. Loads the **108 curated AI tools** across 23 taxonomy categories into RAM.
+1. Loads the **320 curated AI tools** across 23 taxonomy categories into RAM.
 2. Initializes the `sentence-transformers/all-MiniLM-L6-v2` embedding model (384 dense dimensions).
 3. Mounts the pre-computed **FAISS FlatIP vector index**.
 4. Displays an animated diagnostic dashboard confirming vector space readiness in `< 50ms`.
@@ -69,7 +69,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 2. Point out the **AURA Neural Recommendation Core** dashboard at the top of the page:
    - Model: `all-MiniLM-L6-v2` (384-dimensional dense vectors)
    - Vector Index: `FAISS FlatIP` (Exact cosine similarity)
-   - Ingested Catalog: `108 Active Tools`
+   - Ingested Catalog: `320 Active Tools`
    - Latency: `~39 ms`
    - Backend Status: `● Operational (127.0.0.1:8000)`
 3. Test the **Segmented Theme Selector**: Click between *Dark Mode* and *Light Mode* to demonstrate the smooth 350ms native View Transition crossfade.
@@ -119,3 +119,19 @@ Expected Output:
 ✓ Generating static pages (12/12)
 Finalizing page optimization ...
 ```
+
+---
+
+## 7. 🐳 Multi-Container Docker Deployment
+
+To launch the complete containerized stack in isolated microservices:
+
+```bash
+docker compose up -d --build
+```
+
+### Verification & Health Probes:
+- Check container status: `docker compose ps`
+- Access Web Application: [http://localhost:3000](http://localhost:3000)
+- Stream combined service logs: `docker compose logs -f`
+- Stop and clean up containers: `docker compose down`

@@ -21,6 +21,13 @@ logging.basicConfig(level=logging.WARNING)
 logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
 logging.getLogger("transformers").setLevel(logging.WARNING)
 
+from pathlib import Path
+
+# Ensure intelligence directory is in sys.path so 'src' imports resolve properly
+_INTELLIGENCE_DIR = Path(__file__).resolve().parent
+if str(_INTELLIGENCE_DIR) not in sys.path:
+    sys.path.insert(0, str(_INTELLIGENCE_DIR))
+
 from src.inference.recommend import recommend_tools
 import src.inference.recommend as recommend_module
 from src.inference.cli_ui import (

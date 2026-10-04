@@ -62,9 +62,14 @@ async function requestFromWarmService(query: string, topK: number) {
 
 function runPythonRecommendation(query: string, topK: number) {
   return new Promise<any>((resolve, reject) => {
-    const appRoot = process.cwd();
-    const candidatePath = path.resolve(appRoot, '..', 'intelligence');
-    const intelligenceRoot = fs.existsSync(candidatePath) ? candidatePath : path.resolve(appRoot, '..', 'aiml');
+    const cwd = process.cwd();
+    const candidatePaths = [
+      path.resolve(cwd, 'intelligence'),
+      path.resolve(cwd, '..', 'intelligence'),
+      path.resolve(cwd, 'aiml'),
+      path.resolve(cwd, '..', 'aiml'),
+    ];
+    const intelligenceRoot = candidatePaths.find((p) => fs.existsSync(p)) || candidatePaths[1];
     const pythonCommand = process.env.PYTHON || process.env.PYTHON_PATH || 'python';
 
     const script = `

@@ -31,7 +31,7 @@ This is the official Next.js 16 web application for **AURA.ai**. Built with the 
 - [x] **Phase 3: Neural Semantic Search Integration**
   - Direct bridge between Next.js `/api/recommend` and the FastAPI ML service.
   - Fast in-memory caching and fallback execution.
-  - 108 curated tools synchronized from the ML dataset.
+  - 320 curated tools synchronized from the ML dataset.
 
 - [x] **Phase 4: AURA Assistant Chatbot Copilot**
   - Floating slide-out chat drawer with Framer Motion physics.
@@ -70,7 +70,7 @@ This is the official Next.js 16 web application for **AURA.ai**. Built with the 
 
 ## Environment Setup
 
-Create `.env.local` in `AURA.ai/`:
+Create `.env.local` in `app/` (or copy `.env.example`):
 
 ```env
 # NextAuth Configuration
@@ -79,7 +79,8 @@ NEXTAUTH_SECRET="aura-production-secret-encryption-key-32-chars-minimum"
 NEXTAUTH_URL="http://localhost:3000"
 
 # AI/ML Backend Service
-AURA_AIML_URL="http://127.0.0.1:8000"
+AURA_INTELLIGENCE_URL="http://127.0.0.1:8000"
+# (AURA_AIML_URL is also supported as legacy fallback)
 ```
 
 ---

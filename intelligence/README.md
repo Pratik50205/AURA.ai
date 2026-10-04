@@ -37,11 +37,11 @@ Interactive OpenAPI Swagger documentation will be available at:
 ## Directory Structure
 
 ```text
-aiml/
+intelligence/
 ├── main.py                      # Interactive CLI terminal application (<50ms query loop)
 ├── configs/config.yaml          # Central ML and pipeline configuration
 ├── data/
-│   ├── processed/               # Curated dataset (108 tools, 210 queries, 930 pairs)
+│   ├── processed/               # Curated dataset (320 tools, 210 queries, 930 pairs)
 │   ├── embeddings/              # 384-dimensional dense tool vectors (.npy)
 │   ├── indexes/                 # FAISS FlatIP cosine index file
 │   └── splits/                  # Leakage-free train (70%), val (15%), test (15%) partitions
@@ -61,7 +61,7 @@ aiml/
 
 ## Dataset Statistics
 
-- **Curated AI Tools**: 108 normalized tools spanning 23 categories.
+- **Curated AI Tools**: 320 normalized tools spanning 23 categories.
 - **Natural Language Queries**: 210 diverse formulations.
 - **Relevance Judgments**: 930 graded query-tool pairs (labels 0–3).
 - **Split Distribution**: 134 train / 28 validation / 30 held-out test queries (zero data leakage).

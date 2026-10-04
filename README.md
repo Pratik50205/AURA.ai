@@ -124,7 +124,7 @@ AURA.ai/
 │   ├── src/app/api/assistant/         # Conversational AI assistant endpoint
 │   ├── src/app/api/recommend/         # Recommendations API proxy
 │   ├── src/components/                # UI components (AuraAssistantModal, ToolCard, Header)
-│   ├── src/data/tools.ts              # 108 verified AI tools catalog
+│   ├── src/data/tools.ts              # 320 verified AI tools catalog
 │   └── package.json                   # Frontend dependencies
 │
 ├── intelligence/                      # AI/ML Neural Recommendation Engine
@@ -132,7 +132,7 @@ AURA.ai/
 │   ├── src/inference/api.py           # FastAPI recommendation server
 │   ├── src/retrieval/                 # FAISS vector indexing & SentenceTransformer embedder
 │   ├── src/ranking/                   # PyTorch MLP ranker & cross-encoder
-│   ├── data/processed/                # Curated dataset (108 tools, 210 queries, 930 pairs)
+│   ├── data/processed/                # Curated dataset (320 tools, 210 queries, 930 pairs)
 │   ├── tests/                         # 34 automated unit tests
 │   └── requirements.txt               # Python dependencies
 │
@@ -208,6 +208,15 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 cd intelligence
 python -m pytest
 ```
+
+### 4. Full-Stack Docker Deployment (Production Containerized)
+Launch both the neural engine and web application together:
+```bash
+docker compose up -d --build
+```
+- Web Application: [http://localhost:3000](http://localhost:3000)
+- Neural Engine Health: `http://localhost:8000/health` (internal)
+- Stop Containers: `docker compose down`
 
 ---
 

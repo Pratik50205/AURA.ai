@@ -3,12 +3,19 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const sourcePath = fs.existsSync(path.join(projectRoot, 'intelligence', 'data', 'processed', 'aura_tools.json'))
-  ? path.join(projectRoot, 'intelligence', 'data', 'processed', 'aura_tools.json')
-  : path.join(projectRoot, 'aiml', 'data', 'processed', 'aura_tools.json');
-const targetPath = fs.existsSync(path.join(projectRoot, 'app', 'src', 'data', 'tools.ts'))
-  ? path.join(projectRoot, 'app', 'src', 'data', 'tools.ts')
-  : path.join(projectRoot, 'AURA.ai', 'src', 'data', 'tools.ts');
+const sourceCandidates = [
+  path.join(projectRoot, 'intelligence', 'data', 'processed', 'aura_tools.json'),
+  path.join(projectRoot, 'data', 'processed', 'aura_tools.json'),
+  path.join(projectRoot, 'aiml', 'data', 'processed', 'aura_tools.json'),
+];
+const sourcePath = sourceCandidates.find((p) => fs.existsSync(p)) || sourceCandidates[0];
+
+const targetCandidates = [
+  path.join(projectRoot, 'app', 'src', 'data', 'tools.ts'),
+  path.join(projectRoot, 'src', 'data', 'tools.ts'),
+  path.join(projectRoot, 'AURA.ai', 'src', 'data', 'tools.ts'),
+];
+const targetPath = targetCandidates.find((p) => fs.existsSync(p)) || targetCandidates[0];
 const sourceTools = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
 const tools = sourceTools.map((tool) => ({
