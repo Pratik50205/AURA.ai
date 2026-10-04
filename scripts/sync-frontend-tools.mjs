@@ -11,6 +11,7 @@ const sourceCandidates = [
 const sourcePath = sourceCandidates.find((p) => fs.existsSync(p)) || sourceCandidates[0];
 
 const targetCandidates = [
+  path.join(projectRoot, 'web', 'src', 'data', 'tools.ts'),
   path.join(projectRoot, 'app', 'src', 'data', 'tools.ts'),
   path.join(projectRoot, 'src', 'data', 'tools.ts'),
   path.join(projectRoot, 'AURA.ai', 'src', 'data', 'tools.ts'),

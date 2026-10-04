@@ -87,7 +87,7 @@ The project is structured into **3 core modules**:
 
 ```text
 ┌─────────────────────────────────┐      REST API      ┌─────────────────────────────────┐
-│       app/ (Web Application)    │ ◄────────────────► │  intelligence/ (Neural Engine)  │
+│       web/ (Web Application)    │ ◄────────────────► │  intelligence/ (Neural Engine)  │
 │   Next.js 16 • React 19 • UI    │    (Port 8000)     │  PyTorch • FAISS • Embeddings   │
 │   • Interactive Discovery       │                    │  • Sentence Transformers        │
 │   • AI Assistant Chatbot Copilot│                    │  • 384-d Vector Retrieval       │
@@ -107,7 +107,7 @@ The project is structured into **3 core modules**:
 
 | Directory | Core Role | Primary Technologies | Key Entry Point |
 |---|---|---|---|
-| **`app/`** | **Full-Stack Web App** | Next.js 16, React 19, Tailwind CSS 4, Framer Motion | Run `npm run dev` (Port 3000) |
+| **`web/`** | **Full-Stack Web App** | Next.js 16, React 19, Tailwind CSS 4, Framer Motion | Run `npm run dev` (Port 3000) |
 | **`intelligence/`** | **Neural Intelligence Engine** | Python 3.14, PyTorch, FAISS, Sentence-Transformers | Run `python main.py` or FastAPI (Port 8000) |
 | **`docs/`** | **Engineering Hub** | Markdown Documentation | Read `ARCHITECTURE.md` & `WALKTHROUGH.md` |
 | **`scripts/`** | **Sync Utilities** | Node.js, Python | Syncs ML dataset with frontend catalog |
@@ -119,7 +119,7 @@ The project is structured into **3 core modules**:
 ```text
 AURA.ai/
 │
-├── app/                               # Web Application (Frontend + Gateway + Auth)
+├── web/                               # Web Application (Frontend + Gateway + Auth)
 │   ├── src/app/                       # App Router pages (Dashboard, Discover, Saved, Settings)
 │   ├── src/app/api/assistant/         # Conversational AI assistant endpoint
 │   ├── src/app/api/recommend/         # Recommendations API proxy
@@ -197,7 +197,7 @@ API Documentation will be live at `http://127.0.0.1:8000/docs`.
 
 ### 2. Launch Next.js Frontend (Web App)
 ```bash
-cd app
+cd web
 npm install
 npm run dev
 ```

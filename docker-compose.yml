@@ -17,10 +17,10 @@ services:
       retries: 12
       start_period: 120s
 
-  app:
+  web:
     build:
-      context: ./app
-    container_name: aura-app
+      context: ./web
+    container_name: aura-web
     restart: unless-stopped
     depends_on:
       intelligence:

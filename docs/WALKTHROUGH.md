@@ -46,7 +46,7 @@ python -m uvicorn src.inference.api:app --port 8000
 Launch the Next.js frontend:
 
 ```bash
-cd app
+cd web
 npm run dev
 ```
 
@@ -108,7 +108,7 @@ Expected Output:
 Verify that the Next.js frontend builds cleanly without TypeScript or routing errors:
 
 ```bash
-cd app
+cd web
 npm run build
 ```
 

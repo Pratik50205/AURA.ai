@@ -70,7 +70,7 @@ This is the official Next.js 16 web application for **AURA.ai**. Built with the 
 
 ## Environment Setup
 
-Create `.env.local` in `app/` (or copy `.env.example`):
+Create `.env.local` in `web/` (or copy `.env.example`):
 
 ```env
 # NextAuth Configuration
