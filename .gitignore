@@ -39,3 +39,8 @@ AGENTS.md
 CLAUDE.md
 .agents/
 
+# Internal planning docs
+docs/PRD.md
+docs/TASK_TRACKER.md
+
+
