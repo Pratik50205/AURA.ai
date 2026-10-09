@@ -26,7 +26,7 @@ app = FastAPI(
 class RecommendRequest(BaseModel):
     query: str
     top_k: int = 5
-    use_reranker: bool = False
+    use_reranker: bool = True
 
 
 class ToolResult(BaseModel):
@@ -36,6 +36,12 @@ class ToolResult(BaseModel):
     category: str
     description: str
     url: str | None
+    pricing: str = "Freemium"
+    pricingDetails: list[Any] = []
+    trustScore: int = 80
+    users: str = "Not listed"
+    verified: bool = False
+    tags: list[str] = []
     semantic_score: float
     reranker_score: float | None = None
     ranking_score: float | None = None
@@ -44,6 +50,8 @@ class ToolResult(BaseModel):
 
 class RecommendResponse(BaseModel):
     query: str
+    expanded_query: str | None = None
+    intents: dict[str, Any] | None = None
     results: list[ToolResult]
     model_version: str
     latency_ms: float
@@ -80,7 +88,7 @@ def recommend_get(
     top_k: int = Query(5, description="Number of tools to return"),
 ):
     """GET endpoint for quick queries."""
-    result = recommend_tools(query=query, top_k=top_k, use_reranker=False)
+    result = recommend_tools(query=query, top_k=top_k, use_reranker=True)
     return result
 
 

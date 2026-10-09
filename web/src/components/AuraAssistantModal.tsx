@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useDashboard } from '@/app/(dashboard)/layout';
 import type { Tool } from '@/lib/site';
+import { tools } from '@/data/tools';
 
 interface ChatMessage {
   id: string;
@@ -267,7 +268,7 @@ export default function AuraAssistantModal() {
                     <h3 className="text-sm font-bold tracking-tight">AURA AI Assistant</h3>
                     <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                      108 Vector Tools
+                      {tools.length} Vector Tools
                     </span>
                   </div>
                   <p className="text-[11px] text-muted-foreground font-medium">Neural Discovery & Real-Time Comparison</p>
@@ -501,28 +502,57 @@ export default function AuraAssistantModal() {
                         </div>
                       )}
 
-                      {/* Horizontal Scrolling Follow-Up Chips */}
+                      {/* Follow-Up Options & Interactive Workflow Chips */}
                       {message.suggestedFollowUps && message.suggestedFollowUps.length > 0 && (
-                        <div className="w-full max-w-[95%] mt-2 px-1">
-                          <div className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1">
-                            <Sparkles className="w-3 h-3 text-[#FF7B00]" /> Suggested Inquiries
-                          </div>
-                          <div className="flex gap-2 overflow-x-auto pb-1 pt-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                            {message.suggestedFollowUps.map((chip, chipIndex) => (
-                              <button
-                                key={chipIndex}
-                                onClick={() => handleSendMessage(chip)}
-                                className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-full border transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap shadow-sm ${
-                                  isLightMode
-                                    ? 'bg-white border-gray-200 hover:border-[#D9042B]/50 hover:bg-red-50 text-gray-800'
-                                    : 'bg-[#181824] border-white/10 hover:border-[#FF3344]/50 hover:bg-[#202030] text-gray-200 hover:text-white'
-                                }`}
-                              >
-                                <span className="text-[#FF3344] font-bold">+</span>
-                                <span>{chip}</span>
-                              </button>
-                            ))}
-                          </div>
+                        <div className="w-full max-w-[95%] mt-3 px-1">
+                          {(!message.tools || message.tools.length === 0) && !message.comparison ? (
+                            /* Greeting & Conversational Quick-Start Grid */
+                            <div className="space-y-2">
+                              <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground flex items-center gap-1.5">
+                                <Sparkles className="w-3 h-3 text-[#FF7B00]" />
+                                Choose a workflow or explore:
+                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {message.suggestedFollowUps.map((chip, chipIndex) => (
+                                  <button
+                                    key={chipIndex}
+                                    onClick={() => handleSendMessage(chip)}
+                                    className={`p-2.5 rounded-xl border text-xs font-medium transition-all duration-200 flex items-center justify-between text-left group shadow-sm ${
+                                      isLightMode
+                                        ? 'bg-white border-gray-200 hover:border-[#D9042B]/50 hover:bg-red-50 text-gray-800 hover:text-red-600'
+                                        : 'bg-[#181824] border-white/10 hover:border-[#FF3344]/50 hover:bg-[#202030] text-gray-200 hover:text-white'
+                                    }`}
+                                  >
+                                    <span className="truncate pr-1">{chip}</span>
+                                    <ArrowRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[#FF3344] shrink-0" />
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          ) : (
+                            /* Compact Horizontal Scroll for Tool Result Recommendations */
+                            <div>
+                              <div className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1">
+                                <Sparkles className="w-3 h-3 text-[#FF7B00]" /> Suggested Inquiries
+                              </div>
+                              <div className="flex gap-2 overflow-x-auto pb-1 pt-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                                {message.suggestedFollowUps.map((chip, chipIndex) => (
+                                  <button
+                                    key={chipIndex}
+                                    onClick={() => handleSendMessage(chip)}
+                                    className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-full border transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap shadow-sm ${
+                                      isLightMode
+                                        ? 'bg-white border-gray-200 hover:border-[#D9042B]/50 hover:bg-red-50 text-gray-800'
+                                        : 'bg-[#181824] border-white/10 hover:border-[#FF3344]/50 hover:bg-[#202030] text-gray-200 hover:text-white'
+                                    }`}
+                                  >
+                                    <span className="text-[#FF3344] font-bold">+</span>
+                                    <span>{chip}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -543,7 +573,7 @@ export default function AuraAssistantModal() {
                       <span className="w-2 h-2 rounded-full bg-[#FF3344] animate-ping" />
                       <span className="font-semibold text-[11px]">Searching 384-dimensional vector space...</span>
                     </div>
-                    <p className="text-[10px] text-muted-foreground">Evaluating 108 tool embeddings and trust benchmarks</p>
+                    <p className="text-[10px] text-muted-foreground">Evaluating {tools.length} tool embeddings and multi-signal constraints</p>
                   </div>
                 </div>
               )}

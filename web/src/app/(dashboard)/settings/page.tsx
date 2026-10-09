@@ -21,6 +21,7 @@ import {
   Bell
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { tools, getCategories } from '@/data/tools';
 
 const USER_PROFILE_STORAGE_KEY = 'aura-user-profile';
 
@@ -105,19 +106,19 @@ export default function SettingsPage() {
               </div>
               <div>
                 <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-                  AURA Neural Recommendation Core
+                  AURA Neural Recommendation Core v2
                   <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                     Operational
                   </span>
                 </h2>
-                <p className="text-xs text-muted-foreground">Real-time vector index parameters and inference benchmarks</p>
+                <p className="text-xs text-muted-foreground">Multi-signal intent and constraint ranking engine telemetry</p>
               </div>
             </div>
 
             <div className="flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-xl border border-white/10 bg-white/5 text-muted-foreground self-start sm:self-auto">
               <Server className="w-3.5 h-3.5 text-emerald-400" />
-              <span>127.0.0.1:8000 (FastAPI)</span>
+              <span>127.0.0.1:8000 (FastAPI v2)</span>
             </div>
           </div>
 
@@ -138,8 +139,8 @@ export default function SettingsPage() {
               <div className="text-[10px] uppercase font-bold text-muted-foreground flex items-center gap-1">
                 <Zap className="w-3 h-3 text-amber-400" /> Index Engine
               </div>
-              <div className="text-xs sm:text-sm font-bold mt-1.5 text-foreground truncate">FAISS FlatIP</div>
-              <div className="text-[10px] text-muted-foreground mt-0.5">Exact Cosine Similarity</div>
+              <div className="text-xs sm:text-sm font-bold mt-1.5 text-foreground truncate">FAISS FlatIP + MLP</div>
+              <div className="text-[10px] text-muted-foreground mt-0.5">Multi-Signal Neural Ranker</div>
             </div>
 
             <div className={`p-3.5 rounded-2xl border ${
@@ -148,8 +149,8 @@ export default function SettingsPage() {
               <div className="text-[10px] uppercase font-bold text-muted-foreground flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3 text-blue-400" /> Curated Tools
               </div>
-              <div className="text-xs sm:text-sm font-bold mt-1.5 text-foreground">108 Ingested</div>
-              <div className="text-[10px] text-muted-foreground mt-0.5">23 Categories Active</div>
+              <div className="text-xs sm:text-sm font-bold mt-1.5 text-foreground">{tools.length} Ingested</div>
+              <div className="text-[10px] text-muted-foreground mt-0.5">{getCategories().length} Categories Active</div>
             </div>
 
             <div className={`p-3.5 rounded-2xl border ${
@@ -158,8 +159,8 @@ export default function SettingsPage() {
               <div className="text-[10px] uppercase font-bold text-muted-foreground flex items-center gap-1">
                 <Zap className="w-3 h-3 text-emerald-400" /> Query Latency
               </div>
-              <div className="text-xs sm:text-sm font-bold mt-1.5 text-emerald-400 font-mono">~39 ms</div>
-              <div className="text-[10px] text-muted-foreground mt-0.5">Sub-50ms verified</div>
+              <div className="text-xs sm:text-sm font-bold mt-1.5 text-emerald-400 font-mono">~32 ms</div>
+              <div className="text-[10px] text-muted-foreground mt-0.5">Sub-40ms verified</div>
             </div>
           </div>
         </div>

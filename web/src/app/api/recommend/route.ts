@@ -36,6 +36,12 @@ function normalizeResults(results: unknown): RecommendationResult[] {
       category: typeof result.category === 'string' ? result.category : '',
       description: typeof result.description === 'string' ? result.description : '',
       url: typeof result.url === 'string' ? result.url : null,
+      pricing: typeof result.pricing === 'string' ? result.pricing : undefined,
+      pricingDetails: Array.isArray(result.pricingDetails) ? result.pricingDetails : undefined,
+      trustScore: typeof result.trustScore === 'number' ? result.trustScore : undefined,
+      users: typeof result.users === 'string' ? result.users : undefined,
+      verified: typeof result.verified === 'boolean' ? result.verified : undefined,
+      tags: Array.isArray(result.tags) ? (result.tags as string[]) : undefined,
       reason: typeof result.reason === 'string' ? result.reason : '',
       semantic_score: typeof result.semantic_score === 'number' ? result.semantic_score : undefined,
       reranker_score: typeof result.reranker_score === 'number' ? result.reranker_score : undefined,
@@ -48,7 +54,7 @@ async function requestFromWarmService(query: string, topK: number) {
   const response = await fetch(`${AIML_SERVICE_URL}/recommend`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, top_k: topK, use_reranker: false }),
+    body: JSON.stringify({ query, top_k: topK, use_reranker: true }),
     signal: AbortSignal.timeout(120_000),
     cache: 'no-store',
   });
@@ -84,7 +90,7 @@ from src.inference.recommend import recommend_tools
 result = recommend_tools(
     query=${JSON.stringify(query)},
     top_k=${Math.max(1, Math.min(topK, 10))},
-    use_reranker=False,
+    use_reranker=True,
 )
 print(json.dumps(result))
 `;
@@ -155,8 +161,13 @@ export async function POST(request: NextRequest) {
       }
 
       const normalizedResult = {
-        ...result,
-        results: normalizeResults(result.results),
+        query,
+        expanded_query: typeof result?.expanded_query === 'string' ? result.expanded_query : null,
+        intents: result?.intents && typeof result.intents === 'object' ? result.intents : null,
+        results: normalizeResults(result?.results),
+        model_version: typeof result?.model_version === 'string' ? result.model_version : 'aura-neural-ranker-v2',
+        latency_ms: typeof result?.latency_ms === 'number' ? result.latency_ms : 0,
+        num_candidates_considered: typeof result?.num_candidates_considered === 'number' ? result.num_candidates_considered : 0,
       };
       recommendationCache.set(cacheKey, { expiresAt: Date.now() + CACHE_TTL_MS, value: normalizedResult });
       return NextResponse.json(normalizedResult);

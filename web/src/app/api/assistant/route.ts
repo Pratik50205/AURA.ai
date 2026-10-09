@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { tools } from '@/data/tools';
 import type { Tool } from '@/lib/site';
+import { auth } from '@/lib/auth/config';
 
 export const runtime = 'nodejs';
 
@@ -31,6 +32,35 @@ function findComparisonTools(text: string): [Tool, Tool] | null {
   return null;
 }
 
+function isGreeting(text: string): boolean {
+  const cleaned = text.toLowerCase().trim().replace(/[!.,?]+$/, '').trim();
+  const greetings = new Set([
+    'hi', 'hello', 'hey', 'heyy', 'heyyy', 'howdy', 'yo', 'sup',
+    'good morning', 'good afternoon', 'good evening', 'greetings',
+    'hi there', 'hello there', 'hey there', "what's up", 'whats up',
+    'hi aura', 'hello aura', 'hey aura'
+  ]);
+  return greetings.has(cleaned);
+}
+
+function isIdentityOrCapabilities(text: string): boolean {
+  const cleaned = text.toLowerCase().trim().replace(/[!.,?]+$/, '').trim();
+  const patterns = [
+    'who are you', 'what are you', 'what can you do', 'how do you work',
+    'what is aura', 'help', 'features', 'what do you do', 'who created you'
+  ];
+  return patterns.some((p) => cleaned === p || cleaned.includes(p));
+}
+
+function isGratitudeOrFarewell(text: string): boolean {
+  const cleaned = text.toLowerCase().trim().replace(/[!.,?]+$/, '').trim();
+  const patterns = new Set([
+    'thanks', 'thank you', 'thx', 'thanks a lot', 'thank you so much',
+    'appreciate it', 'bye', 'goodbye', 'cya', 'see ya', 'good night'
+  ]);
+  return patterns.has(cleaned);
+}
+
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
   try {
@@ -44,7 +74,85 @@ export async function POST(request: NextRequest) {
 
     const lowerMessage = message.toLowerCase();
 
-    // Check for comparison intent
+    // Check optional authenticated user name
+    let userName: string | null = null;
+    try {
+      const session = await auth();
+      if (session?.user?.name) {
+        userName = session.user.name.split(' ')[0];
+      } else if (session?.user?.email) {
+        userName = session.user.email.split('@')[0];
+      }
+    } catch {
+      // Session extraction optional
+    }
+
+    // 1. Greeting intent handling
+    if (isGreeting(lowerMessage)) {
+      const salutation = userName ? `Hello **${userName}**! 👋` : 'Hello there! 👋';
+      const reply = `${salutation} Welcome to **AURA.ai**!\n\n` +
+        `I am your intelligent AI Copilot, indexed with **${tools.length} verified AI tools** across 23 categories.\n\n` +
+        `**What are you looking to build or explore today?** Pick one of the popular options below or describe your task in plain words (e.g. *"find free video editors with captions"* or *"compare Cursor vs Copilot"*):`;
+
+      return NextResponse.json({
+        reply,
+        tools: [],
+        comparison: null,
+        suggestedFollowUps: [
+          '🎬 Free video editing with captions',
+          '💻 Best AI coding copilots',
+          '⚡ Compare Cursor vs GitHub Copilot',
+          '📊 AI presentation & pitch deck makers',
+          '🎨 Image generation & graphic design',
+          '💸 Show 100% free & open-source tools'
+        ],
+        latencyMs: Math.max(Date.now() - startTime, 18),
+      });
+    }
+
+    // 2. Identity & capabilities intent handling
+    if (isIdentityOrCapabilities(lowerMessage)) {
+      const reply = `I am **AURA Copilot**, an intelligent AI tool discovery and recommendation assistant.\n\n` +
+        `Here is what I can help you with:\n\n` +
+        `• **Natural Language Tool Discovery**: Tell me what you need to create or accomplish (e.g., *"tools to remove audio noise"* or *"free alternatives to Jasper"*).\n` +
+        `• **Side-by-Side Tool Comparison**: Ask me to compare two products (e.g., *"compare Claude vs ChatGPT"* or *"Runway vs Pika"*).\n` +
+        `• **Budget & Tier Filtering**: Search specifically for free, freemium, or commercial tools with verified pricing plans.\n` +
+        `• **Trust & Community Ratings**: Evaluate tools by community trust scores and verified benchmarks.\n\n` +
+        `**What would you like to explore right now?**`;
+
+      return NextResponse.json({
+        reply,
+        tools: [],
+        comparison: null,
+        suggestedFollowUps: [
+          '⚡ Compare Claude vs ChatGPT',
+          '🎬 Top video generation tools',
+          '💻 Developer code assistants',
+          '💸 Free AI tools for productivity'
+        ],
+        latencyMs: Math.max(Date.now() - startTime, 18),
+      });
+    }
+
+    // 3. Gratitude & farewell intent handling
+    if (isGratitudeOrFarewell(lowerMessage)) {
+      const reply = `You're very welcome! 😊 Feel free to ask anytime if you want to discover more AI tools, benchmark pricing tiers, or compare workflows.\n\n` +
+        `Happy building with AURA! 🚀`;
+
+      return NextResponse.json({
+        reply,
+        tools: [],
+        comparison: null,
+        suggestedFollowUps: [
+          'Explore trending AI tools',
+          'Compare Cursor vs GitHub Copilot',
+          'Show free design tools'
+        ],
+        latencyMs: Math.max(Date.now() - startTime, 18),
+      });
+    }
+
+    // 4. Check for comparison intent
     const comparisonPair = findComparisonTools(message);
     if (comparisonPair) {
       const [toolA, toolB] = comparisonPair;
@@ -90,8 +198,8 @@ export async function POST(request: NextRequest) {
       const mlResponse = await fetch(`${AIML_SERVICE_URL}/recommend`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: message, top_k: 8, use_reranker: false }),
-        signal: AbortSignal.timeout(3000),
+        body: JSON.stringify({ query: message, top_k: 8, use_reranker: true }),
+        signal: AbortSignal.timeout(5000),
       });
 
       if (mlResponse.ok) {
@@ -149,8 +257,12 @@ export async function POST(request: NextRequest) {
       const popularPlan = leadTool.pricingDetails?.find(p => p.isPopular) || leadTool.pricingDetails?.find(p => p.price && !p.price.includes('$0')) || leadTool.pricingDetails?.[0];
       const pricingBadge = popularPlan ? ` • ${popularPlan.plan}: ${popularPlan.price}` : ` • ${leadTool.pricing}`;
 
-      let customWhy = `*Why it fits:* It holds a **${leadTool.trustScore}/100 Trust Score** and specializes in ${leadTool.tags.slice(0, 3).join(', ')}.`;
-      if (wantsPaid && popularPlan) {
+      const leadMlMatch = mlResults.find((r) => r.tool_id === leadTool.id || r.name?.toLowerCase() === leadTool.name.toLowerCase());
+      let customWhy = leadMlMatch?.reason
+        ? `*Why AURA recommends this:* ${leadMlMatch.reason}`
+        : `*Why it fits:* It holds a **${leadTool.trustScore}/100 Trust Score** and specializes in ${leadTool.tags.slice(0, 3).join(', ')}.`;
+
+      if (!leadMlMatch?.reason && wantsPaid && popularPlan) {
         customWhy = `*Why it fits your subscription budget:* Its **${popularPlan.plan} tier (${popularPlan.price})** provides ${popularPlan.features?.slice(0, 2).join(', ') || 'full professional access'}.`;
       }
 

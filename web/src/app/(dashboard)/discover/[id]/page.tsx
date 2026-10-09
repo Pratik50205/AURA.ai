@@ -7,7 +7,8 @@ import {
   ArrowLeft, ExternalLink, Bookmark, Share2, Star,
   Shield, ShieldCheck, Users, Tag, DollarSign,
   ChevronDown, ChevronUp, Check, X, Copy,
-  AlertTriangle, Heart, Code, Image, Video, Music, FileText, MessageSquare
+  AlertTriangle, Heart, Code, Image, Video, Music, FileText, MessageSquare,
+  Bot, Search, Sparkles, Globe, Scale, BookOpen, Layers, Languages, BarChart3, Zap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getToolById, tools } from '@/data/tools';
@@ -66,13 +67,30 @@ export default function ToolDetailPage({ params }: ToolDetailPageProps) {
   };
 
   const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-    'AI Tools': Code,
+    'AI Tools': Sparkles,
+    'AI Chatbot': Bot,
+    'AI Search': Search,
+    'Image Generation': Image,
+    'Image Editing': Image,
     'Design': Image,
-    'Video': Video,
-    'Audio': Music,
-    'Writing': FileText,
+    'Video Generation': Video,
+    'Video Editing': Video,
+    'Audio & Voice': Music,
+    'Music Generation': Music,
+    'Code Assistant': Code,
+    'Writing Assistant': FileText,
+    'Translation': Languages,
     'Productivity': FileText,
-    'Developer': Code,
+    'Research': Search,
+    'Marketing & SEO': Globe,
+    'Data & Analytics': BarChart3,
+    '3D Generation': Layers,
+    'Automation': Zap,
+    'Customer Service': MessageSquare,
+    'Education': BookOpen,
+    'AI Platform': Layers,
+    'Website Builder': Globe,
+    'Legal': Scale,
   };
   const CategoryIcon = categoryIcons[tool.category] || Code;
 

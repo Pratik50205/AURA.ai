@@ -3,15 +3,16 @@ import { cn } from '@/lib/utils';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Shield, ShieldCheck, ThumbsUp, ThumbsDown, ExternalLink, Bookmark
+  Shield, ShieldCheck, ThumbsUp, ThumbsDown, ExternalLink, Bookmark, Sparkles
 } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Tool } from '@/lib/site';
+import type { RankedTool } from '@/lib/recommendations';
 import { getTrustScoreColor, getPricingColor } from '@/lib/utils';
 
 interface ToolCardProps {
-  tool: Tool;
+  tool: Tool | RankedTool;
   onToggleSave: (toolId: string) => void;
   isSaved: boolean;
   compact?: boolean;
@@ -71,6 +72,20 @@ export default function ToolCard({ tool, onToggleSave, isSaved, compact = false,
       <p className={cn("text-sm mb-4 flex-1 line-clamp-2 relative z-10 leading-relaxed", isLightMode ? "text-gray-600" : "text-white/70")}>
         {tool.description}
       </p>
+
+      {'recommendationReason' in tool && tool.recommendationReason && (
+        <div className={cn(
+          "mb-3 px-2.5 py-1.5 rounded-lg text-xs border relative z-10 flex items-start gap-1.5",
+          isLightMode 
+            ? "bg-amber-50/80 border-amber-200/80 text-amber-900" 
+            : "bg-[#FF7B00]/10 border-[#FF7B00]/25 text-[#FFB366]"
+        )}>
+          <Sparkles className="w-3 h-3 shrink-0 mt-0.5 text-[#FF7B00]" />
+          <span className="line-clamp-2 text-[11px] font-medium leading-relaxed">
+            {tool.recommendationReason}
+          </span>
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-1.5 mb-4 relative z-10">
         {tool.tags.slice(0, 3).map((tag) => (
@@ -189,9 +204,35 @@ export default function ToolCard({ tool, onToggleSave, isSaved, compact = false,
         </div>
       </div>
 
-      <p className={cn("text-sm mb-6 flex-1 line-clamp-3 relative z-10 leading-relaxed", isLightMode ? "text-gray-600" : "text-white/70")}>
+      <p className={cn("text-sm mb-4 flex-1 line-clamp-3 relative z-10 leading-relaxed", isLightMode ? "text-gray-600" : "text-white/70")}>
         {tool.description}
       </p>
+
+      {'recommendationReason' in tool && tool.recommendationReason && (
+        <div className={cn(
+          "mb-5 px-3 py-2.5 rounded-xl border relative z-10 flex items-start gap-2.5",
+          isLightMode 
+            ? "bg-amber-50/90 border-amber-200 text-amber-950" 
+            : "bg-gradient-to-r from-[#FF7B00]/15 via-[#D9042B]/10 to-transparent border-[#FF7B00]/30 text-amber-100"
+        )}>
+          <Sparkles className="w-4 h-4 shrink-0 mt-0.5 text-[#FF7B00]" />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="font-bold text-[10px] uppercase tracking-wider text-[#FF7B00]">
+                AI Recommendation Reason
+              </span>
+              {'rankingScore' in tool && typeof tool.rankingScore === 'number' && (
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#FF7B00]/20 text-[#FF7B00] font-semibold">
+                  {(tool.rankingScore * 100).toFixed(0)}% Score
+                </span>
+              )}
+            </div>
+            <p className="text-xs leading-relaxed opacity-90">
+              {tool.recommendationReason}
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-2 mb-6 relative z-10">
         {tool.tags.map((tag) => (

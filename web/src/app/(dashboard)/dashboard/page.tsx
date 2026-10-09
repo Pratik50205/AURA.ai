@@ -54,7 +54,14 @@ const ToolShelf = ({
 export default function DashboardPage() {
   const { searchQuery, savedTools, toggleSaveTool, isLightMode } = useDashboard();
   const [isBannerVisible, setIsBannerVisible] = useState(true);
-  const { results: recommendations, isLoading: recommendationsLoading } = useRecommendations(searchQuery);
+  const { 
+    results: recommendations, 
+    isLoading: recommendationsLoading,
+    expandedQuery,
+    intents,
+    latencyMs,
+    candidatesCount 
+  } = useRecommendations(searchQuery);
   const isSearching = Boolean(searchQuery.trim());
   const filteredTools = useMemo(() => {
     if (!isSearching) return tools;
@@ -137,11 +144,28 @@ export default function DashboardPage() {
       </motion.div>}
 
       {isSearching ? (
-        // Grid View for Search Results
         <div>
-          <h3 className={cn("text-2xl font-bold mb-6", isLightMode ? "text-gray-900" : "text-white")}>
-            {recommendationsLoading ? 'Generating AI recommendations...' : 'AI Recommendations'}
-          </h3>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <h3 className={cn("text-2xl font-bold flex items-center gap-2.5", isLightMode ? "text-gray-900" : "text-white")}>
+              <Sparkles className="w-6 h-6 text-aura-primary" />
+              {recommendationsLoading ? 'Generating AI recommendations...' : 'AI Recommendations'}
+            </h3>
+            {!recommendationsLoading && recommendations.length > 0 && (
+              <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
+                {expandedQuery && (
+                  <span className={cn(
+                    "px-2.5 py-1 rounded-lg border",
+                    isLightMode ? "bg-amber-50 border-amber-200 text-amber-900" : "bg-black/30 border-white/10 text-white/70"
+                  )}>
+                    Expanded: &ldquo;{expandedQuery}&rdquo;
+                  </span>
+                )}
+                <span className="text-emerald-400 font-semibold">{latencyMs}ms</span>
+                <span>•</span>
+                <span>{candidatesCount || recommendations.length} candidates</span>
+              </div>
+            )}
+          </div>
           <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             <AnimatePresence>
               {filteredTools.map((tool) => (

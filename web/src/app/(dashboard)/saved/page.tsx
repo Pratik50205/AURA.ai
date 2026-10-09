@@ -34,7 +34,7 @@ export default function SavedToolsPage() {
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">No tools saved yet</h2>
           <p className="text-muted-foreground text-sm max-w-md leading-relaxed">
-            Explore the curated directory of 108 vector-indexed AI tools and click the bookmark icon on any card to save it to your workspace.
+            Explore the curated directory of {tools.length} vector-indexed AI tools and click the bookmark icon on any card to save it to your workspace.
           </p>
 
           <Link
