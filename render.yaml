@@ -1,0 +1,29 @@
+services:
+  # 1. Neural Intelligence FastAPI Engine
+  - type: web
+    name: aura-intelligence
+    runtime: docker
+    dockerfilePath: ./intelligence/Dockerfile
+    dockerContext: ./intelligence
+    plan: free
+    healthCheckPath: /health
+
+  # 2. Next.js Web Application
+  - type: web
+    name: aura-web
+    runtime: docker
+    dockerfilePath: ./web/Dockerfile
+    dockerContext: ./web
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: AURA_INTELLIGENCE_URL
+        fromService:
+          type: web
+          name: aura-intelligence
+          property: host
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        value: file:/app/data/aura.db
