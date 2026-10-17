@@ -34,16 +34,27 @@ Stop searching endlessly through unorganized directories. Tell AURA what you nee
 - **1-Click Bookmarking**: Save tools to your workspace collection directly from inside the chat bubble.
 - **Dynamic Suggested Inquiries**: Horizontal scrolling prompt chips for seamless multi-turn exploration.
 
-### 2. ⚡ Sub-40ms Neural Retrieval Engine
-- **Dense Vector Embeddings**: Pre-computed 384-dimensional embeddings generated with `sentence-transformers/all-MiniLM-L6-v2`.
+### 2. ⚡ Sub-40ms Hybrid Retrieval Engine (Dense FAISS + Sparse BM25 Fusion)
+- **Dense Vector Embeddings**: 384-dimensional embeddings generated with `sentence-transformers/all-MiniLM-L6-v2`.
 - **Exact Vector Index**: Meta FAISS `FlatIP` cosine inner-product indexing in system RAM.
+- **Sparse Lexical Engine**: Okapi BM25 index over all tool documents for 100% exact keyword, entity, and version matching.
+- **Reciprocal Rank Fusion (RRF)**: Merges dense semantic relevance and sparse keyword ranks into a unified candidate pool.
 - **Learned Ranking**: Supervised PyTorch MLP Ranker trained on 930 graded query-tool relevance judgments.
 - **Query Preprocessing**: Boundary-enforced query expansion resolving domain slang (*ppt*, *bg*, *sub*, *tts*, *cv*, *ui/ux*).
 
-### 3. 📊 Live Engine Diagnostics & Telemetry
+### 3. 🛡️ Resilient Bounded Caching & Sliding-Window Rate Limiting
+- **Bounded LRU Cache**: Zero-dependency memory-bounded cache with TTL preventing memory leaks under high query traffic.
+- **API Rate Limiter**: IP-based sliding window protection (60 req/min for recommendations, 40 req/min for assistant).
+
+### 4. 🐳 Full-Stack Docker Deployment with Persistence
+- **Persistent SQLite Storage**: Named Docker volume (`aura-web-data`) preserving accounts, reviews, and bookmarks.
+- **Pre-baked AI Model**: `all-MiniLM-L6-v2` pre-cached in image layer for 0-second cold-starts and 100% offline capability.
+- **Dual Exposed Ports**: Web dashboard on `:3000` and direct FastAPI Swagger docs on `:8000`.
+
+### 5. 📊 Live Engine Diagnostics & Telemetry
 - Embedded in the Settings dashboard (`/settings`), providing live visibility into embedding dimensions, index parameters, catalog size, and FastAPI connection health.
 
-### 4. 🌓 Dual-Theme System with View Transitions API
+### 6. 🌓 Dual-Theme System with View Transitions API
 - Smooth 350ms native crossfade transitions between **Dark Obsidian** and **Clean Light** themes with zero layout shifts.
 
 ---
@@ -54,29 +65,38 @@ Stop searching endlessly through unorganized directories. Tell AURA what you nee
 User Query (Chat or Search Bar)
        │
        ▼
-┌─────────────────────────────────────────┐
-│ Query Preprocessing & Slang Expansion   │  \bppt\b → presentation slides
-└────────────────────┬────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────┐
-│ Sentence Transformer Semantic Encoding  │  all-MiniLM-L6-v2 (384-dim dense)
-└────────────────────┬────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────┐
-│ FAISS FlatIP Vector Index Retrieval     │  Exact Cosine Search (< 2 ms)
-└────────────────────┬────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────┐
-│ Supervised PyTorch MLP Feature Ranker   │  10 Domain Features (Quality, Trust)
-└────────────────────┬────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────┐
-│ AURA Assistant & Comparison Matrix      │  Explainable Rationale & Actions
-└─────────────────────────────────────────┘
+┌───────────────────────────────────────────────┐
+│ Query Preprocessing & Slang Expansion         │  \bppt\b → presentation slides
+└───────────────────────┬───────────────────────┘
+                        │
+         ┌──────────────┴──────────────┐
+         ▼                             ▼
+┌─────────────────────────┐   ┌─────────────────────────┐
+│ Dense Vector Encoding   │   │ Sparse Lexical Matching │
+│ all-MiniLM-L6-v2 (384d) │   │ Okapi BM25 Index        │
+└────────────┬────────────┘   └────────────┬────────────┘
+             │                             │
+             ▼                             ▼
+┌─────────────────────────┐   ┌─────────────────────────┐
+│ FAISS FlatIP Cosine     │   │ BM25 Exact Term Rank    │
+│ Top-30 Semantic Match   │   │ Top-30 Keyword Match    │
+└────────────┬────────────┘   └────────────┬────────────┘
+             │                             │
+             └──────────────┬──────────────┘
+                            ▼
+┌───────────────────────────────────────────────┐
+│ Reciprocal Rank Fusion (RRF) Candidate Merge  │  0.6/(60+rank_d) + 0.4/(60+rank_s)
+└───────────────────────┬───────────────────────┘
+                        │
+                        ▼
+┌───────────────────────────────────────────────┐
+│ Supervised PyTorch Neural MLP Ranker          │  Intent, Trust, Pricing & Quality
+└───────────────────────┬───────────────────────┘
+                        │
+                        ▼
+┌───────────────────────────────────────────────┐
+│ AURA Assistant & Comparison Matrix            │  Explainable Rationale & Actions
+└───────────────────────────────────────────────┘
 ```
 
 ---
@@ -210,13 +230,16 @@ python -m pytest
 ```
 
 ### 4. Full-Stack Docker Deployment (Production Containerized)
-Launch both the neural engine and web application together:
+Launch both the neural engine and web application with persistent volume storage and pre-cached AI models:
 ```bash
 docker compose up -d --build
 ```
-- Web Application: [http://localhost:3000](http://localhost:3000)
-- Neural Engine Health: `http://localhost:8000/health` (internal)
-- Stop Containers: `docker compose down`
+- **Web Application / Dashboard:** [http://localhost:3000](http://localhost:3000)
+- **Neural API & Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Engine Health Endpoint:** [http://localhost:8000/health](http://localhost:8000/health)
+- **View Container Logs:** `docker compose logs -f`
+- **Stop Containers:** `docker compose down`
+*(Data persists in named volume `aura-web-data` across restarts)*
 
 ---
 

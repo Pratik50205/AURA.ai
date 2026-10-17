@@ -17,6 +17,10 @@ ENV PORT=3000
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/dev.db ./dev.db
+
+RUN mkdir -p /app/data
 
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "if [ ! -f /app/data/aura.db ] && [ -f /app/dev.db ]; then cp /app/dev.db /app/data/aura.db; fi; node server.js"]

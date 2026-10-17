@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { tools } from '@/data/tools';
 import type { Tool } from '@/lib/site';
 import { auth } from '@/lib/auth/config';
+import { BoundedLruCache } from '@/lib/cache';
+import { checkRateLimit, buildRateLimitResponse } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
 const AIML_SERVICE_URL = process.env.AURA_INTELLIGENCE_URL || process.env.AURA_AIML_URL || 'http://127.0.0.1:8000';
+const assistantCache = new BoundedLruCache<any>({ maxSize: 300, defaultTtlMs: 3 * 60 * 1000 });
 
 function findToolByNameOrSlug(query: string): Tool | undefined {
   const q = query.toLowerCase().trim();
@@ -62,6 +65,12 @@ function isGratitudeOrFarewell(text: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  // Apply rate limiting (40 requests per minute per client IP)
+  const rateLimit = checkRateLimit(request, { limit: 40, windowMs: 60_000, keyPrefix: 'assistant' });
+  if (!rateLimit.success) {
+    return buildRateLimitResponse(rateLimit);
+  }
+
   const startTime = Date.now();
   try {
     const body = await request.json();
@@ -85,6 +94,14 @@ export async function POST(request: NextRequest) {
       }
     } catch {
       // Session extraction optional
+    }
+
+    // For non-personalized queries with no conversation history, check cache
+    if (!userName && history.length === 0) {
+      const cached = assistantCache.get(lowerMessage);
+      if (cached) {
+        return NextResponse.json({ ...cached, latencyMs: 5 });
+      }
     }
 
     // 1. Greeting intent handling
@@ -286,13 +303,19 @@ export async function POST(request: NextRequest) {
     }
     followUps.push(`What are the best prompts for ${topTools[0]?.name || 'these tools'}?`);
 
-    return NextResponse.json({
+    const responseData = {
       reply: responseText,
       tools: topTools,
       comparison: null,
       suggestedFollowUps: followUps,
       latencyMs: Math.max(latencyMs, 32),
-    });
+    };
+
+    if (!userName && history.length === 0) {
+      assistantCache.set(lowerMessage, responseData);
+    }
+
+    return NextResponse.json(responseData);
   } catch (error) {
     console.error('[AURA Assistant API error]', error);
     return NextResponse.json(

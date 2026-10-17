@@ -14,6 +14,10 @@ COPY requirements.txt ./
 RUN pip install --upgrade pip && \
     pip install torch --index-url https://download.pytorch.org/whl/cpu && \
     pip install -r requirements.txt
+
+# Pre-download default sentence transformer model for instant offline startup
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')"
+
 COPY . .
 
 EXPOSE 8000

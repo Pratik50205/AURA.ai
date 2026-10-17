@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import type { RecommendationResult } from '@/lib/recommendations';
+import type { RecommendationResult, RecommendationResponseData } from '@/lib/recommendations';
+import { BoundedLruCache } from '@/lib/cache';
+import { checkRateLimit, buildRateLimitResponse } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
 const FALLBACK_MODEL = 'fallback';
 const AIML_SERVICE_URL = process.env.AURA_INTELLIGENCE_URL || process.env.AURA_AIML_URL || 'http://127.0.0.1:8000';
-const recommendationCache = new Map<string, { expiresAt: number; value: unknown }>();
-const CACHE_TTL_MS = 5 * 60 * 1000;
+const recommendationCache = new BoundedLruCache<RecommendationResponseData>({ maxSize: 500, defaultTtlMs: 5 * 60 * 1000 });
 
 function normalizeResults(results: unknown): RecommendationResult[] {
   if (!Array.isArray(results)) {
@@ -136,6 +137,12 @@ print(json.dumps(result))
 }
 
 export async function POST(request: NextRequest) {
+  // Apply rate limiting (60 requests per minute per client IP)
+  const rateLimit = checkRateLimit(request, { limit: 60, windowMs: 60_000, keyPrefix: 'recommend' });
+  if (!rateLimit.success) {
+    return buildRateLimitResponse(rateLimit);
+  }
+
   try {
     const body = await request.json();
     const query = typeof body?.query === 'string' ? body.query.trim() : '';
@@ -147,8 +154,8 @@ export async function POST(request: NextRequest) {
 
     const cacheKey = `${query.toLowerCase()}::${Math.max(1, Math.min(topK, 10))}`;
     const cached = recommendationCache.get(cacheKey);
-    if (cached && cached.expiresAt > Date.now()) {
-      return NextResponse.json(cached.value);
+    if (cached) {
+      return NextResponse.json(cached);
     }
 
     try {
@@ -160,7 +167,7 @@ export async function POST(request: NextRequest) {
         result = await runPythonRecommendation(query, topK);
       }
 
-      const normalizedResult = {
+      const normalizedResult: RecommendationResponseData = {
         query,
         expanded_query: typeof result?.expanded_query === 'string' ? result.expanded_query : null,
         intents: result?.intents && typeof result.intents === 'object' ? result.intents : null,
@@ -169,7 +176,7 @@ export async function POST(request: NextRequest) {
         latency_ms: typeof result?.latency_ms === 'number' ? result.latency_ms : 0,
         num_candidates_considered: typeof result?.num_candidates_considered === 'number' ? result.num_candidates_considered : 0,
       };
-      recommendationCache.set(cacheKey, { expiresAt: Date.now() + CACHE_TTL_MS, value: normalizedResult });
+      recommendationCache.set(cacheKey, normalizedResult);
       return NextResponse.json(normalizedResult);
     } catch (mlError) {
       console.warn('[AURA ML fallback]', mlError);

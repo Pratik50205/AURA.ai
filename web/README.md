@@ -47,9 +47,15 @@ This is the official Next.js 16 web application for **AURA.ai**. Built with the 
   - Removed promotional banners for a clean navigation flow.
 
 - [x] **Phase 6: Production Verification & GitHub Sync**
-  - 100% Next.js production build pass rate (`12/12 routes compiled`).
+  - 100% Next.js production build pass rate (`13/13 routes compiled`).
   - Sub-40ms response latency.
   - Repository published to [GitHub](https://github.com/Pratik50205/AURA.ai).
+
+- [x] **Phase 7: Resilience, Security & Docker Orchestration**
+  - Zero-dependency Bounded LRU Cache (`BoundedLruCache`) with TTL preventing memory leaks.
+  - IP-based sliding-window rate limiter (`checkRateLimit`) protecting `/api/recommend` and `/api/assistant`.
+  - Multi-container Docker Compose with persistent SQLite volume (`aura-web-data`) for accounts, bookmarks, and reviews.
+  - Pre-cached PyTorch embedding models for 0-second cold-starts and offline startup.
 
 ---
 

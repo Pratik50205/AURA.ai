@@ -19,8 +19,9 @@ Instead of relying on rigid keyword matching (like traditional SQL or basic sear
 | Role | Exact Model Identifier | Architecture / Type | Parameters / Dims | Primary Responsibility |
 | :--- | :--- | :--- | :--- | :--- |
 | **Semantic Embedding (Bi-Encoder)** | `sentence-transformers/all-MiniLM-L6-v2` | Transformer / BERT-based | 22.7M parameters / **384-dimensional** dense vectors | Converts user query and tool metadata into dense semantic vectors |
-| **Vector Search Engine** | Meta FAISS (`IndexFlatIP`) | Dense Vector Index | 108 vectors $\times$ 384 dimensions | Fast cosine similarity candidate retrieval in **< 1 ms** |
-| **Learned Ranker (Supervised)** | Custom PyTorch MLP (`models/mlp_ranker.pt`) | Deep Neural Network (`10 → 64 → 32 → 1`) | ~3,000 weights (ReLU, Dropout, Sigmoid) | Scores candidates using 8 domain & quality features |
+| **Vector Search Engine** | Meta FAISS (`IndexFlatIP`) | Dense Vector Index | Exact Cosine Similarity $\times$ 384 dimensions | Fast cosine similarity candidate retrieval in **< 1 ms** |
+| **Sparse Lexical Engine (BM25)** | Okapi BM25 (`rank-bm25`) | Inverted Lexical Index | Tokenized corpus representation | Exact entity, product name, and technical acronym matching via Reciprocal Rank Fusion (RRF) |
+| **Learned Ranker (Supervised)** | Custom PyTorch MLP (`models/mlp_ranker.pt`) | Deep Neural Network (`10 → 64 → 32 → 1`) | ~3,000 weights (ReLU, Dropout, Sigmoid) | Scores candidates using 10 domain, intent & quality features |
 | **Cross-Encoder Reranker (Stage 2)** | `cross-encoder/ms-marco-MiniLM-L-6-v2` | Transformer Cross-Encoder | 22.7M parameters | Performs full token cross-attention between query and candidate text |
 
 ---

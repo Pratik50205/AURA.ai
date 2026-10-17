@@ -7,8 +7,15 @@ The intelligence core for **AURA.ai**, providing high-dimensional vector search,
 ## Architecture Flow
 
 ```text
-User Query → Query Preprocessing & Slang Expansion → Sentence Transformer Encoding
-    → FAISS FlatIP Vector Index → Top-20 Candidates → PyTorch MLP Feature Ranker → Top-K Results
+User Query → Slang Expansion 
+    → Dual Retrieval:
+        ├── Dense Semantic: Sentence-Transformers (all-MiniLM-L6-v2) → FAISS FlatIP (384-d Cosine)
+        └── Sparse Lexical: Tokenized Inverted Index → Okapi BM25 Keyword Scoring
+    → Reciprocal Rank Fusion (RRF):
+        RRF_Score(d) = 0.6 / (60 + rank_dense) + 0.4 / (60 + rank_bm25)
+    → Multi-Signal Intent & Domain Guardrails
+    → Supervised Neural MLP Ranker
+    → Top-K Results with Consultative Explanations (<40 ms)
 ```
 
 ---

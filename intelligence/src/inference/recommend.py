@@ -165,9 +165,17 @@ def rank_candidates_market_grade(
         pricing_details = c.get("pricingDetails", [])
         combined_text = f"{name} {cat} {desc} {' '.join(tags)} {' '.join(features)}"
 
-        # 1. Base Dense Vector Cosine Similarity
+        # 1. Base Dense Vector & BM25 Hybrid Synergy
         sem_score = float(c.get("semantic_score", 0.0))
-        final_score = sem_score * 0.55
+        bm25_score = float(c.get("bm25_score", 0.0))
+        rrf_score = float(c.get("rrf_score", 0.0))
+
+        final_score = sem_score * 0.50
+        if bm25_score > 0:
+            final_score += min(bm25_score / 25.0, 0.15)
+        if rrf_score >= 0.012:
+            # Dual-retrieval consensus bonus (both dense semantic and sparse BM25 agreed)
+            final_score += 0.08
 
         # 2. Exact Brand / Tool Name Recognition (Instant +0.35 boost)
         clean_name = re.sub(r'[^a-z0-9]', '', name)
