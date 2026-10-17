@@ -49,6 +49,7 @@ CLAUDE.md
 
 # SQLite Database files
 *.db
+!dev.db
 *.db-journal
 *.sqlite
 *.sqlite3
