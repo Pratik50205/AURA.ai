@@ -9,7 +9,24 @@ import { checkRateLimit, buildRateLimitResponse } from '@/lib/rate-limit';
 export const runtime = 'nodejs';
 
 const FALLBACK_MODEL = 'fallback';
-const AIML_SERVICE_URL = process.env.AURA_INTELLIGENCE_URL || process.env.AURA_AIML_URL || 'http://127.0.0.1:8000';
+
+function getAimlServiceUrl(): string {
+  let raw = (process.env.AURA_INTELLIGENCE_URL || process.env.AURA_AIML_URL || 'http://127.0.0.1:8000').trim();
+  if (!raw.startsWith('http://') && !raw.startsWith('https://')) {
+    raw = `http://${raw}`;
+  }
+  try {
+    const parsed = new URL(raw);
+    if (!parsed.port && parsed.hostname === 'aura-intelligence') {
+      parsed.port = '10000';
+      return parsed.toString().replace(/\/$/, '');
+    }
+  } catch {
+    // fallback
+  }
+  return raw.replace(/\/$/, '');
+}
+
 const recommendationCache = new BoundedLruCache<RecommendationResponseData>({ maxSize: 500, defaultTtlMs: 5 * 60 * 1000 });
 
 function normalizeResults(results: unknown): RecommendationResult[] {
@@ -52,7 +69,8 @@ function normalizeResults(results: unknown): RecommendationResult[] {
 }
 
 async function requestFromWarmService(query: string, topK: number) {
-  const response = await fetch(`${AIML_SERVICE_URL}/recommend`, {
+  const serviceUrl = getAimlServiceUrl();
+  const response = await fetch(`${serviceUrl}/recommend`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query, top_k: topK, use_reranker: true }),
