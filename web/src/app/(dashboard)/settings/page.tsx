@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useDashboard } from '@/app/(dashboard)/layout';
 import { useSession } from 'next-auth/react';
 import { 
@@ -17,6 +18,8 @@ import {
   Database, 
   Zap, 
   ShieldCheck, 
+  UserCheck,
+  LogIn,
   Server,
   Bell
 } from 'lucide-react';
@@ -33,11 +36,11 @@ export default function SettingsPage() {
   const [emailNotifications, setEmailNotifications] = useState(true);
 
   const [formData, setFormData] = useState({
-    name: 'Pratik',
-    profession: 'AI Engineer & Researcher',
-    company: 'AURA AI Labs',
-    email: 'pratik@aura-ai.internal',
-    bio: 'Building neural semantic discovery and intelligent vector recommendation architectures for generative AI tooling.',
+    name: '',
+    profession: 'AI Practitioner & Explorer',
+    company: '',
+    email: '',
+    bio: '',
   });
 
   // Load from localStorage or session
@@ -49,8 +52,8 @@ export default function SettingsPage() {
       } else if (session?.user) {
         setFormData((prev) => ({
           ...prev,
-          name: session.user?.name || prev.name,
-          email: session.user?.email || prev.email,
+          name: session.user?.name || prev.name || '',
+          email: session.user?.email || prev.email || '',
         }));
       }
     } catch {
@@ -165,16 +168,61 @@ export default function SettingsPage() {
           </div>
         </div>
 
+        {/* Guest Banner if not logged in */}
+        {!session?.user && (
+          <div className="p-5 rounded-3xl border border-amber-500/30 bg-amber-500/10 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 backdrop-blur-xl">
+            <div>
+              <p className="text-sm font-semibold text-amber-400">You are browsing as a Guest</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Sign in or register an account to save custom profile settings and unlock personalized recommendations.
+              </p>
+            </div>
+            <Link
+              href="/login"
+              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#D9042B] to-[#FF7B00] hover:opacity-90 shadow-md shadow-red-500/20 transition-all shrink-0 flex items-center gap-1.5"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              Sign In to Save
+            </Link>
+          </div>
+        )}
+
         {/* Profile Information Card */}
         <div className={`p-6 sm:p-8 rounded-3xl border backdrop-blur-xl shadow-sm ${
           isLightMode ? 'bg-white border-gray-200' : 'bg-[#151520] border-[#262638]'
         }`}>
-          <h2 className="text-xl font-bold text-foreground mb-6">Profile Information</h2>
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <h2 className="text-xl font-bold text-foreground">Profile Information</h2>
+            {session?.user ? (
+              <span className={cn(
+                "px-2.5 py-1 rounded-lg text-xs font-bold tracking-wider border flex items-center gap-1.5",
+                (session.user as any).role === 'ADMIN'
+                  ? "bg-purple-500/20 text-purple-400 border-purple-500/30"
+                  : "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+              )}>
+                {(session.user as any).role === 'ADMIN' ? (
+                  <>
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    Administrator
+                  </>
+                ) : (
+                  <>
+                    <UserCheck className="w-3.5 h-3.5" />
+                    Verified User
+                  </>
+                )}
+              </span>
+            ) : (
+              <span className="px-2.5 py-1 rounded-lg text-xs font-medium text-muted-foreground bg-white/5 border border-white/10">
+                Guest Visitor
+              </span>
+            )}
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-8 items-start mb-6 border-b border-white/10 pb-8">
             <div className="relative group shrink-0">
               <img
-                src={session?.user?.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.name || 'Pratik'}&backgroundColor=D9042B`}
+                src={session?.user?.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.name || formData.email || 'Aura'}&backgroundColor=D9042B`}
                 alt="User avatar"
                 className="w-24 h-24 rounded-2xl border-2 border-white/10 shadow-xl object-cover bg-black/20"
               />

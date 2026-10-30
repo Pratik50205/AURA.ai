@@ -1,0 +1,1482 @@
+[
+  {
+    "model_slug": "baseline",
+    "display_name": "all-MiniLM-L6-v2 (Production Baseline)",
+    "hf_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "dimension": 384,
+    "params_m": 22.7,
+    "license": "Apache-2.0",
+    "profiling": {
+      "model_load_time_sec": 6.97,
+      "model_ram_mb": 108.5,
+      "embedding_throughput_docs_per_sec": 28.1,
+      "embedding_storage_kb": 480.1,
+      "index_build_time_ms": 3.34,
+      "index_size_kb": 480.0
+    },
+    "latency": {
+      "mean_ms": 23.76,
+      "median_ms": 22.67,
+      "p95_ms": 31.45,
+      "p99_ms": 32.79
+    },
+    "experiment_a_dense": {
+      "num_queries": 30,
+      "Precision@1": 0.7,
+      "Recall@1": 0.4173,
+      "NDCG@1": 0.7048,
+      "HitRate@1": 0.7,
+      "Precision@3": 0.4333,
+      "Recall@3": 0.6198,
+      "NDCG@3": 0.6545,
+      "HitRate@3": 0.8667,
+      "Precision@5": 0.3067,
+      "Recall@5": 0.6777,
+      "NDCG@5": 0.6644,
+      "HitRate@5": 0.8667,
+      "Precision@10": 0.1867,
+      "Recall@10": 0.7775,
+      "NDCG@10": 0.7036,
+      "HitRate@10": 0.9333,
+      "Precision@20": 0.11,
+      "Recall@20": 0.8506,
+      "NDCG@20": 0.7318,
+      "HitRate@20": 0.9333,
+      "MRR": 0.7803,
+      "failure_rate_at_10": 0.0667,
+      "failed_query_count": 2,
+      "MRR_95_CI": [
+        0.6487,
+        0.9001
+      ],
+      "NDCG@10_95_CI": [
+        0.6011,
+        0.7994
+      ],
+      "per_query_analysis": [
+        {
+          "query_id": "q072",
+          "query": "Turn my hand-drawn sketch into a digital wireframe",
+          "mrr": 1.0,
+          "ndcg@10": 0.8609,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t50",
+            "t137",
+            "t316"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q151",
+          "query": "What tool can generate realistic video from a single photo?",
+          "mrr": 1.0,
+          "ndcg@10": 0.7969,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t90",
+            "t20",
+            "t19"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q115",
+          "query": "Compare different AI models in one place",
+          "mrr": 0.0,
+          "ndcg@10": 0.0,
+          "precision@1": 0.0,
+          "hit_rate@10": 0,
+          "retrieved_top3": [
+            "t151",
+            "t85",
+            "t82"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": true
+        },
+        {
+          "query_id": "q057",
+          "query": "Translate my website content into multiple languages",
+          "mrr": 1.0,
+          "ndcg@10": 0.8176,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t37",
+            "t207",
+            "t66"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q108",
+          "query": "I need an open source AI image generator I can run locally",
+          "mrr": 0.1429,
+          "ndcg@10": 0.3333,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t180",
+            "t177",
+            "t10"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q199",
+          "query": "I need an accessible way to consume written articles by listening",
+          "mrr": 1.0,
+          "ndcg@10": 0.8828,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t55",
+            "t145",
+            "t104"
+          ],
+          "num_relevant": 2,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q173",
+          "query": "Make my writing sound more engaging and clear",
+          "mrr": 1.0,
+          "ndcg@10": 0.9091,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t76",
+            "t35",
+            "t75"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q051",
+          "query": "Check my grammar and improve my writing",
+          "mrr": 1.0,
+          "ndcg@10": 0.9295,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t35",
+            "t76",
+            "t36"
+          ],
+          "num_relevant": 2,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q144",
+          "query": "I want AI roleplay and character interaction",
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t80",
+            "t269",
+            "t214"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q208",
+          "query": "I want to generate a complete app with frontend and backend",
+          "mrr": 1.0,
+          "ndcg@10": 0.8216,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t84",
+            "t83",
+            "t120"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q155",
+          "query": "Upload a 100-page PDF and ask questions about it",
+          "mrr": 0.1,
+          "ndcg@10": 0.1473,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t190",
+            "t273",
+            "t191"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q130",
+          "query": "Research case law for my legal brief",
+          "mrr": 0.5,
+          "ndcg@10": 0.6309,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t319",
+            "t97",
+            "t209"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q060",
+          "query": "Generate professional slides from a text outline",
+          "mrr": 1.0,
+          "ndcg@10": 0.9719,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t41",
+            "t42",
+            "t43"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q056",
+          "query": "I need accurate translation for my business documents",
+          "mrr": 1.0,
+          "ndcg@10": 0.8609,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t37",
+            "t287",
+            "t273"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q024",
+          "query": "I need an AI to help me write Python code",
+          "mrr": 0.3333,
+          "ndcg@10": 0.2656,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t109",
+            "t156",
+            "t30"
+          ],
+          "num_relevant": 6,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q008",
+          "query": "Create a photorealistic image of a fantasy landscape",
+          "mrr": 0.5,
+          "ndcg@10": 0.3886,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t178",
+            "t5",
+            "t134"
+          ],
+          "num_relevant": 5,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q009",
+          "query": "What's the best tool for generating concept art with AI?",
+          "mrr": 1.0,
+          "ndcg@10": 0.7188,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t8",
+            "t5",
+            "t180"
+          ],
+          "num_relevant": 5,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q109",
+          "query": "What's a free text-to-image tool I can run on my own computer?",
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t7",
+            "t6",
+            "t182"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q152",
+          "query": "I need to scan a 3D object from video footage",
+          "mrr": 1.0,
+          "ndcg@10": 0.9587,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t91",
+            "t267",
+            "t216"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q023",
+          "query": "What's the best AI chatbot for coding help?",
+          "mrr": 1.0,
+          "ndcg@10": 0.5395,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t2",
+            "t1",
+            "t113"
+          ],
+          "num_relevant": 7,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q140",
+          "query": "I need enterprise-grade machine learning operations platform",
+          "mrr": 1.0,
+          "ndcg@10": 0.9568,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t106",
+            "t300",
+            "t299"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q185",
+          "query": "What AI tool helps identify if citations support or contradict a claim?",
+          "mrr": 0.5,
+          "ndcg@10": 0.6653,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t270",
+            "t100",
+            "t46"
+          ],
+          "num_relevant": 2,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q027",
+          "query": "Help me debug my JavaScript code",
+          "mrr": 0.0,
+          "ndcg@10": 0.1091,
+          "precision@1": 0.0,
+          "hit_rate@10": 0,
+          "retrieved_top3": [
+            "t31",
+            "t30",
+            "t115"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": true
+        },
+        {
+          "query_id": "q036",
+          "query": "I need automatic transcription for my Zoom meetings",
+          "mrr": 1.0,
+          "ndcg@10": 0.9483,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t39",
+            "t207",
+            "t131"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q058",
+          "query": "Build a presentation from my research notes",
+          "mrr": 1.0,
+          "ndcg@10": 0.7439,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t41",
+            "t42",
+            "t273"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q063",
+          "query": "Find academic papers about machine learning",
+          "mrr": 1.0,
+          "ndcg@10": 0.8734,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t46",
+            "t44",
+            "t147"
+          ],
+          "num_relevant": 5,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q071",
+          "query": "Generate UI mockups from my text description",
+          "mrr": 0.3333,
+          "ndcg@10": 0.5083,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t6",
+            "t120",
+            "t83"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q007",
+          "query": "I need an AI that can create art from my written prompts",
+          "mrr": 1.0,
+          "ndcg@10": 0.6043,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t5",
+            "t10",
+            "t258"
+          ],
+          "num_relevant": 7,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q029",
+          "query": "Convert my text into natural sounding speech",
+          "mrr": 1.0,
+          "ndcg@10": 0.8647,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t21",
+            "t55",
+            "t66"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q170",
+          "query": "What open source European AI model can I use for my app?",
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t82",
+            "t116",
+            "t148"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        }
+      ]
+    },
+    "experiment_b_hybrid": {
+      "num_queries": 30,
+      "Precision@1": 0.6667,
+      "Recall@1": 0.384,
+      "NDCG@1": 0.6524,
+      "HitRate@1": 0.6667,
+      "Precision@3": 0.4222,
+      "Recall@3": 0.616,
+      "NDCG@3": 0.6405,
+      "HitRate@3": 0.8,
+      "Precision@5": 0.3067,
+      "Recall@5": 0.6729,
+      "NDCG@5": 0.6511,
+      "HitRate@5": 0.8667,
+      "Precision@10": 0.18,
+      "Recall@10": 0.7588,
+      "NDCG@10": 0.6784,
+      "HitRate@10": 0.9,
+      "Precision@20": 0.11,
+      "Recall@20": 0.8506,
+      "NDCG@20": 0.7147,
+      "HitRate@20": 0.9333,
+      "MRR": 0.7565,
+      "failure_rate_at_10": 0.1,
+      "failed_query_count": 3,
+      "MRR_95_CI": [
+        0.6231,
+        0.8787
+      ],
+      "NDCG@10_95_CI": [
+        0.5718,
+        0.7838
+      ],
+      "per_query_analysis": [
+        {
+          "query_id": "q072",
+          "query": "Turn my hand-drawn sketch into a digital wireframe",
+          "mrr": 1.0,
+          "ndcg@10": 0.8609,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t50",
+            "t137",
+            "t316"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q151",
+          "query": "What tool can generate realistic video from a single photo?",
+          "mrr": 1.0,
+          "ndcg@10": 0.7969,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t90",
+            "t20",
+            "t19"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q115",
+          "query": "Compare different AI models in one place",
+          "mrr": 0.0,
+          "ndcg@10": 0.0,
+          "precision@1": 0.0,
+          "hit_rate@10": 0,
+          "retrieved_top3": [
+            "t86",
+            "t148",
+            "t82"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": true
+        },
+        {
+          "query_id": "q057",
+          "query": "Translate my website content into multiple languages",
+          "mrr": 0.1111,
+          "ndcg@10": 0.2461,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t207",
+            "t57",
+            "t66"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q108",
+          "query": "I need an open source AI image generator I can run locally",
+          "mrr": 0.5,
+          "ndcg@10": 0.6309,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t177",
+            "t7",
+            "t10"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q199",
+          "query": "I need an accessible way to consume written articles by listening",
+          "mrr": 0.5,
+          "ndcg@10": 0.571,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t104",
+            "t55",
+            "t273"
+          ],
+          "num_relevant": 2,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q173",
+          "query": "Make my writing sound more engaging and clear",
+          "mrr": 1.0,
+          "ndcg@10": 0.9288,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t76",
+            "t35",
+            "t309"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q051",
+          "query": "Check my grammar and improve my writing",
+          "mrr": 1.0,
+          "ndcg@10": 0.9562,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t35",
+            "t36",
+            "t76"
+          ],
+          "num_relevant": 2,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q144",
+          "query": "I want AI roleplay and character interaction",
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t80",
+            "t160",
+            "t131"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q208",
+          "query": "I want to generate a complete app with frontend and backend",
+          "mrr": 1.0,
+          "ndcg@10": 0.7853,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t84",
+            "t153",
+            "t83"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q155",
+          "query": "Upload a 100-page PDF and ask questions about it",
+          "mrr": 0.0833,
+          "ndcg@10": 0.0,
+          "precision@1": 0.0,
+          "hit_rate@10": 0,
+          "retrieved_top3": [
+            "t273",
+            "t190",
+            "t191"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": true
+        },
+        {
+          "query_id": "q130",
+          "query": "Research case law for my legal brief",
+          "mrr": 0.5,
+          "ndcg@10": 0.6309,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t319",
+            "t97",
+            "t209"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q060",
+          "query": "Generate professional slides from a text outline",
+          "mrr": 1.0,
+          "ndcg@10": 0.9719,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t41",
+            "t43",
+            "t42"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q056",
+          "query": "I need accurate translation for my business documents",
+          "mrr": 1.0,
+          "ndcg@10": 0.8609,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t37",
+            "t310",
+            "t191"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q024",
+          "query": "I need an AI to help me write Python code",
+          "mrr": 0.25,
+          "ndcg@10": 0.3625,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t140",
+            "t226",
+            "t156"
+          ],
+          "num_relevant": 6,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q008",
+          "query": "Create a photorealistic image of a fantasy landscape",
+          "mrr": 0.25,
+          "ndcg@10": 0.2311,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t178",
+            "t134",
+            "t216"
+          ],
+          "num_relevant": 5,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q009",
+          "query": "What's the best tool for generating concept art with AI?",
+          "mrr": 1.0,
+          "ndcg@10": 0.7149,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t8",
+            "t5",
+            "t264"
+          ],
+          "num_relevant": 5,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q109",
+          "query": "What's a free text-to-image tool I can run on my own computer?",
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t7",
+            "t108",
+            "t6"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q152",
+          "query": "I need to scan a 3D object from video footage",
+          "mrr": 1.0,
+          "ndcg@10": 0.961,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t91",
+            "t216",
+            "t267"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q023",
+          "query": "What's the best AI chatbot for coding help?",
+          "mrr": 1.0,
+          "ndcg@10": 0.3308,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t2",
+            "t212",
+            "t82"
+          ],
+          "num_relevant": 7,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q140",
+          "query": "I need enterprise-grade machine learning operations platform",
+          "mrr": 1.0,
+          "ndcg@10": 0.9587,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t106",
+            "t147",
+            "t53"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q185",
+          "query": "What AI tool helps identify if citations support or contradict a claim?",
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t100",
+            "t46",
+            "t142"
+          ],
+          "num_relevant": 2,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q027",
+          "query": "Help me debug my JavaScript code",
+          "mrr": 0.0,
+          "ndcg@10": 0.1091,
+          "precision@1": 0.0,
+          "hit_rate@10": 0,
+          "retrieved_top3": [
+            "t30",
+            "t31",
+            "t72"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": true
+        },
+        {
+          "query_id": "q036",
+          "query": "I need automatic transcription for my Zoom meetings",
+          "mrr": 1.0,
+          "ndcg@10": 0.9868,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t39",
+            "t66",
+            "t131"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q058",
+          "query": "Build a presentation from my research notes",
+          "mrr": 1.0,
+          "ndcg@10": 0.7439,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t41",
+            "t42",
+            "t88"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q063",
+          "query": "Find academic papers about machine learning",
+          "mrr": 1.0,
+          "ndcg@10": 0.8242,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t46",
+            "t147",
+            "t44"
+          ],
+          "num_relevant": 5,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q071",
+          "query": "Generate UI mockups from my text description",
+          "mrr": 0.5,
+          "ndcg@10": 0.5917,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t6",
+            "t83",
+            "t94"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q007",
+          "query": "I need an AI that can create art from my written prompts",
+          "mrr": 1.0,
+          "ndcg@10": 0.7111,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t5",
+            "t105",
+            "t264"
+          ],
+          "num_relevant": 7,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q029",
+          "query": "Convert my text into natural sounding speech",
+          "mrr": 1.0,
+          "ndcg@10": 0.587,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t55",
+            "t309",
+            "t21"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q170",
+          "query": "What open source European AI model can I use for my app?",
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t82",
+            "t115",
+            "t116"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        }
+      ]
+    },
+    "experiment_c_ranking": {
+      "num_queries": 30,
+      "Precision@1": 0.6,
+      "Recall@1": 0.3209,
+      "NDCG@1": 0.5619,
+      "HitRate@1": 0.6,
+      "Precision@3": 0.3333,
+      "Recall@3": 0.4709,
+      "NDCG@3": 0.4935,
+      "HitRate@3": 0.7,
+      "Precision@5": 0.2267,
+      "Recall@5": 0.4954,
+      "NDCG@5": 0.4895,
+      "HitRate@5": 0.7,
+      "Precision@10": 0.1667,
+      "Recall@10": 0.6416,
+      "NDCG@10": 0.5469,
+      "HitRate@10": 0.8333,
+      "Precision@20": 0.11,
+      "Recall@20": 0.8506,
+      "NDCG@20": 0.6186,
+      "HitRate@20": 0.9333,
+      "MRR": 0.6628,
+      "failure_rate_at_10": 0.1667,
+      "failed_query_count": 5,
+      "MRR_95_CI": [
+        0.5161,
+        0.8088
+      ],
+      "NDCG@10_95_CI": [
+        0.4288,
+        0.6698
+      ],
+      "per_query_analysis": [
+        {
+          "query_id": "q072",
+          "query": "Turn my hand-drawn sketch into a digital wireframe",
+          "mrr": 1.0,
+          "ndcg@10": 0.8609,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t50",
+            "t137",
+            "t266"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q151",
+          "query": "What tool can generate realistic video from a single photo?",
+          "mrr": 1.0,
+          "ndcg@10": 0.9738,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t90",
+            "t20",
+            "t16"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q115",
+          "query": "Compare different AI models in one place",
+          "mrr": 0.0,
+          "ndcg@10": 0.0,
+          "precision@1": 0.0,
+          "hit_rate@10": 0,
+          "retrieved_top3": [
+            "t82",
+            "t52",
+            "t116"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": true
+        },
+        {
+          "query_id": "q057",
+          "query": "Translate my website content into multiple languages",
+          "mrr": 1.0,
+          "ndcg@10": 0.8913,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t37",
+            "t18",
+            "t57"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q108",
+          "query": "I need an open source AI image generator I can run locally",
+          "mrr": 0.0833,
+          "ndcg@10": 0.0,
+          "precision@1": 0.0,
+          "hit_rate@10": 0,
+          "retrieved_top3": [
+            "t177",
+            "t147",
+            "t265"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": true
+        },
+        {
+          "query_id": "q199",
+          "query": "I need an accessible way to consume written articles by listening",
+          "mrr": 1.0,
+          "ndcg@10": 0.9468,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t55",
+            "t23",
+            "t145"
+          ],
+          "num_relevant": 2,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q173",
+          "query": "Make my writing sound more engaging and clear",
+          "mrr": 1.0,
+          "ndcg@10": 0.8216,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t76",
+            "t35",
+            "t75"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q051",
+          "query": "Check my grammar and improve my writing",
+          "mrr": 1.0,
+          "ndcg@10": 0.9562,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t35",
+            "t36",
+            "t76"
+          ],
+          "num_relevant": 2,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q144",
+          "query": "I want AI roleplay and character interaction",
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t80",
+            "t73",
+            "t269"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q208",
+          "query": "I want to generate a complete app with frontend and backend",
+          "mrr": 1.0,
+          "ndcg@10": 0.3696,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t83",
+            "t121",
+            "t120"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q155",
+          "query": "Upload a 100-page PDF and ask questions about it",
+          "mrr": 1.0,
+          "ndcg@10": 0.5097,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t99",
+            "t4",
+            "t45"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q130",
+          "query": "Research case law for my legal brief",
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t97",
+            "t319",
+            "t209"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q060",
+          "query": "Generate professional slides from a text outline",
+          "mrr": 1.0,
+          "ndcg@10": 0.6842,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t41",
+            "t104",
+            "t42"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q056",
+          "query": "I need accurate translation for my business documents",
+          "mrr": 1.0,
+          "ndcg@10": 0.8609,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t37",
+            "t42",
+            "t207"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q024",
+          "query": "I need an AI to help me write Python code",
+          "mrr": 0.3333,
+          "ndcg@10": 0.1327,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t156",
+            "t147",
+            "t31"
+          ],
+          "num_relevant": 6,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q008",
+          "query": "Create a photorealistic image of a fantasy landscape",
+          "mrr": 0.125,
+          "ndcg@10": 0.2923,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t91",
+            "t141",
+            "t178"
+          ],
+          "num_relevant": 5,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q009",
+          "query": "What's the best tool for generating concept art with AI?",
+          "mrr": 1.0,
+          "ndcg@10": 0.5918,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t5",
+            "t10",
+            "t52"
+          ],
+          "num_relevant": 5,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q109",
+          "query": "What's a free text-to-image tool I can run on my own computer?",
+          "mrr": 0.3333,
+          "ndcg@10": 0.5,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t182",
+            "t108",
+            "t7"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q152",
+          "query": "I need to scan a 3D object from video footage",
+          "mrr": 0.1111,
+          "ndcg@10": 0.2761,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t267",
+            "t317",
+            "t316"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q023",
+          "query": "What's the best AI chatbot for coding help?",
+          "mrr": 0.1,
+          "ndcg@10": 0.0956,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t144",
+            "t143",
+            "t212"
+          ],
+          "num_relevant": 7,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q140",
+          "query": "I need enterprise-grade machine learning operations platform",
+          "mrr": 0.0909,
+          "ndcg@10": 0.0,
+          "precision@1": 0.0,
+          "hit_rate@10": 0,
+          "retrieved_top3": [
+            "t147",
+            "t299",
+            "t300"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": true
+        },
+        {
+          "query_id": "q185",
+          "query": "What AI tool helps identify if citations support or contradict a claim?",
+          "mrr": 0.125,
+          "ndcg@10": 0.2483,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t142",
+            "t104",
+            "t208"
+          ],
+          "num_relevant": 2,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q027",
+          "query": "Help me debug my JavaScript code",
+          "mrr": 0.0,
+          "ndcg@10": 0.071,
+          "precision@1": 0.0,
+          "hit_rate@10": 0,
+          "retrieved_top3": [
+            "t241",
+            "t31",
+            "t215"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": true
+        },
+        {
+          "query_id": "q036",
+          "query": "I need automatic transcription for my Zoom meetings",
+          "mrr": 1.0,
+          "ndcg@10": 0.9949,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t39",
+            "t56",
+            "t40"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q058",
+          "query": "Build a presentation from my research notes",
+          "mrr": 0.5,
+          "ndcg@10": 0.5158,
+          "precision@1": 0.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t104",
+            "t42",
+            "t41"
+          ],
+          "num_relevant": 3,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q063",
+          "query": "Find academic papers about machine learning",
+          "mrr": 1.0,
+          "ndcg@10": 0.6493,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t99",
+            "t189",
+            "t4"
+          ],
+          "num_relevant": 5,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q071",
+          "query": "Generate UI mockups from my text description",
+          "mrr": 1.0,
+          "ndcg@10": 0.7813,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t50",
+            "t83",
+            "t41"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q007",
+          "query": "I need an AI that can create art from my written prompts",
+          "mrr": 1.0,
+          "ndcg@10": 0.6,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t105",
+            "t42",
+            "t41"
+          ],
+          "num_relevant": 7,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q029",
+          "query": "Convert my text into natural sounding speech",
+          "mrr": 1.0,
+          "ndcg@10": 0.7841,
+          "precision@1": 1.0,
+          "hit_rate@10": 1,
+          "retrieved_top3": [
+            "t23",
+            "t21",
+            "t211"
+          ],
+          "num_relevant": 4,
+          "has_zero_hits": false
+        },
+        {
+          "query_id": "q170",
+          "query": "What open source European AI model can I use for my app?",
+          "mrr": 0.0833,
+          "ndcg@10": 0.0,
+          "precision@1": 0.0,
+          "hit_rate@10": 0,
+          "retrieved_top3": [
+            "t147",
+            "t85",
+            "t86"
+          ],
+          "num_relevant": 1,
+          "has_zero_hits": true
+        }
+      ]
+    }
+  }
+]

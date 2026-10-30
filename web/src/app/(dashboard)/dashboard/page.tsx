@@ -7,11 +7,13 @@ import ToolCard from '@/components/ToolCard';
 import { tools, getTrendingTools } from '@/data/tools';
 import { rankToolsByRecommendations } from '@/lib/recommendations';
 import { useRecommendations } from '@/hooks/useRecommendations';
-import { Sparkles, TrendingUp, Star, Bot, Palette, Briefcase, X } from 'lucide-react';
+import { Sparkles, TrendingUp, Star, Bot, Palette, Briefcase, X, Zap, ArrowRight, Layers, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 const ToolShelf = ({
   title,
+  subtitle,
   icon: Icon,
   tools,
   onToggleSave,
@@ -19,6 +21,7 @@ const ToolShelf = ({
   isLightMode
 }: {
   title: string;
+  subtitle?: string;
   icon: React.ComponentType<{ className?: string }>;
   tools: any[];
   onToggleSave: (toolId: string) => void;
@@ -27,16 +30,35 @@ const ToolShelf = ({
 }) => {
   if (tools.length === 0) return null;
   return (
-    <div className="mb-12">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-aura-primary/20 flex items-center justify-center border border-aura-primary/30">
-          <Icon className="w-5 h-5 text-aura-primary" />
+    <div className="mb-14">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#D9042B] to-[#FF7B00] flex items-center justify-center text-white shadow-md shadow-red-500/20">
+            <Icon className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className={cn("text-xl sm:text-2xl font-bold tracking-tight", isLightMode ? "text-slate-900" : "text-white")}>
+              {title}
+            </h3>
+            {subtitle && (
+              <p className={cn("text-xs mt-0.5", isLightMode ? "text-slate-500" : "text-white/60")}>
+                {subtitle}
+              </p>
+            )}
+          </div>
         </div>
-        <h3 className={cn("text-2xl font-bold", isLightMode ? "text-gray-900" : "text-white")}>{title}</h3>
+        <Link
+          href="/discover"
+          className="text-xs font-semibold text-red-600 dark:text-red-400 hover:underline flex items-center gap-1"
+        >
+          <span>View All</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
       </div>
-      <div className="flex overflow-x-auto gap-6 pb-6 snap-x scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+
+      <div className="flex overflow-x-auto gap-6 pb-4 snap-x scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {tools.map((tool) => (
-          <div key={tool.id} className="min-w-[300px] max-w-[300px] sm:min-w-[360px] sm:max-w-[360px] snap-start shrink-0">
+          <div key={tool.id} className="min-w-[310px] max-w-[310px] sm:min-w-[350px] sm:max-w-[350px] snap-start shrink-0">
             <ToolCard
               tool={tool}
               onToggleSave={onToggleSave}
@@ -71,83 +93,92 @@ export default function DashboardPage() {
   }, [isSearching, recommendations]);
 
   // Catalog shelves data
-  const trendingTools = getTrendingTools(10);
-  const freeTools = tools.filter((t) => t.pricing === 'Free' || t.pricing === 'Freemium').slice(0, 10);
-  const productivityTools = tools.filter((t) => t.category === 'Productivity').slice(0, 10);
-  const designTools = tools.filter((t) => t.category === 'Design').slice(0, 10);
-  const aiTools = tools.filter((t) => t.category === 'AI Tools').slice(0, 10);
+  const trendingTools = getTrendingTools(8);
+  const freeTools = tools.filter((t) => t.pricing === 'Free' || t.pricing === 'Freemium').slice(0, 8);
+  const productivityTools = tools.filter((t) => t.category.toLowerCase().includes('productivity') || t.category.toLowerCase().includes('coding')).slice(0, 8);
+  const designTools = tools.filter((t) => t.category.toLowerCase().includes('design') || t.category.toLowerCase().includes('image') || t.category.toLowerCase().includes('video')).slice(0, 8);
+  const aiTools = tools.filter((t) => t.category.toLowerCase().includes('chatbot') || t.category.toLowerCase().includes('audio')).slice(0, 8);
 
   const dismissBanner = () => {
     setIsBannerVisible(false);
   };
 
   return (
-    <div className="max-w-7xl mx-auto pb-12">
-      {/* Hero Section */}
-      {isBannerVisible && <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={cn("mb-12 relative rounded-3xl overflow-hidden glass-card p-8 sm:p-12 border-aura-primary/20", isLightMode && "border-aura-primary/15")}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-aura-primary/10 via-aura-accent/5 to-transparent pointer-events-none" />
-        <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-aura-primary/10 to-transparent pointer-events-none blur-3xl" />
-
-        <button
-          type="button"
-          onClick={dismissBanner}
-          aria-label="Dismiss dashboard banner"
+    <div className="max-w-7xl mx-auto pb-16 px-4 sm:px-6">
+      {/* Hero Welcome Banner */}
+      {isBannerVisible && (
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
           className={cn(
-            "absolute top-4 right-4 z-20 p-2 rounded-xl transition-colors",
-            isLightMode ? "text-gray-500 hover:text-gray-900 hover:bg-gray-100" : "text-white/50 hover:text-white hover:bg-white/10"
+            "mb-12 relative rounded-3xl overflow-hidden p-8 sm:p-12 border backdrop-blur-2xl transition-all shadow-xl",
+            isLightMode
+              ? "bg-gradient-to-r from-red-50/70 via-white to-orange-50/60 border-slate-200/90 shadow-slate-200/50"
+              : "bg-gradient-to-r from-red-950/20 via-[#11121C] to-black border-white/10 shadow-black/80"
           )}
         >
-          <X className="w-5 h-5" />
-        </button>
+          <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-orange-500/5 to-transparent pointer-events-none" />
 
-        <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-aura-primary/20 text-aura-primary border border-aura-primary/30 text-xs font-bold uppercase tracking-wider mb-6">
-            <Sparkles className="w-4 h-4" />
-            <span>AI-Powered Recommendations</span>
-          </div>
-          <h2 className="text-4xl sm:text-5xl font-extrabold mb-4 leading-tight" style={{ color: isLightMode ? '#1a1a1a' : '#ffffff' }}>
-            Discover the perfect tool for <span className="text-aura-gradient-full">any task</span>
-          </h2>
-          <p className="text-lg mb-8 leading-relaxed" style={{ color: isLightMode ? '#4b5563' : 'rgba(255,255,255,0.6)' }}>
-            Stop searching endlessly. Tell AURA what you need, and our semantic engine will find the most trusted and efficient utilities instantly.
-          </p>
-          <div className="flex gap-4">
-            <button
-              onClick={() => {
-                const searchInput = document.querySelector('input[type="text"]');
-                if (searchInput && searchInput instanceof HTMLElement) {
-                  searchInput.focus();
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-              }}
-              className="px-6 py-3 rounded-xl bg-aura-primary hover:bg-aura-primary-vibrant text-white font-semibold transition-all shadow-aura-glow hover:shadow-aura-glow-lg"
-            >
-              Try Semantic Search
-            </button>
-            <a
-              href="/discover"
-              className={cn(
-                "px-6 py-3 rounded-xl font-semibold border transition-all backdrop-blur-sm",
-                isLightMode
-                  ? "bg-gray-100 border-gray-200 text-gray-900 hover:bg-gray-200"
-                  : "bg-white/5 border-white/10 text-white hover:bg-white/10"
-              )}
-            >
-              View Categories
-            </a>
-          </div>
-        </div>
-      </motion.div>}
+          <button
+            type="button"
+            onClick={dismissBanner}
+            aria-label="Dismiss dashboard banner"
+            className={cn(
+              "absolute top-4 right-4 z-20 p-2 rounded-xl transition-colors",
+              isLightMode ? "text-slate-400 hover:text-slate-800 hover:bg-slate-100" : "text-white/40 hover:text-white hover:bg-white/10"
+            )}
+          >
+            <X className="w-5 h-5" />
+          </button>
 
+          <div className="relative z-10 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border badge-brand">
+              <Sparkles className="w-3.5 h-3.5 text-[#FF3344]" />
+              <span>AI UTILITY RECOMMENDATION WORKSPACE</span>
+            </div>
+            <h2 className={cn(
+              "text-3xl sm:text-5xl font-black mb-3 leading-tight tracking-tight",
+              isLightMode ? "text-slate-900" : "text-white"
+            )}>
+              Discover the perfect tool for <span className="text-gradient">any generative task</span>
+            </h2>
+            <p className={cn(
+              "text-sm sm:text-base mb-8 leading-relaxed",
+              isLightMode ? "text-slate-600" : "text-white/70"
+            )}>
+              Stop searching endlessly. Type any technical or creative requirement in the search bar above, and AURA matches verified tools with trust ratings and price transparency.
+            </p>
+            <div className="flex gap-3.5 flex-wrap">
+              <Link
+                href="/discover"
+                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-[#D9042B] to-[#FF7B00] text-white font-bold text-sm hover:opacity-95 shadow-md shadow-red-500/25 active:scale-95 transition-all flex items-center gap-2"
+              >
+                <span>Browse All 320+ Tools</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/#workflows"
+                className={cn(
+                  "px-6 py-3 rounded-2xl font-semibold text-sm border transition-all backdrop-blur-sm flex items-center gap-2",
+                  isLightMode
+                    ? "bg-white border-slate-200 text-slate-800 hover:bg-slate-50 shadow-sm"
+                    : "bg-white/5 border-white/10 text-white hover:bg-white/10"
+                )}
+              >
+                <Layers className="w-4 h-4 text-[#FF7B00]" />
+                <span>Explore Workflows</span>
+              </Link>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* When searching via Header Search */}
       {isSearching ? (
         <div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-            <h3 className={cn("text-2xl font-bold flex items-center gap-2.5", isLightMode ? "text-gray-900" : "text-white")}>
-              <Sparkles className="w-6 h-6 text-aura-primary" />
+            <h3 className={cn("text-2xl font-bold flex items-center gap-2.5", isLightMode ? "text-slate-900" : "text-white")}>
+              <Sparkles className="w-6 h-6 text-[#FF3344]" />
               {recommendationsLoading ? 'Generating AI recommendations...' : 'AI Recommendations'}
             </h3>
             {!recommendationsLoading && recommendations.length > 0 && (
@@ -160,79 +191,73 @@ export default function DashboardPage() {
                     Expanded: &ldquo;{expandedQuery}&rdquo;
                   </span>
                 )}
-                <span className="text-emerald-400 font-semibold">{latencyMs}ms</span>
+                <span className="text-emerald-500 font-semibold">{latencyMs}ms</span>
                 <span>•</span>
                 <span>{candidatesCount || recommendations.length} candidates</span>
               </div>
             )}
           </div>
-          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <AnimatePresence>
-              {filteredTools.map((tool) => (
-                <motion.div
-                  key={tool.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <ToolCard tool={tool} onToggleSave={toggleSaveTool} isSaved={savedTools.includes(tool.id)} isLightMode={isLightMode} />
-                </motion.div>
-              ))}
-              {filteredTools.length === 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="col-span-full py-12 text-center flex flex-col items-center gap-4"
-                  style={{ color: isLightMode ? '#6b7280' : 'rgba(255,255,255,0.6)' }}
-                >
-                  <Sparkles className="w-12 h-12" style={{ opacity: isLightMode ? 0.2 : 0.3 }} />
-                  <p className="text-lg">No tools found matching &ldquo;{searchQuery}&rdquo;.</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTools.map((tool) => (
+              <ToolCard
+                key={tool.id}
+                tool={tool}
+                onToggleSave={toggleSaveTool}
+                isSaved={savedTools.includes(tool.id)}
+                isLightMode={isLightMode}
+              />
+            ))}
+          </div>
         </div>
       ) : (
-        // Play Store style Catalog View
-        <div className="flex flex-col gap-4">
+        /* Catalog Shelves */
+        <div>
           <ToolShelf
-            title="Trending Now"
+            title="Viral & Trending Tools"
+            subtitle="Fastest-growing AI utilities with highest community benchmark activity"
             icon={TrendingUp}
             tools={trendingTools}
             onToggleSave={toggleSaveTool}
             savedTools={savedTools}
             isLightMode={isLightMode}
           />
+
           <ToolShelf
-            title="Free & Verified"
-            icon={Star}
+            title="Top Free & Open Access AI"
+            subtitle="Generative tools with high-value free tiers and open weights"
+            icon={Zap}
             tools={freeTools}
             onToggleSave={toggleSaveTool}
             savedTools={savedTools}
             isLightMode={isLightMode}
           />
+
           <ToolShelf
-            title="Essential AI Assistants"
+            title="Coding Assistants & Development"
+            subtitle="Autonomous copilots, terminal agents, and refactoring engines"
             icon={Bot}
-            tools={aiTools}
+            tools={productivityTools}
             onToggleSave={toggleSaveTool}
             savedTools={savedTools}
             isLightMode={isLightMode}
           />
+
           <ToolShelf
-            title="Creative Powerhouses"
+            title="Design & Visual Generation"
+            subtitle="Text-to-image synthesis, neural canvas, and visual generation"
             icon={Palette}
             tools={designTools}
             onToggleSave={toggleSaveTool}
             savedTools={savedTools}
             isLightMode={isLightMode}
           />
+
           <ToolShelf
-            title="Top Productivity Picks"
-            icon={Briefcase}
-            tools={productivityTools}
+            title="Chatbots, Reasoning & Audio"
+            subtitle="Frontier reasoning models and voice generation"
+            icon={Award}
+            tools={aiTools}
             onToggleSave={toggleSaveTool}
             savedTools={savedTools}
             isLightMode={isLightMode}

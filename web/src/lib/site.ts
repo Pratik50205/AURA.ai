@@ -106,6 +106,7 @@ export type NavItem = {
   label: string;
   href: string;
   badge?: string;
+  adminOnly?: boolean;
 };
 
 export type FilterOption = {
@@ -137,6 +138,10 @@ export const navItems: NavItem[] = [
   { icon: 'Compass', label: 'Discover', href: '/discover' },
   { icon: 'Bookmark', label: 'Saved Tools', href: '/saved' },
   { icon: 'Settings', label: 'Settings', href: '/settings' },
+];
+
+export const adminNavItems: NavItem[] = [
+  { icon: 'ShieldCheck', label: 'Admin Console', href: '/admin', badge: 'Admin', adminOnly: true },
 ];
 
 export const categories: FilterOption[] = [

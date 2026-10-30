@@ -1,15 +1,21 @@
 'use client';
-import { cn } from '@/lib/utils';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Shield, ShieldCheck, ThumbsUp, ThumbsDown, ExternalLink, Bookmark, Sparkles
-} from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import {
+  Shield, 
+  ShieldCheck, 
+  ExternalLink, 
+  Bookmark, 
+  Sparkles,
+  Heart,
+  ArrowLeftRight,
+  ArrowRight
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 import type { Tool } from '@/lib/site';
 import type { RankedTool } from '@/lib/recommendations';
-import { getTrustScoreColor, getPricingColor } from '@/lib/utils';
 
 interface ToolCardProps {
   tool: Tool | RankedTool;
@@ -19,279 +25,39 @@ interface ToolCardProps {
   isLightMode?: boolean;
 }
 
-export default function ToolCard({ tool, onToggleSave, isSaved, compact = false, isLightMode = false }: ToolCardProps) {
-  const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
+export default function ToolCard({
+  tool,
+  onToggleSave,
+  isSaved,
+  compact = false,
+  isLightMode = false,
+}: ToolCardProps) {
   const router = useRouter();
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(tool.trustScore || 85);
+  const [isCompared, setIsCompared] = useState(false);
 
-  const cardBase = "glass-card group flex flex-col h-full relative overflow-hidden";
-  const cardHover = isLightMode
-    ? "hover:border-aura-primary/20 hover:shadow-aura-glow"
-    : "hover:border-white/10";
+  const handleToggleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsLiked(prev => !prev);
+    setLikesCount(prev => isLiked ? prev - 1 : prev + 1);
+  };
 
-  const compactCardBase = "glass-card p-4 group flex flex-col h-full relative overflow-hidden";
-  const compactCardHover = isLightMode
-    ? "hover:border-aura-primary/20 hover:shadow-aura-glow"
-    : "hover:border-white/10";
+  const handleToggleCompare = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsCompared(prev => !prev);
+  };
 
-  const renderCompact = () => (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -3 }}
-      className={cn(compactCardBase, compactCardHover)}
-    >
-      <div className="flex items-center gap-3 mb-3 relative z-10">
-        <div className={cn(
-          "w-10 h-10 rounded-xl flex items-center justify-center p-1.5 shadow-inner",
-          isLightMode ? "bg-gray-100 border-gray-200" : "bg-surface border border-white/10"
-        )}>
-          <img src={tool.icon} alt={tool.name} className="w-full h-full object-contain" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <h3 className={cn("text-base font-bold truncate flex items-center gap-1.5", isLightMode ? "text-gray-900" : "text-white")}>
-            {tool.name}
-            {tool.verified && <ShieldCheck className="w-3.5 h-3.5 text-aura-accent flex-shrink-0" />}
-          </h3>
-          <div className="flex items-center gap-2 text-xs text-gray-500">
-            <span>{tool.category}</span>
-            <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-            <span>{tool.users}</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${getPricingColor(tool.pricing)}`}>
-            {tool.pricing}
-          </span>
-          <div className={`flex items-center gap-1 px-2 py-1 rounded border ${getTrustScoreColor(tool.trustScore)}`}>
-            <Shield className="w-3 h-3" />
-            <span className="text-xs font-bold">{tool.trustScore}</span>
-          </div>
-        </div>
-      </div>
+  const handleToggleBookmark = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleSave(tool.id);
+  };
 
-      <p className={cn("text-sm mb-4 flex-1 line-clamp-2 relative z-10 leading-relaxed", isLightMode ? "text-gray-600" : "text-white/70")}>
-        {tool.description}
-      </p>
+  const handleVisitExternal = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
 
-      {'recommendationReason' in tool && tool.recommendationReason && (
-        <div className={cn(
-          "mb-3 px-2.5 py-1.5 rounded-lg text-xs border relative z-10 flex items-start gap-1.5",
-          isLightMode 
-            ? "bg-amber-50/80 border-amber-200/80 text-amber-900" 
-            : "bg-[#FF7B00]/10 border-[#FF7B00]/25 text-[#FFB366]"
-        )}>
-          <Sparkles className="w-3 h-3 shrink-0 mt-0.5 text-[#FF7B00]" />
-          <span className="line-clamp-2 text-[11px] font-medium leading-relaxed">
-            {tool.recommendationReason}
-          </span>
-        </div>
-      )}
-
-      <div className="flex flex-wrap gap-1.5 mb-4 relative z-10">
-        {tool.tags.slice(0, 3).map((tag) => (
-          <span key={tag} className={cn(
-            "px-2 py-0.5 text-[9px] font-medium rounded uppercase tracking-wider",
-            isLightMode ? "text-gray-600 bg-gray-100 border-gray-200" : "text-white/60 bg-white/5 border-white/5"
-          )}>
-            {tag}
-          </span>
-        ))}
-        {tool.tags.length > 3 && (
-          <span className={cn(
-            "px-2 py-0.5 text-[9px] font-medium rounded uppercase tracking-wider",
-            isLightMode ? "text-gray-400 bg-gray-100 border-gray-200" : "text-white/40 bg-white/5 border-white/5"
-          )}>
-            +{tool.tags.length - 3}
-          </span>
-        )}
-      </div>
-
-      <div className="flex items-center justify-between pt-3 border-t relative z-10" style={{ borderColor: isLightMode ? '#e5e7eb' : 'rgba(255,255,255,0.1)' }}>
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => setFeedback(feedback === 'up' ? null : 'up')}
-            className={`p-1.5 rounded-lg border transition-all ${
-              feedback === 'up'
-                ? 'bg-green-500/20 border-green-500/30 text-green-500'
-                : (isLightMode ? 'bg-gray-100 border-gray-200 text-gray-500 hover:bg-gray-200 hover:text-gray-700' : 'bg-surface border-white/5 text-white/50 hover:bg-white/5 hover:text-white')
-            }`}
-            aria-label="Upvote"
-          >
-            <ThumbsUp className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => setFeedback(feedback === 'down' ? null : 'down')}
-            className={`p-1.5 rounded-lg border transition-all ${
-              feedback === 'down'
-                ? 'bg-red-500/20 border-red-500/30 text-red-500'
-                : (isLightMode ? 'bg-gray-100 border-gray-200 text-gray-500 hover:bg-gray-200 hover:text-gray-700' : 'bg-surface border-white/5 text-white/50 hover:bg-white/5 hover:text-white')
-            }`}
-            aria-label="Downvote"
-          >
-            <ThumbsDown className="w-3.5 h-3.5" />
-          </button>
-        </div>
-        <a
-          href={tool.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-xl transition-all border",
-            isLightMode
-              ? "bg-gray-100 border-gray-200 text-gray-700 hover:bg-aura-primary/10 hover:text-aura-primary hover:border-aura-primary/30"
-              : "bg-white/5 border-white/10 text-white hover:bg-aura-primary/20 hover:text-aura-primary hover:border-aura-primary/30"
-          )}
-        >
-          <span className="hidden sm:inline">Visit</span>
-          <ExternalLink className="w-3.5 h-3.5" />
-        </a>
-      </div>
-    </motion.div>
-  );
-
-  const renderFull = () => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5 }}
-      transition={{ duration: 0.3 }}
-      className={cn(cardBase, cardHover)}
-    >
-      {/* Decorative gradient blur */}
-      <div className="absolute -top-24 -right-24 w-48 h-48 bg-aura-primary/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-
-      <div className="flex justify-between items-start mb-4 relative z-10">
-        <div className="flex items-center gap-3">
-          <div className={cn(
-            "w-12 h-12 rounded-2xl flex items-center justify-center p-2 shadow-inner",
-            isLightMode ? "bg-gray-100 border-gray-200" : "bg-surface border border-white/10"
-          )}>
-            <img src={tool.icon} alt={tool.name} className="w-full h-full object-contain" />
-          </div>
-          <div>
-            <h3 className={cn("text-lg font-bold group-hover:text-aura-primary transition-colors flex items-center gap-2", isLightMode ? "text-gray-900" : "text-white")}>
-              {tool.name}
-              {tool.verified && <ShieldCheck className="w-4 h-4 text-aura-accent" />}
-            </h3>
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <span>{tool.category}</span>
-              <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-              <span>{tool.users} users</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {tool.pricing && (
-            <div className={`px-2 py-1 rounded-md border text-[10px] font-bold uppercase tracking-wider ${getPricingColor(tool.pricing)}`}>
-              {tool.pricing}
-            </div>
-          )}
-          <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border ${getTrustScoreColor(tool.trustScore)}`}>
-            <Shield className="w-3.5 h-3.5" />
-            <span className="text-xs font-bold">{tool.trustScore}</span>
-          </div>
-          <button
-            onClick={() => onToggleSave(tool.id)}
-            className={`p-1.5 rounded-lg border transition-all ${
-              isSaved ? 'bg-aura-primary/20 border-aura-primary/30 text-aura-primary' : (isLightMode ? 'bg-gray-100 border-gray-200 text-gray-500 hover:bg-gray-200 hover:text-gray-700' : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10 hover:text-white')
-            }`}
-            aria-label={isSaved ? 'Remove from saved' : 'Save tool'}
-            aria-pressed={isSaved}
-          >
-            <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
-          </button>
-        </div>
-      </div>
-
-      <p className={cn("text-sm mb-4 flex-1 line-clamp-3 relative z-10 leading-relaxed", isLightMode ? "text-gray-600" : "text-white/70")}>
-        {tool.description}
-      </p>
-
-      {'recommendationReason' in tool && tool.recommendationReason && (
-        <div className={cn(
-          "mb-5 px-3 py-2.5 rounded-xl border relative z-10 flex items-start gap-2.5",
-          isLightMode 
-            ? "bg-amber-50/90 border-amber-200 text-amber-950" 
-            : "bg-gradient-to-r from-[#FF7B00]/15 via-[#D9042B]/10 to-transparent border-[#FF7B00]/30 text-amber-100"
-        )}>
-          <Sparkles className="w-4 h-4 shrink-0 mt-0.5 text-[#FF7B00]" />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-0.5">
-              <span className="font-bold text-[10px] uppercase tracking-wider text-[#FF7B00]">
-                AI Recommendation Reason
-              </span>
-              {'rankingScore' in tool && typeof tool.rankingScore === 'number' && (
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#FF7B00]/20 text-[#FF7B00] font-semibold">
-                  {(tool.rankingScore * 100).toFixed(0)}% Score
-                </span>
-              )}
-            </div>
-            <p className="text-xs leading-relaxed opacity-90">
-              {tool.recommendationReason}
-            </p>
-          </div>
-        </div>
-      )}
-
-      <div className="flex flex-wrap gap-2 mb-6 relative z-10">
-        {tool.tags.map((tag) => (
-          <span key={tag} className={cn(
-            "px-2.5 py-1 text-[10px] font-medium rounded-md uppercase tracking-wider",
-            isLightMode ? "text-gray-600 bg-gray-100 border-gray-200" : "text-white/60 bg-white/5 border-white/5"
-          )}>
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      <div className="flex items-center justify-between pt-4 border-t relative z-10" style={{ borderColor: isLightMode ? '#e5e7eb' : 'rgba(255,255,255,0.1)' }}>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setFeedback(feedback === 'up' ? null : 'up')}
-            className={`p-2 rounded-xl border transition-all ${
-              feedback === 'up'
-                ? 'bg-green-500/20 border-green-500/30 text-green-500'
-                : (isLightMode ? 'bg-gray-100 border-gray-200 text-gray-500 hover:bg-gray-200 hover:text-gray-700' : 'bg-surface border-white/5 text-white/50 hover:bg-white/5 hover:text-white')
-            }`}
-            aria-label="Upvote"
-          >
-            <ThumbsUp className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setFeedback(feedback === 'down' ? null : 'down')}
-            className={`p-2 rounded-xl border transition-all ${
-              feedback === 'down'
-                ? 'bg-red-500/20 border-red-500/30 text-red-500'
-                : (isLightMode ? 'bg-gray-100 border-gray-200 text-gray-500 hover:bg-gray-200 hover:text-gray-700' : 'bg-surface border-white/5 text-white/50 hover:bg-white/5 hover:text-white')
-            }`}
-            aria-label="Downvote"
-          >
-            <ThumbsDown className="w-4 h-4" />
-          </button>
-        </div>
-
-        <a
-          href={tool.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={cn(
-            "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl transition-all border",
-            isLightMode
-              ? "bg-gray-100 border-gray-200 text-gray-700 hover:bg-aura-primary/10 hover:text-aura-primary hover:border-aura-primary/30"
-              : "bg-white/5 border-white/10 text-white hover:bg-aura-primary/20 hover:text-aura-primary hover:border-aura-primary/30"
-          )}
-        >
-          <span>Visit Site</span>
-          <ExternalLink className="w-4 h-4" />
-        </a>
-      </div>
-    </motion.div>
-  );
-
-  // Card navigation stays in the current tab; external Visit links remain explicit.
   const handleCardClick = (e: React.MouseEvent) => {
-    // Don't navigate if clicking on interactive elements
     const target = e.target as HTMLElement;
     if (
       target.closest('button') ||
@@ -304,20 +70,278 @@ export default function ToolCard({ tool, onToggleSave, isSaved, compact = false,
     router.push(`/discover/${tool.id}`);
   };
 
+  const getPricingBadgeClass = (pricing: string) => {
+    const p = pricing.toLowerCase();
+    if (p.includes('free') && !p.includes('freemium')) return 'badge-emerald';
+    if (p.includes('freemium')) return 'badge-brand';
+    return 'badge-amber';
+  };
+
+  // -------------------------------------------------------------
+  // Compact Card (used in horizontal shelves & mini preview lists)
+  // -------------------------------------------------------------
+  if (compact) {
+    return (
+      <div
+        onClick={handleCardClick}
+        className={cn(
+          "p-5 rounded-3xl border flex flex-col justify-between transition-all duration-300 group hover:-translate-y-1 cursor-pointer relative overflow-hidden h-full",
+          isLightMode
+            ? "bg-white border-slate-200/90 shadow-sm hover:shadow-xl hover:border-red-500/30"
+            : "bg-[#12131C] border-white/10 hover:border-red-500/40 hover:bg-[#161724]"
+        )}
+      >
+        <div>
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div className="flex items-center gap-3">
+              <div className={cn(
+                "w-11 h-11 rounded-2xl flex items-center justify-center p-2 overflow-hidden shrink-0 border transition-transform group-hover:scale-105",
+                isLightMode ? "bg-slate-100 border-slate-200" : "bg-[#1E2333] border-white/10"
+              )}>
+                <img
+                  src={tool.icon}
+                  alt={tool.name}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = `https://logo.clearbit.com/${tool.name.toLowerCase().replace(/\s+/g, '')}.com`;
+                  }}
+                />
+              </div>
+              <div>
+                <h4 className={cn(
+                  "text-sm font-bold truncate transition-colors flex items-center gap-1.5",
+                  isLightMode ? "text-slate-900 group-hover:text-red-600" : "text-white group-hover:text-red-400"
+                )}>
+                  {tool.name}
+                  {tool.verified && <ShieldCheck className="w-3.5 h-3.5 text-[#FF7B00] shrink-0" />}
+                </h4>
+                <span className={cn("text-xs", isLightMode ? "text-slate-500" : "text-white/50")}>
+                  {tool.category}
+                </span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleToggleBookmark}
+              className={cn(
+                "p-2 rounded-xl border transition-all shrink-0",
+                isSaved
+                  ? "bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30"
+                  : isLightMode
+                    ? "bg-slate-100 border-slate-200 text-slate-500 hover:text-slate-900"
+                    : "bg-white/5 border-white/10 text-white/50 hover:text-white"
+              )}
+              title="Bookmark tool"
+            >
+              <Bookmark className={cn("w-3.5 h-3.5", isSaved && "fill-current")} />
+            </button>
+          </div>
+
+          <p className={cn(
+            "text-xs line-clamp-2 leading-relaxed mb-4",
+            isLightMode ? "text-slate-600" : "text-white/70"
+          )}>
+            {tool.description}
+          </p>
+        </div>
+
+        <div className={cn(
+          "flex items-center justify-between pt-3 border-t",
+          isLightMode ? "border-slate-100" : "border-white/10"
+        )}>
+          <span className={cn("text-[11px] px-2 py-0.5 rounded-md font-semibold", getPricingBadgeClass(tool.pricing))}>
+            {tool.pricing}
+          </span>
+          <div className="flex items-center gap-2">
+            <a
+              href={tool.url}
+              target="_blank"
+              rel="noreferrer"
+              onClick={handleVisitExternal}
+              className={cn(
+                "px-2.5 py-1 rounded-xl text-xs font-semibold border transition-all flex items-center gap-1",
+                isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200" : "bg-white/5 hover:bg-white/10 text-white border-white/10"
+              )}
+            >
+              <span>Visit</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------
+  // Full Card (used in Discover, Saved, & Catalog grid)
+  // -------------------------------------------------------------
   return (
     <div
-      className="block cursor-pointer"
       onClick={handleCardClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          router.push(`/discover/${tool.id}`);
-        }
-      }}
+      className={cn(
+        "p-6 rounded-3xl border flex flex-col justify-between transition-all duration-300 group hover:-translate-y-1.5 cursor-pointer relative overflow-hidden h-full",
+        isLightMode
+          ? "bg-white border-slate-200/90 shadow-sm hover:shadow-2xl hover:border-red-500/35"
+          : "bg-[#12131C] border-white/10 hover:border-red-500/40 hover:bg-[#161724] hover:shadow-2xl hover:shadow-red-500/5"
+      )}
     >
-      {compact ? renderCompact() : renderFull()}
+      <div>
+        {/* Top Header: Icon + Name + Category + Action Icons */}
+        <div className="flex items-start justify-between gap-3 mb-4">
+          <div className="flex items-center gap-3.5">
+            <div className={cn(
+              "w-12 h-12 rounded-2xl flex items-center justify-center p-2.5 overflow-hidden shrink-0 border transition-transform group-hover:scale-105 shadow-sm",
+              isLightMode ? "bg-slate-100 border-slate-200" : "bg-[#1E2333] border-white/10"
+            )}>
+              <img
+                src={tool.icon}
+                alt={tool.name}
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = `https://logo.clearbit.com/${tool.name.toLowerCase().replace(/\s+/g, '')}.com`;
+                }}
+              />
+            </div>
+            <div>
+              <h3 className={cn(
+                "text-base font-bold transition-colors line-clamp-1 flex items-center gap-1.5",
+                isLightMode ? "text-slate-900 group-hover:text-red-600" : "text-white group-hover:text-red-400"
+              )}>
+                {tool.name}
+                {tool.verified && <ShieldCheck className="w-4 h-4 text-[#FF7B00] shrink-0" />}
+              </h3>
+              <span className={cn("text-xs font-medium", isLightMode ? "text-slate-500" : "text-white/50")}>
+                {tool.category}
+              </span>
+            </div>
+          </div>
+
+          {/* Quick Action Icons: Compare + Save */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={handleToggleCompare}
+              className={cn(
+                "p-2 rounded-xl border transition-all active:scale-95",
+                isCompared
+                  ? "bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30"
+                  : isLightMode
+                    ? "bg-slate-100 border-slate-200 text-slate-500 hover:text-slate-900"
+                    : "bg-white/5 border-white/10 text-white/50 hover:text-white"
+              )}
+              title="Add to compare tray"
+            >
+              <ArrowLeftRight className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={handleToggleBookmark}
+              className={cn(
+                "p-2 rounded-xl border transition-all active:scale-95",
+                isSaved
+                  ? "bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30"
+                  : isLightMode
+                    ? "bg-slate-100 border-slate-200 text-slate-500 hover:text-slate-900"
+                    : "bg-white/5 border-white/10 text-white/50 hover:text-white"
+              )}
+              title="Save to workspace"
+            >
+              <Bookmark className={cn("w-3.5 h-3.5", isSaved && "fill-current")} />
+            </button>
+          </div>
+        </div>
+
+        {/* Description */}
+        <p className={cn(
+          "text-xs sm:text-sm line-clamp-2 leading-relaxed mb-4",
+          isLightMode ? "text-slate-600" : "text-white/70"
+        )}>
+          {tool.description}
+        </p>
+
+        {/* AI Recommendation Reason Banner (if ranked) */}
+        {'recommendationReason' in tool && tool.recommendationReason && (
+          <div className={cn(
+            "mb-4 px-3 py-2 rounded-xl border flex items-start gap-2",
+            isLightMode 
+              ? "bg-amber-50/90 border-amber-200 text-amber-950" 
+              : "bg-gradient-to-r from-[#FF7B00]/15 via-[#D9042B]/10 to-transparent border-[#FF7B00]/30 text-amber-100"
+          )}>
+            <Sparkles className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[#FF7B00]" />
+            <div className="flex-1 min-w-0">
+              <span className="font-bold text-[10px] uppercase tracking-wider text-[#FF7B00] block mb-0.5">
+                AI Recommendation Reason
+              </span>
+              <p className="text-[11px] leading-relaxed line-clamp-2">
+                {tool.recommendationReason}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Tag Pills */}
+        <div className="flex flex-wrap gap-1.5 mb-6">
+          {tool.tags.slice(0, 3).map((tag, idx) => (
+            <span key={idx} className="tag-pill">
+              #{tag}
+            </span>
+          ))}
+          {tool.tags.length > 3 && (
+            <span className={cn(
+              "text-[10px] px-2 py-0.5 rounded font-mono",
+              isLightMode ? "text-slate-400 bg-slate-100" : "text-white/40 bg-white/5"
+            )}>
+              +{tool.tags.length - 3}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Bar: Pricing + Like Counter + Visit + Details */}
+      <div className={cn(
+        "flex items-center justify-between pt-4 border-t mt-auto",
+        isLightMode ? "border-slate-100" : "border-white/10"
+      )}>
+        <div className="flex items-center gap-2">
+          <span className={cn("text-xs px-2.5 py-1 rounded-lg font-semibold", getPricingBadgeClass(tool.pricing))}>
+            {tool.pricing}
+          </span>
+          <button
+            onClick={handleToggleLike}
+            className={cn(
+              "text-xs flex items-center gap-1 transition-colors px-1 py-0.5 rounded",
+              isLiked ? "text-red-500 font-bold" : isLightMode ? "text-slate-500 hover:text-slate-800" : "text-white/50 hover:text-white"
+            )}
+            title="Like this tool"
+          >
+            <Heart className={cn("w-3.5 h-3.5", isLiked && "fill-current text-red-500")} />
+            <span>{likesCount}</span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <a
+            href={tool.url}
+            target="_blank"
+            rel="noreferrer"
+            onClick={handleVisitExternal}
+            className={cn(
+              "px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all flex items-center gap-1",
+              isLightMode
+                ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-800"
+                : "bg-white/5 hover:bg-white/10 border-white/10 text-white"
+            )}
+            title="Visit official website"
+          >
+            <span>Visit</span>
+            <ExternalLink className="w-3 h-3" />
+          </a>
+          <button
+            onClick={handleCardClick}
+            className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#D9042B] to-[#FF7B00] shadow-sm hover:opacity-95 transition-all"
+          >
+            Details
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

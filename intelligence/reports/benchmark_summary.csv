@@ -1,0 +1,2 @@
+model_slug,display_name,params_m,dimension,license,dense_P@1,dense_P@3,dense_P@5,dense_P@10,dense_R@1,dense_R@5,dense_R@10,dense_MRR,dense_NDCG@5,dense_NDCG@10,dense_failure_rate,hybrid_MRR,hybrid_NDCG@10,hybrid_P@1,mlp_MRR,mlp_NDCG@10,latency_median_ms,latency_p95_ms,model_ram_mb,load_time_sec,throughput_docs_sec,index_size_kb
+baseline,all-MiniLM-L6-v2 (Production Baseline),22.7,384,Apache-2.0,0.7,0.4333,0.3067,0.1867,0.4173,0.6777,0.7775,0.7803,0.6644,0.7036,0.0667,0.7565,0.6784,0.6667,0.6628,0.5469,22.67,31.45,108.5,6.97,28.1,480.0

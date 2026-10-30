@@ -16,25 +16,25 @@
   /* Font Family */
   --font-inter: var(--font-inter), system-ui, sans-serif;
 
-  /* Dark Theme (Default) */
-  --background: #0a0a0f;
-  --foreground: #ffffff;
-  --surface: #13131a;
-  --surface-elevated: #1a1a24;
+  /* Light Theme (Default) */
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --surface: #f8fafc;
+  --surface-elevated: #ffffff;
   --primary: #D9042B;
   --primary-hover: #FF3344;
   --secondary: #FF7B00;
   --accent: #FF7B00;
-  --muted: #71717a;
-  --border: #2a2a3a;
-  --card: #13131a;
-  --card-border: #2a2a3a;
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-muted: rgba(255, 255, 255, 0.5);
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --card: #ffffff;
+  --card-border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: rgba(15, 23, 42, 0.72);
+  --text-muted: rgba(15, 23, 42, 0.52);
 
   /* Status Colors */
-  --success: #22c55e;
+  --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;
 }
@@ -42,20 +42,39 @@
 /* Light Theme */
 [data-theme="light"] {
   --background: #ffffff;
-  --foreground: #1a1a1a;
-  --surface: #f8f9fa;
+  --foreground: #0f172a;
+  --surface: #f8fafc;
   --surface-elevated: #ffffff;
   --primary: #D9042B;
   --primary-hover: #FF3344;
   --secondary: #FF7B00;
   --accent: #FF7B00;
-  --muted: #6b7280;
-  --border: #e5e7eb;
+  --muted: #64748b;
+  --border: #e2e8f0;
   --card: #ffffff;
-  --card-border: #e5e7eb;
-  --text-primary: #1a1a1a;
-  --text-secondary: rgba(0, 0, 0, 0.7);
-  --text-muted: rgba(0, 0, 0, 0.5);
+  --card-border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: rgba(15, 23, 42, 0.72);
+  --text-muted: rgba(15, 23, 42, 0.52);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --background: #090a0f;
+  --foreground: #ffffff;
+  --surface: #13131a;
+  --surface-elevated: #1a1a24;
+  --primary: #D9042B;
+  --primary-hover: #FF3344;
+  --secondary: #FF7B00;
+  --accent: #FF7B00;
+  --muted: #94a3b8;
+  --border: #1e2230;
+  --card: #13131a;
+  --card-border: #1e2230;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.72);
+  --text-muted: rgba(255, 255, 255, 0.52);
 }
 
 /* ========================================
@@ -365,4 +384,96 @@ html {
 
 .animate-pulse-accent {
   animation: pulse-accent-glow 2s ease-in-out infinite;
+}
+
+/* ========================================
+   Craly & AURA Unified Design System Components
+   ======================================== */
+
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(135deg, #D9042B 0%, #FF3344 50%, #FF7B00 100%);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 9999px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.badge-brand {
+  background: rgba(217, 4, 43, 0.08);
+  color: #D9042B;
+  border: 1px solid rgba(217, 4, 43, 0.25);
+}
+
+[data-theme="dark"] .badge-brand {
+  background: rgba(250, 58, 82, 0.15);
+  color: #FF7B90;
+  border-color: rgba(250, 58, 82, 0.35);
+}
+
+.badge-emerald {
+  background: rgba(16, 185, 129, 0.08);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+[data-theme="dark"] .badge-emerald {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34D399;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.badge-amber {
+  background: rgba(245, 158, 11, 0.08);
+  color: #D97706;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+[data-theme="dark"] .badge-amber {
+  background: rgba(245, 158, 11, 0.15);
+  color: #FBBF24;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.badge-blue {
+  background: rgba(59, 130, 246, 0.08);
+  color: #2563EB;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+[data-theme="dark"] .badge-blue {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60A5FA;
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .tag-pill {
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.tag-pill:hover {
+  border-color: rgba(217, 4, 43, 0.3);
+  color: var(--primary);
 }

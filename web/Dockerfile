@@ -1,18 +1,24 @@
 FROM node:20-alpine AS dependencies
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
 FROM node:20-alpine AS builder
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
-RUN npx prisma generate && npm run build
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+RUN touch ./dev.db && npx prisma generate && npm run build
 
 FROM node:20-alpine AS runner
+RUN apk add --no-cache libc6-compat openssl curl
 WORKDIR /app
 ENV NODE_ENV=production
 ENV HOSTNAME="0.0.0.0"
+ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
@@ -22,5 +28,5 @@ COPY --from=builder /app/dev.db ./dev.db
 
 RUN mkdir -p /app/data
 
-EXPOSE 3000 10000
+EXPOSE 3000
 CMD ["sh", "-c", "if [ ! -f /app/data/aura.db ] && [ -f /app/dev.db ]; then cp /app/dev.db /app/data/aura.db; fi; HOSTNAME=0.0.0.0 PORT=${PORT:-3000} node server.js"]

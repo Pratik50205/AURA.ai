@@ -462,6 +462,12 @@ Use these exact answers during your project review or presentation:
 #### Q7: "How does AURA achieve sub-40 millisecond response times in production?"
 > **Answer:** We pre-warm the SentenceTransformer model and mount the normalized FAISS `FlatIP` index directly into RAM on ASGI server startup (`@app.on_event('startup')`). Because vector distance calculations occur purely in memory without disk I/O or cold-start model weights loading, query processing executes in ~32ms.
 
+#### Q8: "How does the Multi-Provider LLM Brain work, and how does it prevent unwanted tool spam?"
+> **Answer:** AURA implements a strict Intent Disambiguation Engine in `assistantEngine.ts` and `llmBrain.ts`. Non-tool inquiries (arithmetic calculations, science principles, algorithm coding) are answered directly with syntax formatting and strictly return zero tool cards (`tools: []`). Users can dynamically toggle their conversational brain between Google Gemini (`gemini-1.5-flash`), Groq (`llama-3.3-70b-versatile`), OpenAI (`gpt-4o-mini`), and local host Ollama with 1-click in-app key testing.
+
+#### Q9: "How is AURA orchestrated with Docker, and how does it connect to local Ollama on the host?"
+> **Answer:** AURA uses an isolated multi-container architecture in `docker-compose.yml` with a bridge network (`aura-network`). To enable the Next.js container to communicate with local Ollama running on the developer's host machine, the web service includes `extra_hosts: ["host.docker.internal:host-gateway"]` and binds `OLLAMA_BASE_URL` to `http://host.docker.internal:11434`. Persistent named volumes (`aura-web-data` and `aura-model-cache`) guarantee zero data loss and eliminate redundant model weight downloads.
+
 ---
 
 *Document prepared for AURA Major Project Presentation & Viva Defense.*

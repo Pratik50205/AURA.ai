@@ -27,9 +27,9 @@ Stop searching endlessly through unorganized directories. Tell AURA what you nee
 
 ## Key System Features
 
-### 1. 🤖 Interactive AURA Assistant Copilot
-- **Floating AI Drawer**: Accessible across the entire platform via a persistent floating orb.
-- **Natural Language Tool Discovery**: Understands informal user requirements, budget limits (*free, freemium, paid*), and difficulty level.
+### 1. 🤖 Multi-Provider AI Assistant Copilot & Custom Brains
+- **Multi-Provider LLM Brain (`llmBrain.ts`)**: Connect your assistant to **Google Gemini (1.5 Flash)**, **Groq (Llama 3.3 70B)**, **OpenAI (GPT-4o mini)**, or local host **Ollama (Llama 3)** with 1-click in-app model drawer and live key validation.
+- **Zero-Spam Precision Engine**: Strictly separates conversational intent — answers Math, Code (with copy button), Science, and general QA directly with zero unsolicited tool recommendations.
 - **Direct Side-by-Side Comparison**: Automatically generates comparison matrices comparing pricing, trust scores, primary strengths, and budget winners (e.g., *"Compare Cursor vs GitHub Copilot"*).
 - **1-Click Bookmarking**: Save tools to your workspace collection directly from inside the chat bubble.
 - **Dynamic Suggested Inquiries**: Horizontal scrolling prompt chips for seamless multi-turn exploration.
@@ -42,19 +42,24 @@ Stop searching endlessly through unorganized directories. Tell AURA what you nee
 - **Learned Ranking**: Supervised PyTorch MLP Ranker trained on 930 graded query-tool relevance judgments.
 - **Query Preprocessing**: Boundary-enforced query expansion resolving domain slang (*ppt*, *bg*, *sub*, *tts*, *cv*, *ui/ux*).
 
-### 3. 🛡️ Resilient Bounded Caching & Sliding-Window Rate Limiting
-- **Bounded LRU Cache**: Zero-dependency memory-bounded cache with TTL preventing memory leaks under high query traffic.
-- **API Rate Limiter**: IP-based sliding window protection (60 req/min for recommendations, 40 req/min for assistant).
+### 3. 🔍 Windows Command Spotlight Search (`Ctrl+K`)
+- **Interactive Command Palette**: Press `Ctrl+K` (or `Cmd+K` on Mac) for a focused, floating search spotlight.
+- **Accepts Natural Language Prompts**: Input full requirements like *"generate python code for web scraper"* or *"tools for audio noise cancellation"* with category fast-jump tags.
 
-### 4. 🐳 Full-Stack Docker Deployment with Persistence
-- **Persistent SQLite Storage**: Named Docker volume (`aura-web-data`) preserving accounts, reviews, and bookmarks.
-- **Pre-baked AI Model**: `all-MiniLM-L6-v2` pre-cached in image layer for 0-second cold-starts and 100% offline capability.
-- **Dual Exposed Ports**: Web dashboard on `:3000` and direct FastAPI Swagger docs on `:8000`.
+### 4. ⚖️ 3-Slot Blank-by-Default Comparison & Admin Console
+- **Unbiased Comparison Workspace**: 3-slot comparison drawer without intrusive presets, giving users complete freedom of choice.
+- **Enterprise Admin Console (`/admin`)**: Real-time telemetry, user management, audit activity stream, and backend system health monitors.
 
-### 5. 📊 Live Engine Diagnostics & Telemetry
+### 5. 🐳 Production Multi-Container Docker Deployment
+- **Isolated Microservice Architecture**: Next.js 16 frontend and FastAPI PyTorch engine linked via internal bridge network `aura-network`.
+- **Host Gateway for Ollama**: Includes `extra_hosts: ["host.docker.internal:host-gateway"]` enabling seamless communication with local host Ollama LLMs.
+- **Persistent Volumes**: Named volumes `aura-web-data` (SQLite database) and `aura-model-cache` (HuggingFace vector weights).
+- **Automated Healthchecks**: Automatic readiness dependency checks and startup health probing.
+
+### 6. 📊 Live Engine Diagnostics & Telemetry
 - Embedded in the Settings dashboard (`/settings`), providing live visibility into embedding dimensions, index parameters, catalog size, and FastAPI connection health.
 
-### 6. 🌓 Dual-Theme System with View Transitions API
+### 7. 🌓 Dual-Theme System with View Transitions API
 - Smooth 350ms native crossfade transitions between **Dark Obsidian** and **Clean Light** themes with zero layout shifts.
 
 ---

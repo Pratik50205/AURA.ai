@@ -33,6 +33,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check admin eligibility
+    const adminEmails = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'admin@aura.ai')
+      .toLowerCase()
+      .split(',')
+      .map((e) => e.trim())
+      .filter(Boolean);
+    const normalizedEmail = email.toLowerCase().trim();
+    const role = adminEmails.includes(normalizedEmail) ? 'ADMIN' : 'USER';
+
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -40,13 +49,15 @@ export async function POST(request: NextRequest) {
     const user = await prisma.user.create({
       data: {
         name: name || email.split('@')[0],
-        email: email.toLowerCase(),
+        email: normalizedEmail,
         password: hashedPassword,
+        role,
       },
       select: {
         id: true,
         name: true,
         email: true,
+        role: true,
         createdAt: true,
       },
     });

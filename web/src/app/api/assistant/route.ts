@@ -4,6 +4,16 @@ import type { Tool } from '@/lib/site';
 import { auth } from '@/lib/auth/config';
 import { BoundedLruCache } from '@/lib/cache';
 import { checkRateLimit, buildRateLimitResponse } from '@/lib/rate-limit';
+import { 
+  processAssistantQuery, 
+  isToolRecommendationRequest,
+  type AssistantResponse 
+} from '@/lib/assistantEngine';
+import { 
+  resolveBrainConfig, 
+  queryLLMBrain, 
+  type BrainConfig 
+} from '@/lib/llmBrain';
 
 export const runtime = 'nodejs';
 
@@ -13,8 +23,7 @@ const assistantCache = new BoundedLruCache<any>({ maxSize: 300, defaultTtlMs: 3 
 function findToolByNameOrSlug(query: string): Tool | undefined {
   const q = query.toLowerCase().trim();
   return tools.find((t) => {
-    const nameMatch = t.name.toLowerCase() === q || t.name.toLowerCase().includes(q) || q.includes(t.name.toLowerCase());
-    return nameMatch;
+    return t.name.toLowerCase() === q || t.name.toLowerCase().includes(q) || q.includes(t.name.toLowerCase());
   });
 }
 
@@ -76,6 +85,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const message = typeof body?.message === 'string' ? body.message.trim() : '';
     const history = Array.isArray(body?.history) ? body.history : [];
+    const clientBrainConfig = body?.brainConfig;
 
     if (!message) {
       return NextResponse.json({ error: 'Message cannot be empty' }, { status: 400 });
@@ -96,80 +106,154 @@ export async function POST(request: NextRequest) {
       // Session extraction optional
     }
 
-    // For non-personalized queries with no conversation history, check cache
-    if (!userName && history.length === 0) {
+    // 1. Resolve Active LLM Brain (Gemini, OpenAI, Groq, Ollama, or Built-in)
+    const brainConfig = resolveBrainConfig(clientBrainConfig);
+
+    // For non-personalized queries with no conversation history and default model, check cache
+    if (!userName && history.length === 0 && brainConfig.provider === 'builtin') {
       const cached = assistantCache.get(lowerMessage);
       if (cached) {
         return NextResponse.json({ ...cached, latencyMs: 5 });
       }
     }
 
-    // 1. Greeting intent handling
+    // 2. Greeting intent handling (Zero tools recommended)
     if (isGreeting(lowerMessage)) {
       const salutation = userName ? `Hello **${userName}**! 👋` : 'Hello there! 👋';
-      const reply = `${salutation} Welcome to **AURA.ai**!\n\n` +
-        `I am your intelligent AI Copilot, indexed with **${tools.length} verified AI tools** across 23 categories.\n\n` +
-        `**What are you looking to build or explore today?** Pick one of the popular options below or describe your task in plain words (e.g. *"find free video editors with captions"* or *"compare Cursor vs Copilot"*):`;
+      const brainLabel = brainConfig.provider === 'builtin' ? 'AURA Neural Engine' : brainConfig.provider.toUpperCase();
+      const reply = `${salutation} How can I help you today?\n\n` +
+        `I am connected via **${brainLabel}**. Feel free to ask me general knowledge, coding, or mathematical questions, or ask for AI tool recommendations if you have a specific workflow in mind.`;
 
       return NextResponse.json({
         reply,
-        tools: [],
+        tools: [], // No tools recommended
         comparison: null,
+        brainInfo: { provider: brainConfig.provider, model: brainConfig.model },
         suggestedFollowUps: [
-          '🎬 Free video editing with captions',
-          '💻 Best AI coding copilots',
-          '⚡ Compare Cursor vs GitHub Copilot',
-          '📊 AI presentation & pitch deck makers',
-          '🎨 Image generation & graphic design',
-          '💸 Show 100% free & open-source tools'
+          'What is quantum computing?',
+          'How do I reverse a string in Python?',
+          'Recommend AI tools for video editing',
+          'Calculate 15% of 240'
         ],
         latencyMs: Math.max(Date.now() - startTime, 18),
       });
     }
 
-    // 2. Identity & capabilities intent handling
+    // 3. Identity & capabilities intent handling (Zero tools recommended)
     if (isIdentityOrCapabilities(lowerMessage)) {
-      const reply = `I am **AURA Copilot**, an intelligent AI tool discovery and recommendation assistant.\n\n` +
-        `Here is what I can help you with:\n\n` +
-        `• **Natural Language Tool Discovery**: Tell me what you need to create or accomplish (e.g., *"tools to remove audio noise"* or *"free alternatives to Jasper"*).\n` +
-        `• **Side-by-Side Tool Comparison**: Ask me to compare two products (e.g., *"compare Claude vs ChatGPT"* or *"Runway vs Pika"*).\n` +
-        `• **Budget & Tier Filtering**: Search specifically for free, freemium, or commercial tools with verified pricing plans.\n` +
-        `• **Trust & Community Ratings**: Evaluate tools by community trust scores and verified benchmarks.\n\n` +
-        `**What would you like to explore right now?**`;
+      const reply = `I am **AURA Copilot**, an intelligent AI assistant powered by **${brainConfig.provider === 'builtin' ? 'AURA Neural Engine' : brainConfig.provider.toUpperCase()}**.\n\n` +
+        `Here is what I can assist you with:\n\n` +
+        `• **Direct Problem Solving**: Ask me technical questions (Python, JavaScript, CSS, SQL, Git), math calculations, scientific concepts, or everyday facts with direct, accurate answers.\n` +
+        `• **AI Tool Discovery (When Requested)**: If you need software or tool recommendations, I evaluate 320+ verified tools with neural similarity, pricing tiers, and trust benchmarks.\n` +
+        `• **Tool Benchmarking**: Ask to compare specific AI tools side-by-side (e.g., *"compare Cursor vs GitHub Copilot"*).\n\n` +
+        `*I answer questions directly without pushing recommendations unless you explicitly ask for tools or apps.*`;
 
       return NextResponse.json({
         reply,
-        tools: [],
+        tools: [], // No tools recommended
         comparison: null,
+        brainInfo: { provider: brainConfig.provider, model: brainConfig.model },
         suggestedFollowUps: [
-          '⚡ Compare Claude vs ChatGPT',
-          '🎬 Top video generation tools',
-          '💻 Developer code assistants',
-          '💸 Free AI tools for productivity'
-        ],
-        latencyMs: Math.max(Date.now() - startTime, 18),
-      });
-    }
-
-    // 3. Gratitude & farewell intent handling
-    if (isGratitudeOrFarewell(lowerMessage)) {
-      const reply = `You're very welcome! 😊 Feel free to ask anytime if you want to discover more AI tools, benchmark pricing tiers, or compare workflows.\n\n` +
-        `Happy building with AURA! 🚀`;
-
-      return NextResponse.json({
-        reply,
-        tools: [],
-        comparison: null,
-        suggestedFollowUps: [
-          'Explore trending AI tools',
+          'How do I center a div in CSS?',
+          'What is photosynthesis?',
           'Compare Cursor vs GitHub Copilot',
-          'Show free design tools'
+          'What are the best free AI video editors?'
         ],
         latencyMs: Math.max(Date.now() - startTime, 18),
       });
     }
 
-    // 4. Check for comparison intent
+    // 4. Gratitude & farewell intent handling (Zero tools recommended)
+    if (isGratitudeOrFarewell(lowerMessage)) {
+      const reply = `You're very welcome! 😊 Let me know whenever you need assistance with code, calculations, or AI workflows.`;
+
+      return NextResponse.json({
+        reply,
+        tools: [], // No tools recommended
+        comparison: null,
+        brainInfo: { provider: brainConfig.provider, model: brainConfig.model },
+        suggestedFollowUps: [
+          'Ask a technical question',
+          'Ask a science question',
+          'Find AI tools for a task'
+        ],
+        latencyMs: Math.max(Date.now() - startTime, 18),
+      });
+    }
+
+    // ========================================================================
+    // 5. If an External LLM Brain (Gemini, Groq, OpenAI, Ollama) is configured:
+    // ========================================================================
+    const isToolIntent = isToolRecommendationRequest(lowerMessage);
+
+    if (brainConfig.provider !== 'builtin') {
+      const llmResult = await queryLLMBrain(message, history, brainConfig);
+
+      if (llmResult && llmResult.reply) {
+        // If the user's question was explicitly seeking tools, attach matching tools
+        let topTools: Tool[] = [];
+        if (isToolIntent) {
+          try {
+            const mlResponse = await fetch(`${AIML_SERVICE_URL}/recommend`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ query: message, top_k: 4, use_reranker: true }),
+              signal: AbortSignal.timeout(3000),
+            });
+            if (mlResponse.ok) {
+              const data = await mlResponse.json();
+              const toolIds = (data.results || []).map((r: any) => r.tool_id);
+              topTools = tools.filter(t => toolIds.includes(t.id)).slice(0, 4);
+            }
+          } catch {
+            // fallback
+            topTools = tools.slice(0, 3);
+          }
+        }
+
+        return NextResponse.json({
+          reply: llmResult.reply,
+          tools: topTools,
+          comparison: null,
+          brainInfo: { provider: llmResult.provider, model: llmResult.model },
+          suggestedFollowUps: isToolIntent 
+            ? ['Compare top 2 tools', 'Show free alternatives', 'Best prompts for this'] 
+            : ['Tell me more', 'Give an example', 'Explain in detail'],
+          latencyMs: llmResult.latencyMs,
+        });
+      }
+      // If external LLM failed, seamlessly falls through to local engine!
+    }
+
+    // ========================================================================
+    // 6. Built-in Local Engine (Deterministic Math, Science, Code, General QA)
+    // ========================================================================
+    const assistantResult = await processAssistantQuery(message, userName);
+
+    // If the engine recognized a non-tool intent (Math, Code, Science, General QA, Platform)
+    // RETURN DIRECT ACCURATE ANSWER WITH ZERO TOOL RECOMMENDATIONS!
+    if (assistantResult.intent !== 'TOOL_RECOMMENDATION') {
+      const latencyMs = Math.max(Date.now() - startTime, 18);
+      const responseData = {
+        reply: assistantResult.reply,
+        tools: [], // ZERO tool recommendations!
+        comparison: null,
+        brainInfo: { provider: 'Built-in Engine', model: 'aura-neural-reasoner' },
+        suggestedFollowUps: assistantResult.suggestedFollowUps,
+        latencyMs,
+      };
+
+      if (!userName && history.length === 0) {
+        assistantCache.set(lowerMessage, responseData);
+      }
+      return NextResponse.json(responseData);
+    }
+
+    // ========================================================================
+    // 7. Tool Recommendation / Comparison Flow (ONLY when user explicitly requests tools)
+    // ========================================================================
+
+    // Check for explicit comparison intent
     const comparisonPair = findComparisonTools(message);
     if (comparisonPair) {
       const [toolA, toolB] = comparisonPair;
@@ -200,10 +284,11 @@ export async function POST(request: NextRequest) {
             "Wider Adoption": toolA.users || toolB.users ? (toolA.trustScore > toolB.trustScore ? toolA.name : toolB.name) : toolA.name,
           }
         },
+        brainInfo: { provider: 'Built-in Engine', model: 'aura-compare-matrix' },
         suggestedFollowUps: [
           `Show free alternatives to ${toolA.name}`,
           `Show free alternatives to ${toolB.name}`,
-          `How do I get started with ${toolA.trustScore > toolB.trustScore ? toolA.name : toolB.name}?`
+          `What are the best prompts for ${toolA.name}?`
         ],
         latencyMs: Math.max(latencyMs, 25),
       });
@@ -267,7 +352,7 @@ export async function POST(request: NextRequest) {
     const topTools = matchedTools.slice(0, 4);
     const latencyMs = Date.now() - startTime;
 
-    // Craft consultative response
+    // Craft consultative response ONLY when tools are genuinely sought
     let responseText = '';
     if (topTools.length > 0) {
       const leadTool = topTools[0];
@@ -283,12 +368,12 @@ export async function POST(request: NextRequest) {
         customWhy = `*Why it fits your subscription budget:* Its **${popularPlan.plan} tier (${popularPlan.price})** provides ${popularPlan.features?.slice(0, 2).join(', ') || 'full professional access'}.`;
       }
 
-      responseText = `Based on your request, I evaluated the AURA neural index and identified **${topTools.length} tools** tailored to your workflow.\n\n` +
-        `**Top recommendation: ${leadTool.name}** (${leadTool.category}${pricingBadge})\n` +
+      responseText = `Based on your tool discovery request, here are **${topTools.length} AI utilities** evaluated from the AURA catalog:\n\n` +
+        `**Top Recommendation: ${leadTool.name}** (${leadTool.category}${pricingBadge})\n` +
         `${leadTool.description}\n\n` +
         customWhy;
     } else {
-      responseText = `I couldn't find an exact match for that specific inquiry. Could you tell me more about what you're trying to build, your preferred budget, or your team workflow?`;
+      responseText = `I couldn't find an exact AI tool matching that specific workflow request. Could you clarify what format you want to produce (e.g. video, code, audio, 3D) or your required features?`;
     }
 
     // Dynamic follow-ups
@@ -307,6 +392,7 @@ export async function POST(request: NextRequest) {
       reply: responseText,
       tools: topTools,
       comparison: null,
+      brainInfo: { provider: 'Built-in Engine', model: 'aura-neural-ranker-v2' },
       suggestedFollowUps: followUps,
       latencyMs: Math.max(latencyMs, 32),
     };
