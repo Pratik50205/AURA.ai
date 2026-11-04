@@ -25,12 +25,12 @@ declare module 'next-auth/jwt' {
 }
 
 function getAdminEmails(): string[] {
-  const configured = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'admin@aura.ai').toLowerCase();
+  const configured = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || '').toLowerCase();
   return configured.split(',').map((e) => e.trim()).filter(Boolean);
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || 'aura-super-secret-key-32-chars-long-2026',
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
   session: { strategy: 'jwt' },
   pages: {
     signIn: '/login',
@@ -57,50 +57,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         const email = (credentials.email as string).toLowerCase().trim();
-        const password = credentials.password as string;
-
-        // Dedicated built-in Administrator credential handling
-        if (email === 'admin@aura.ai' && (password === 'adminaura' || password === 'admin@aura.ai')) {
-          try {
-            let adminUser = await prisma.user.findUnique({
-              where: { email: 'admin@aura.ai' },
-            });
-
-            if (!adminUser) {
-              const hashedPassword = await hash('adminaura', 12);
-              adminUser = await prisma.user.create({
-                data: {
-                  name: 'AURA Administrator',
-                  email: 'admin@aura.ai',
-                  password: hashedPassword,
-                  role: 'ADMIN',
-                },
-              });
-            } else if (adminUser.role !== 'ADMIN') {
-              adminUser = await prisma.user.update({
-                where: { id: adminUser.id },
-                data: { role: 'ADMIN' },
-              });
-            }
-
-            return {
-              id: adminUser.id,
-              email: adminUser.email,
-              name: adminUser.name || 'AURA Administrator',
-              image: adminUser.image,
-              role: 'ADMIN',
-            };
-          } catch (e) {
-            console.error('[auth] Built-in admin auto-provisioning:', e);
-            return {
-              id: 'admin-root',
-              email: 'admin@aura.ai',
-              name: 'AURA Administrator',
-              image: null,
-              role: 'ADMIN',
-            };
-          }
-        }
 
         try {
           const user = await prisma.user.findUnique({

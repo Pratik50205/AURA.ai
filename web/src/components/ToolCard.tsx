@@ -16,6 +16,7 @@ import {
 import { cn } from '@/lib/utils';
 import type { Tool } from '@/lib/site';
 import type { RankedTool } from '@/lib/recommendations';
+import { useCompare } from '@/context/CompareContext';
 
 interface ToolCardProps {
   tool: Tool | RankedTool;
@@ -33,9 +34,10 @@ export default function ToolCard({
   isLightMode = false,
 }: ToolCardProps) {
   const router = useRouter();
+  const { toggleTool, isToolSelected } = useCompare();
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(tool.trustScore || 85);
-  const [isCompared, setIsCompared] = useState(false);
+  const isCompared = isToolSelected(tool.id);
 
   const handleToggleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -45,7 +47,7 @@ export default function ToolCard({
 
   const handleToggleCompare = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsCompared(prev => !prev);
+    toggleTool(tool as Tool);
   };
 
   const handleToggleBookmark = (e: React.MouseEvent) => {

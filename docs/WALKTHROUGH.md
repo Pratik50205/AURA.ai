@@ -1,6 +1,6 @@
 # AURA.ai — System Walkthrough & Demonstration Guide
 
-This guide walks through testing, demonstrating, and presenting the **AURA.ai** platform, covering the neural recommendation pipeline, the interactive CLI, the FastAPI REST backend, and the full-stack Next.js web application with the AI Assistant Chatbot.
+This guide walks through testing, demonstrating, and presenting the **AURA.ai** platform, covering the neural recommendation pipeline, the interactive CLI, the FastAPI REST backend, and the full-stack Next.js web application with the AI Assistant Copilot, Generative UI, Voice Commands, and Floating Compare Dock.
 
 ---
 
@@ -10,6 +10,7 @@ The fastest way to demonstrate AURA's neural vector retrieval live in a terminal
 
 ```bash
 cd intelligence
+pip install -r requirements.txt
 python main.py
 ```
 
@@ -43,10 +44,16 @@ python -m uvicorn src.inference.api:app --port 8000
 
 ## 3. 🌐 Full-Stack Web Application (Next.js 16)
 
-Launch the Next.js frontend:
+Initialize the database and launch the Next.js frontend:
 
 ```bash
 cd web
+npm install
+
+# Seed the SQLite database with 320 tools & workflows:
+node prisma/seed.mjs
+
+# Run the Next.js development server:
 npm run dev
 ```
 
@@ -56,38 +63,66 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ## 4. 🌟 Key Features to Showcase in Viva / Demonstrations
 
-### Feature A: Precision Assistant & Multi-Provider AI Brain (`llmBrain.ts`)
+### Feature A: Generative UI & Multi-Step Workflows (`GenerativeUiRenderer.tsx`)
 1. Click the floating gradient **"Ask AURA"** orb in the bottom-right corner.
-2. **Zero-Spam Accuracy Test**:
-   - Math test: Type `"what is 25 * 14?"` $\rightarrow$ Answers `350` instantly with clean steps and **zero unwanted tool cards**.
-   - Code test: Type `"how to reverse a string in python?"` $\rightarrow$ Generates `text[::-1]` in a syntax-highlighted code block with a 1-click **Copy Code** button.
-   - Science test: Type `"what is photosynthesis?"` $\rightarrow$ Explains the chemical formula $6\text{CO}_2 + 6\text{H}_2\text{O} \rightarrow \text{C}_6\text{H}_{12}\text{O}_6 + 6\text{O}_2$ cleanly.
-   - Comparison test: Type `"Cursor vs Copilot"` $\rightarrow$ Triggers side-by-side comparison matrix with verified pricing, trust scores, and budget winners.
-3. **Multi-Model AI Brain Drawer**:
+2. Type an end-to-end task requirement, e.g.:
+   - *"How to create automated YouTube shorts with AI?"*
+3. **Showcase the Resulting Generative UI Widget**:
+   - Notice that instead of plain text, AURA renders an interactive **Workflow Pipeline Tree**:
+     - **Step 1 (Scriptwriting):** ChatGPT / Claude with sample prompt snippets and copy button.
+     - **Step 2 (Voiceover):** ElevenLabs with free tier badge and direct link.
+     - **Step 3 (Video Generation):** Runway / HeyGen with pricing indicator.
+     - **Step 4 (Captions & Subtitles):** CapCut / Descript.
+   - Click **"Compare in Dock"** or **"Save to Collection"** directly on any of the generated cards.
+
+### Feature B: Natural Voice Input & Utterance Deduplication
+1. In the assistant modal, click the **Microphone** icon next to the chat input.
+2. Notice the real-time **pulsating soundwave animation** indicating active listening.
+3. Speak aloud: *"What can you do for me?"* or *"Show me the best free tools for removing image backgrounds"*.
+4. Point out that the utterance streams cleanly without repetitive loops or stuttering, and automatically executes semantic discovery.
+
+### Feature C: Global Floating Compare Dock (`CompareDock.tsx`)
+1. Navigate to the **Discover** page (`/discover`).
+2. Click the **"Compare"** button on any tool card (e.g., *Cursor*).
+3. Notice the **floating glassmorphism dock** appearing at the bottom of the screen.
+4. Add another tool (e.g., *GitHub Copilot* and *Tabnine*):
+   - The dock updates in real-time showing miniature tool badges and counter (`3/4`).
+5. Click **"Compare in Matrix"**:
+   - Instantly navigates to `/compare` with all selected tools pre-loaded in the side-by-side comparison matrix.
+
+### Feature D: Precision Assistant & Multi-Provider AI Brain (`llmBrain.ts`)
+1. Test conversational zero-spam intent separation:
+   - **Math test**: Type `"what is 25 * 14?"` $\rightarrow$ Answers `350` instantly with clean steps and **zero unwanted tool cards**.
+   - **Code test**: Type `"how to reverse a string in python?"` $\rightarrow$ Generates `text[::-1]` in a syntax-highlighted code block with a 1-click **Copy Code** button.
+   - **Science test**: Type `"what is photosynthesis?"` $\rightarrow$ Explains the chemical formula $6\text{CO}_2 + 6\text{H}_2\text{O} \rightarrow \text{C}_6\text{H}_{12}\text{O}_6 + 6\text{O}_2$ cleanly.
+   - **Comparison test**: Type `"Cursor vs Copilot"` $\rightarrow$ Triggers side-by-side comparison matrix with verified pricing, trust scores, and budget winners.
+2. **Multi-Model AI Brain Drawer**:
    - Click the **Brain icon** in the assistant modal header to slide out the **Configure AI Brain Model** drawer.
    - Switch between **Google Gemini (1.5 Flash)**, **Groq (Llama 3.3 70B)**, **OpenAI (GPT-4o mini)**, **Ollama (Local Llama 3)**, or **Built-in AURA Engine**.
    - Input an API key and click **Test Key** to verify connectivity live. Preferences persist across reloads in `localStorage`.
 
-### Feature B: Windows Command Spotlight Search (`Ctrl+K`)
+### Feature E: Windows Command Spotlight Search (`Ctrl+K`)
 1. Press **`Ctrl + K`** (or `Cmd + K` on macOS) from anywhere in the application.
 2. Highlight:
    - Full-screen glassmorphism pop-over with prominent, focused search text input.
    - **Accepts Natural Language Prompts**: Type complex prompts like `"I need a tool to generate realistic speech from text"` or `"build a web scraper"` and press Enter to instantly navigate to ranked discovery results.
    - Quick jump pills for top categories and direct keyboard navigation.
 
-### Feature C: 3-Slot Blank-by-Default Comparison Drawer
-1. Navigate to `/discover` or open the comparison drawer.
-2. Only **3 comparison slots** are provided on the right.
-3. Defaults to **clean blank states** with a plus placeholder, letting users deliberately choose which AI tools to pit against one another without intrusive presets.
+### Feature F: Account-Synced Bookmarks (`/api/saved`)
+1. Click the bookmark icon on any tool card or from inside an assistant chat response.
+2. Demonstrate how bookmarks are persisted via `/api/saved`:
+   - Authenticated users sync automatically with their account in the SQLite database.
+   - Guest visitors seamlessly fall back to browser `localStorage` without login barriers.
+3. Open the **Saved** tab (`/saved`) to inspect the synchronized tool cards.
 
-### Feature D: Enterprise Admin Console (`/admin`)
+### Feature G: Enterprise Admin Console (`/admin`)
 1. Navigate to `/admin` to demonstrate administrative telemetry:
    - Real-time catalog and user count stats (`/api/admin/stats`).
    - Paginated user list with role indicators and join dates (`/api/admin/users`).
    - Live system health cards for FastAPI backend, FAISS vector index, and NextAuth session store.
    - Audit activity log stream tracking user signups and catalog updates.
 
-### Feature E: System Telemetry & Diagnostics (`/settings`)
+### Feature H: System Telemetry & Diagnostics (`/settings`)
 1. Click **Settings** in the left navigation sidebar.
 2. Point out the **AURA Neural Recommendation Core** dashboard at the top of the page:
    - Model: `all-MiniLM-L6-v2` (384-dimensional dense vectors)
@@ -96,17 +131,6 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
    - Latency: `~32 ms`
    - Backend Status: `● Operational (127.0.0.1:8000)`
 3. Test the **Segmented Theme Selector**: Click between *Dark Mode* and *Light Mode* to demonstrate the smooth 350ms native View Transition crossfade.
-
-### Feature F: Discovery Directory & Detail View (`/discover`)
-1. Filter across categories (*AI Chatbot*, *Video Generation*, *Code Assistant*, *Audio & Voice*).
-2. Click on any card (e.g. *ChatGPT* or *Cursor*) to open the **Detail View (`/discover/[id]`)**:
-   - Inspect the verified community trust score meter.
-   - Review pre-tested example prompts by difficulty (*Beginner*, *Intermediate*).
-   - Check side-by-side pros and cons cards.
-
-### Feature G: Saved Tools Workspace (`/saved`)
-1. View bookmarked tools saved during exploration or from the assistant chat.
-2. If empty, demonstrate the clean directory CTA button navigating directly into `/discover`.
 
 ---
 
@@ -158,3 +182,4 @@ docker compose up -d --build
 - Access Web Application: [http://localhost:3000](http://localhost:3000)
 - Stream combined service logs: `docker compose logs -f`
 - Stop and clean up containers: `docker compose down`
+*(Data persists across container lifecycles in named volume `aura-web-data`)*

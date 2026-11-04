@@ -1,3 +1,12 @@
+# ==============================================================================
+# AURA.ai Web Frontend — Git Ignore Configuration
+# ==============================================================================
+
+# Markdown Documentation (Internal notes ignored; README allowed)
+*.md
+**/*.md
+!README.md
+
 # Dependencies
 node_modules/
 .pnp
@@ -5,53 +14,58 @@ node_modules/
 
 # Testing
 coverage/
+.nyc_output/
 
-# Next.js
+# Next.js & Build Outputs
 .next/
 out/
 build/
-
-# Production
 dist/
-
-# Misc
-.DS_Store
-*.pem
-
-# Debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Local env files
-.env*.local
-.env
-
-# Vercel
-.vercel
-
-# TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
-# IDE
-.idea/
-.vscode/
+# Local Environment & Secrets
+.env*.local
+.env
+.env.production
+.env.development
+!.env.example
 
-# Claude local configs (personal, not committed)
-.claude/settings.local.json
-.claude/CLAUDE.local.md
+# Certificates & Private Keys
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
 
-# Auto-generated Next.js agent files
-AGENTS.md
-CLAUDE.md
-.agents/
-
-# SQLite Database files
+# Database & SQLite Storage (DO NOT COMMIT)
 *.db
-!dev.db
 *.db-journal
+*.db-shm
+*.db-wal
 *.sqlite
 *.sqlite3
+dev.db
+prisma/dev.db
 
+# Vercel & Deployment
+.vercel
 
+# Debug & Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+.claude/
+.agents/

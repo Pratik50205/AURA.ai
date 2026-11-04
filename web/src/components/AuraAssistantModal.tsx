@@ -28,11 +28,14 @@ import {
   Eye,
   EyeOff,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Mic,
+  MicOff
 } from 'lucide-react';
 import { useDashboard } from '@/app/(dashboard)/layout';
 import type { Tool } from '@/lib/site';
 import { tools } from '@/data/tools';
+import GenerativeUiRenderer from '@/components/chat/GenerativeUiRenderer';
 
 interface ChatMessage {
   id: string;
@@ -45,6 +48,19 @@ interface ChatMessage {
     summary: string;
     keyDifferences: string[];
     winnerFor: { [criterion: string]: string };
+  } | null;
+  workflow?: {
+    title: string;
+    useCase: string;
+    estimatedCost: string;
+    steps: Array<{
+      stepNumber: number;
+      phase: string;
+      tool: Tool;
+      task: string;
+      promptTip?: string;
+    }>;
+    synergyExplanation: string;
   } | null;
   brainInfo?: { provider: string; model: string } | null;
   suggestedFollowUps?: string[];
@@ -228,9 +244,75 @@ export default function AuraAssistantModal() {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const latestMessageRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const baseInputRef = useRef<string>('');
+
+  // Speech Recognition without repetition bug
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false; // Auto-stop when user finishes speaking
+      recognition.interimResults = true; // Show words as spoken
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+
+      recognition.onresult = (event: any) => {
+        // Correctly calculate full transcript from current recognition session without exponential accumulation
+        let currentTranscript = '';
+        for (let i = 0; i < event.results.length; i++) {
+          currentTranscript += event.results[i][0].transcript;
+        }
+        currentTranscript = currentTranscript.trim();
+
+        const prefix = baseInputRef.current ? `${baseInputRef.current} ` : '';
+        setInputMessage(`${prefix}${currentTranscript}`);
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn('[AURA Voice] Speech recognition error:', event.error);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+    }
+  }, []);
+
+  const toggleVoiceInput = () => {
+    if (!recognitionRef.current) {
+      alert('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      try {
+        baseInputRef.current = inputMessage.trim();
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (err) {
+        console.warn('[AURA Voice] Error starting recognition:', err);
+        setIsListening(false);
+      }
+    }
+  };
 
   const { savedTools, toggleSaveTool, isLightMode } = useDashboard();
 
@@ -346,7 +428,11 @@ export default function AuraAssistantModal() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: query,
-          history: messages.slice(-4).map((m) => ({ role: m.role, content: m.content })),
+          history: messages.slice(-10).map((m) => ({
+            role: m.role,
+            content: m.content,
+            tools: m.tools?.map((t) => ({ id: t.id, name: t.name, category: t.category, pricing: t.pricing })),
+          })),
           brainConfig: {
             provider: brainProvider,
             apiKey: brainApiKey.trim() || undefined,
@@ -367,6 +453,7 @@ export default function AuraAssistantModal() {
         content: data.reply || 'Here is what I found for your request.',
         tools: data.tools || [],
         comparison: data.comparison || null,
+        workflow: data.workflow || null,
         brainInfo: data.brainInfo || null,
         suggestedFollowUps: data.suggestedFollowUps || [],
         latencyMs: data.latencyMs,
@@ -680,9 +767,9 @@ export default function AuraAssistantModal() {
                     <Sparkles className="w-7 h-7" />
                   </div>
                   <div className="space-y-1.5">
-                    <h4 className="text-base font-bold">How can I help you today?</h4>
+                    <h4 className="text-base font-bold">AURA Copilot</h4>
                     <p className="text-xs text-muted-foreground max-w-[340px] leading-relaxed">
-                      Ask me general science, math, or coding questions, or ask for AI tool discovery and pricing benchmarks.
+                      Discover verified AI utilities, compare platforms side-by-side, design multi-tool workflows, or optimize prompts.
                     </p>
                   </div>
 
@@ -746,7 +833,16 @@ export default function AuraAssistantModal() {
                               : 'bg-[#181824] text-white/95 rounded-bl-none border border-[#2a2a3c] shadow-black/40'
                         }`}
                       >
-                        <FormattedMarkdown content={message.content} isUser={isUser} />
+                        {isUser ? (
+                          <FormattedMarkdown content={message.content} isUser={isUser} />
+                        ) : (
+                          <GenerativeUiRenderer
+                            content={message.content}
+                            onSendPrompt={(prompt) => {
+                              handleSendMessage(prompt);
+                            }}
+                          />
+                        )}
 
                         {/* Comparison Card (If comparison query) */}
                         {message.comparison && (
@@ -801,6 +897,40 @@ export default function AuraAssistantModal() {
                                 ))}
                               </div>
                             )}
+                          </div>
+                        )}
+
+                        {/* Workflow Plan Card (If workflow query) */}
+                        {message.workflow && (
+                          <div className="mt-3 pt-3 border-t border-white/10 space-y-2.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-[#FF7B00] uppercase tracking-wider flex items-center gap-1">
+                                <Sparkles className="w-3.5 h-3.5" /> {message.workflow.title}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground font-mono">{message.workflow.estimatedCost}</span>
+                            </div>
+
+                            <div className="space-y-2">
+                              {message.workflow.steps.map((step) => (
+                                <div
+                                  key={step.stepNumber}
+                                  className={`p-2.5 rounded-xl border text-xs flex items-start gap-2.5 ${
+                                    isLightMode ? 'bg-white border-gray-200' : 'bg-black/35 border-white/10'
+                                  }`}
+                                >
+                                  <span className="w-5 h-5 rounded-full bg-[#FF3344] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                                    {step.stepNumber}
+                                  </span>
+                                  <div className="min-w-0 flex-1">
+                                    <div className="flex items-center justify-between gap-1">
+                                      <span className="font-semibold text-foreground text-xs">{step.phase}</span>
+                                      <span className="font-bold text-[#FF7B00] text-[11px] truncate">{step.tool.name}</span>
+                                    </div>
+                                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">{step.task}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
 
@@ -940,11 +1070,7 @@ export default function AuraAssistantModal() {
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                placeholder={
-                  brainProvider === 'builtin'
-                    ? "Ask any question, or ask for AI tools..."
-                    : `Ask ${getBrainBadgeLabel()} anything...`
-                }
+                placeholder={isListening ? "Listening to your voice... speak now..." : "Ask for AI tool discovery, comparisons, workflows, or prompts..."}
                 disabled={isLoading}
                 className={`flex-1 px-4 py-2.5 rounded-xl text-xs sm:text-sm focus:outline-none transition-colors border ${
                   isLightMode
@@ -952,6 +1078,21 @@ export default function AuraAssistantModal() {
                     : 'bg-white/5 border-white/10 text-white focus:border-[#D9042B]/60 focus:bg-white/10 placeholder:text-white/40'
                 }`}
               />
+              <button
+                type="button"
+                onClick={toggleVoiceInput}
+                disabled={isLoading}
+                className={`p-2.5 rounded-xl border transition-all shrink-0 ${
+                  isListening
+                    ? 'bg-red-500 text-white animate-pulse border-red-400 shadow-md shadow-red-500/40'
+                    : isLightMode
+                      ? 'bg-gray-100 hover:bg-gray-200 text-gray-600 border-gray-200'
+                      : 'bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border-white/10'
+                }`}
+                title={isListening ? 'Listening... click to stop' : 'Voice Dictation'}
+              >
+                {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              </button>
               <button
                 type="submit"
                 disabled={isLoading || !inputMessage.trim()}

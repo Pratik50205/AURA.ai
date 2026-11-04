@@ -6,15 +6,15 @@
 
 ## 📋 Executive Summary
 
-**AURA (AI/ML Intelligence Layer)** is an enterprise-grade, two-stage Information Retrieval (IR) and neural recommendation system. It solves a fundamental problem in AI tool discovery: **users do not know exact technical names or formal descriptions of AI tools; they describe their needs in natural, conversational, informal, and often grammatically flawed language.**
+**AURA (AI/ML Intelligence Layer)** is an enterprise-grade, two-stage Information Retrieval (IR) and neural recommendation system. It solves a fundamental problem in AI tool discovery: **users do not know exact technical names or formal descriptions of AI tools; they describe their needs in natural, conversational, informal, and often grammatically flawed language (via text or voice).**
 
-Instead of relying on rigid keyword matching (like traditional SQL or basic search bars), AURA translates human intent into high-dimensional vector representations, retrieves semantic candidate tools in sub-milliseconds, and scores them using a supervised neural ranking model.
+Instead of relying on rigid keyword matching (like traditional SQL or basic search bars), AURA translates human intent into high-dimensional vector representations, retrieves semantic candidate tools in sub-milliseconds, scores them using a supervised neural ranking model, and renders them through an interactive **Generative UI** with multi-step workflows and real-time side-by-side comparison matrices.
 
 ---
 
 ## 📌 Project Specifications & Technical Inventory
 
-### 1. 🤖 Machine Learning Models Used
+### 1. 🤖 Machine Learning & AI Models Used
 
 | Role | Exact Model Identifier | Architecture / Type | Parameters / Dims | Primary Responsibility |
 | :--- | :--- | :--- | :--- | :--- |
@@ -23,6 +23,7 @@ Instead of relying on rigid keyword matching (like traditional SQL or basic sear
 | **Sparse Lexical Engine (BM25)** | Okapi BM25 (`rank-bm25`) | Inverted Lexical Index | Tokenized corpus representation | Exact entity, product name, and technical acronym matching via Reciprocal Rank Fusion (RRF) |
 | **Learned Ranker (Supervised)** | Custom PyTorch MLP (`models/mlp_ranker.pt`) | Deep Neural Network (`10 → 64 → 32 → 1`) | ~3,000 weights (ReLU, Dropout, Sigmoid) | Scores candidates using 10 domain, intent & quality features |
 | **Cross-Encoder Reranker (Stage 2)** | `cross-encoder/ms-marco-MiniLM-L-6-v2` | Transformer Cross-Encoder | 22.7M parameters | Performs full token cross-attention between query and candidate text |
+| **Client AI Brains (Multi-Provider)** | Gemini 1.5 Flash / Groq Llama 3.3 / GPT-4o mini / Ollama | Multi-Model API Bridge | Variable (7B to 70B+) | Conversational assistant QA, workflow generation & tool analysis |
 
 ---
 
@@ -30,11 +31,11 @@ Instead of relying on rigid keyword matching (like traditional SQL or basic sear
 
 | Metric | Exact Count | Description |
 | :--- | :--- | :--- |
-| **Total Curated AI Tools** | **108 tools** | Fully normalized, enriched records in `data/processed/aura_tools.json` |
+| **Total Curated AI Tools** | **320 tools** | Fully normalized, enriched records in `data/processed/aura_tools.json` and SQLite |
 | **Categories Covered** | **23 categories** | Video Generation, Image Editing, Audio & Voice, Code Assistant, Productivity, Music, etc. |
-| **Natural Language Queries** | **500+ queries** | Diverse phrasing, beginner queries, and complex intents in `aura_queries.json` |
-| **Relevance Annotations (Qrels)** | **1,000+ pairs** | Graded relevance judgments (0 to 3 scale) in `aura_qrels.json` |
-| **Training Split** | **641 pairs (70%)** | Used to train the PyTorch MLP Ranker with hard negative mining |
+| **Natural Language Queries** | **210 diverse queries** | Diverse phrasing, beginner queries, and complex intents in `aura_queries.json` |
+| **Relevance Annotations (Qrels)** | **930 graded pairs** | Graded relevance judgments (0 to 3 scale) in `aura_qrels.json` |
+| **Training Split** | **651 pairs (70%)** | Used to train the PyTorch MLP Ranker with hard negative mining |
 | **Validation Split** | **140 pairs (15%)** | Used for early stopping and hyperparameter tuning |
 | **Held-out Test Benchmark** | **30 queries (15%)** | Strictly isolated for scientific evaluation and ablation studies |
 
@@ -47,6 +48,8 @@ Instead of relying on rigid keyword matching (like traditional SQL or basic sear
 | `/health` | `GET` | None | `{"status": "ok"}` | Service health probe |
 | `/recommend` | `GET` | `?query=string&top_k=int` | JSON `RecommendResponse` | Quick URL-based query recommendation |
 | `/recommend` | `POST` | `{"query": "...", "top_k": 5, "use_reranker": false}` | JSON `RecommendResponse` | Production recommendation endpoint |
+| `/api/assistant` | `POST` | `{"messages": [...], "modelPreference": "..."}` | JSON `AssistantResponse` | Conversational Copilot endpoint with intent disambiguation |
+| `/api/saved` | `GET` / `POST` / `DELETE` | `{"toolId": "string"}` | JSON Status | Account-synced tool bookmark persistence |
 | `/docs` | `GET` | None | Interactive Swagger HTML | OpenAPI 3.0 interactive documentation |
 
 ---
@@ -62,11 +65,10 @@ Instead of relying on rigid keyword matching (like traditional SQL or basic sear
 | **Hugging Face `sentence-transformers`** | Neural Embedding Framework | State-of-the-art framework for dense vector encoding and cross-encoder reranking. |
 | **Meta FAISS (`faiss-cpu`)** | Vector Search Engine | Industry-standard vector indexing engine optimized by Meta for microsecond nearest-neighbor search. |
 | **FastAPI** | REST API Framework | High-performance, lightweight web framework with automatic OpenAPI/Swagger documentation. |
-| **Pydantic v2** | Data Validation & Contracts | Enforces strict type validation and input/output contracts for tool records and API payloads. |
-| **Uvicorn** | ASGI Web Server | Production-ready asynchronous server for hosting the FastAPI recommendation engine. |
-| **NumPy** | Numerical Computing | Vector math, matrix slicing, and efficient binary storage (`.npy`) of embeddings. |
+| **Next.js 16** | Full-Stack Frontend | React 19, Turbopack, App Router for fast server rendering and API routes. |
+| **Prisma ORM & LibSQL** | Database Layer | Type-safe ORM with automated SQLite database seeding (320 tools & workflows). |
+| **Web Speech API** | Voice Input | Browser-native audio capture with soundwave pulse animation and utterance deduplication. |
 | **Rank-BM25** | Classical IR Library | Implements the Okapi BM25 keyword algorithm as a baseline benchmark comparison. |
-| **PyYAML** | Configuration Management | Parses `configs/config.yaml` for centralized model hyperparameters, thresholds, and paths. |
 | **Pytest** | Testing Framework | Automated testing framework verifying data pipelines, schemas, and IR metrics (34 tests). |
 
 ---
@@ -74,7 +76,7 @@ Instead of relying on rigid keyword matching (like traditional SQL or basic sear
 #### B. Machine Learning & Information Retrieval Methodologies Used
 
 1. **Two-Stage Retrieve-and-Rerank Architecture:**
-   - **Stage 1 (Coarse Retrieval):** Reduces the search space from $N$ tools to top-20 candidates using lightweight Bi-Encoder vectors and FAISS in $< 1\text{ ms}$.
+   - **Stage 1 (Coarse Retrieval):** Reduces the search space from 320 tools to top-20 candidates using lightweight Bi-Encoder vectors and FAISS in $< 1\text{ ms}$.
    - **Stage 2 (Fine Ranking):** Evaluates rich interaction features (ratings, trust scores, pricing, and deep cross-attention) on only the top candidates to produce the final top-5 ranking.
 2. **Dense Semantic Embedding (Bi-Encoder):**
    - Encodes text into 384-dimensional continuous vector space where semantically similar items are mathematically close, regardless of exact word overlap.
@@ -82,7 +84,7 @@ Instead of relying on rigid keyword matching (like traditional SQL or basic sear
    - Uses L2-normalization so that the dot product (Inner Product) directly equals cosine similarity:
      $$\text{Cosine Similarity} = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\|_2 \|\mathbf{v}\|_2} = \mathbf{u}_{\text{norm}} \cdot \mathbf{v}_{\text{norm}}$$
 4. **Hard Negative Mining:**
-   - Instead of training only on obvious negatives (e.g. comparing a video editor with a legal contract tool), the dataset includes *hard negatives* (tools in the same category that do not satisfy the specific query intent) to force the ranking model to learn subtle differences.
+   - Instead of training only on obvious negatives, the dataset includes *hard negatives* (tools in the same category that do not satisfy the specific query intent) to force the ranking model to learn subtle differences.
 5. **Non-Destructive Query Expansion with Word Boundaries (`\b`):**
    - Preprocesses informal user queries using regular expressions with `\b` word boundaries to expand ambiguous abbreviations (`ppt` $\rightarrow$ `presentation slides ppt`) without false-positive alterations on standard English words.
 6. **Information Retrieval Benchmarking (Precision@K, Recall@K, MRR, NDCG@K):**
@@ -94,7 +96,8 @@ Instead of relying on rigid keyword matching (like traditional SQL or basic sear
 
 - **Vector Search (FAISS):** **< 1.0 ms**
 - **Embedding Generation:** **~20–30 ms** on standard CPU
-- **End-to-End Warm Query Latency:** **~35–50 ms**
+- **Local Fallback Heuristic:** **< 2 ms** (instant client responsiveness)
+- **End-to-End Warm Query Latency:** **~32–45 ms**
 - **Test Suite Pass Rate:** **34/34 tests passed** in **0.48 seconds**
 - **Hardware Requirement:** **CPU-only** (no expensive GPU required)
 
@@ -112,21 +115,22 @@ Instead of relying on rigid keyword matching (like traditional SQL or basic sear
 A **Two-Stage Hybrid AI/ML Pipeline**:
 - **Stage 1: Semantic Dense Retrieval (Bi-Encoder + FAISS Vector Index):** Filters the entire catalogue down to the top-20 conceptual candidates in under 5ms.
 - **Stage 2: Learned Ranking & Cross-Encoder Scoring:** Re-scores candidates based on semantic relevance, metadata trust scores, user ratings, and feature interactions.
+- **Generative UI Layer:** Presents actionable widgets (comparison matrix, step-by-step workflow trees) with 1-click execution.
 
 ---
 
 ## 🏗️ End-to-End System Architecture
 
-```
+```text
                                 USER QUERY
-          (e.g., "i ppt make edit tool" or "remove bg from car pic")
+             (Text Input or Voice via Web Speech API)
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │ 1. QUERY PREPROCESSING & EXPANSION LAYER                                │
 │    • Regex Word-Boundary Normalization (\b)                             │
 │    • Domain Abbreviation Expansion ("ppt" -> "presentation slides ppt")  │
-│    • Preservation of original syntax without false-positives            │
+│    • Utterance Deduplication & Voice Text Sanitization                  │
 └────────────────────────────────────┬────────────────────────────────────┘
                                      │
                                      ▼
@@ -139,9 +143,10 @@ A **Two-Stage Hybrid AI/ML Pipeline**:
                                      │
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ 3. HIGH-SPEED VECTOR SEARCH (FAISS)                                     │
+│ 3. HIGH-SPEED VECTOR SEARCH (FAISS) + BM25 RRF FUSION                   │
 │    • Meta FAISS (IndexFlatIP — Inner Product / Cosine Distance)         │
-│    • Compares query vector against 108 pre-indexed tool vectors         │
+│    • Compares query vector against 320 pre-indexed tool vectors         │
+│    • Merges Dense and Sparse lexical rankings via Reciprocal Rank Fusion│
 │    • Output: Top-20 candidate AI tools (Sub-millisecond latency)        │
 └────────────────────────────────────┬────────────────────────────────────┘
                                      │
@@ -149,16 +154,17 @@ A **Two-Stage Hybrid AI/ML Pipeline**:
 ┌─────────────────────────────────────────────────────────────────────────┐
 │ 4. STAGE 2: LEARNED RANKING (MLP RANKER / CROSS-ENCODER)                │
 │    • PyTorch Multi-Layer Perceptron (10 -> 64 -> 32 -> 1)               │
-│    • Combines 8 features: semantic score, popularity, trust, ratings   │
-│    • Optional: Cross-Encoder (ms-marco-MiniLM-L-6-v2) for deep attention │
+│    • Combines 10 features: semantic score, popularity, trust, ratings   │
+│    • Optional: Cross-Encoder (ms-marco-MiniLM-L-6-v2) for deep attention│
 └────────────────────────────────────┬────────────────────────────────────┘
                                      │
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ 5. RESPONSE FORMULATION & SERVING                                       │
-│    • Formats structured JSON / CLI cards                                │
-│    • Enriches with tool name, category, direct URL, and dynamic reason  │
-│    • Average Warm Latency: ~30–50 ms                                    │
+│ 5. GENERATIVE UI & COPILOT FORMULATION                                  │
+│    • Dynamic Tool Comparison Matrix with Winner Badges                  │
+│    • Step-by-Step Workflow Pipelines with Copyable Code Blocks          │
+│    • Floating Compare Dock (Syncs up to 4 tools across all routes)      │
+│    • Account-Synced Bookmarks via /api/saved                            │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -222,7 +228,7 @@ A **Two-Stage Hybrid AI/ML Pipeline**:
 - **Engine:** Meta FAISS (`IndexFlatIP`).
 - **Mathematical Operation:** Cosine similarity via Inner Product of L2-normalized vectors:
   $$\text{sim}(\mathbf{q}, \mathbf{d}) = \mathbf{q}^T \mathbf{d} = \sum_{i=1}^{384} q_i \cdot d_i$$
-- **Index Dimensions:** $108 \times 384$.
+- **Index Dimensions:** $320 \times 384$.
 - **Latency:** **$< 1.0\text{ ms}$** to search the entire index.
 - **Output:** Top-20 candidate tools passed to Stage 2.
 
@@ -231,12 +237,12 @@ A **Two-Stage Hybrid AI/ML Pipeline**:
 ### 5. Supervised Neural Ranking Model (PyTorch MLP)
 - **Source Files:** `src/ranking/train.py`, `src/ranking/features.py`
 - **Network Architecture:**
-  - Input Layer: 8 dense features
+  - Input Layer: 10 dense features
   - Hidden Layer 1: 64 neurons + ReLU + Dropout(0.2)
   - Hidden Layer 2: 32 neurons + ReLU + Dropout(0.2)
   - Output Layer: 1 neuron + Sigmoid $\rightarrow \hat{y} \in [0, 1]$
 
-#### Feature Engineering Specification (8 Features):
+#### Feature Engineering Specification (10 Features):
 
 | # | Feature Name | Data Type | Range | Description & Purpose |
 | :-: | :--- | :---: | :---: | :--- |
@@ -248,6 +254,8 @@ A **Two-Stage Hybrid AI/ML Pipeline**:
 | **6** | `pricing_tier` | Ordinal | `{0.0, 0.5, 1.0}` | Encodes Free (1.0), Freemium (0.5), or Paid (0.0). |
 | **7** | `feature_density` | Float | `[0.0, 1.0]` | Normalized count of key features provided by the tool. |
 | **8** | `text_length_ratio`| Float | `[0.0, 1.0]` | Ratio of query token count to tool documentation length. |
+| **9** | `bm25_lexical_score`| Float | `[0.0, 1.0]` | Normalized BM25 score for exact keyword relevance. |
+| **10**| `workflow_completeness`| Float | `[0.0, 1.0]` | Indicator of tool integration into multi-step pipelines. |
 
 ---
 
@@ -257,73 +265,11 @@ A **Two-Stage Hybrid AI/ML Pipeline**:
 | :-: | :--- | :--- | :--- | :--- | :-: |
 | **1** | **Query Normalizer** | `"i ppt make edit tool"` | Regex word-boundary expansion | `"i ppt presentation slides make edit tool"` | $< 0.1\text{ ms}$ |
 | **2** | **Embedding Engine** | Expanded text query | `all-MiniLM-L6-v2` tokenization & encoding | 384-dimensional float vector | ~20 ms |
-| **3** | **FAISS Index** | 384-D Query vector | Cosine similarity dot-product across 108 tools | Top-20 Candidate IDs + Scores | $< 1.0\text{ ms}$ |
-| **4** | **Feature Extractor** | Top-20 candidates + query | Compute 8 feature vectors | $(20, 8)$ feature matrix | ~2.0 ms |
-| **5** | **Neural Ranker** | $(20, 8)$ feature matrix | Forward pass through trained PyTorch MLP | Ranked candidate list | ~1.5 ms |
-| **6** | **Response Builder** | Ranked candidate list | Enrich with category, URL, dynamic reason | Formatted JSON / Terminal Card | $< 0.5\text{ ms}$ |
+| **3** | **FAISS Index** | 384-D Query vector | Cosine similarity dot-product across 320 tools | Top-20 Candidate IDs + Scores | $< 1.0\text{ ms}$ |
+| **4** | **Feature Extractor** | Top-20 candidates + query | Compute 10 feature vectors | $(20, 10)$ feature matrix | ~2.0 ms |
+| **5** | **Neural Ranker** | $(20, 10)$ feature matrix | Forward pass through trained PyTorch MLP | Ranked candidate list | ~1.5 ms |
+| **6** | **Generative UI** | Ranked candidate list | Generates comparison matrices / workflow cards | Interactive UI Card / JSON | $< 1.0\text{ ms}$ |
 | | **Total End-to-End** | | | **Top-5 Recommended AI Tools** | **~25–45 ms** |
-
----
-
-## 📁 Repository Structure & Directory Roles
-
-```
-aura-ai-ml/
-├── main.py                      # Interactive CLI terminal application (<50ms query loop)
-├── intelligence_layer.md        # Complete technical reference (this document)
-├── pyrightconfig.json           # Python static analysis & IDE typing configuration
-├── requirements.txt             # Project dependencies (PyTorch, FAISS, Transformers)
-├── README.md                    # Quick-start guide and repository overview
-├── walkthrough.md               # Execution log and benchmark verification
-│
-├── configs/
-│   └── config.yaml              # Central system configuration (models, paths, thresholds)
-│
-├── data/
-│   ├── raw/                     # Raw initial tool dumps
-│   ├── processed/               # Canonical AURA dataset
-│   │   ├── aura_tools.json      # 108 curated AI tools with rich metadata
-│   │   ├── aura_queries.json    # 500+ diverse evaluation queries
-│   │   ├── aura_qrels.json      # 1000+ query-tool relevance judgments (0 to 3)
-│   │   └── aura_pairs.json      # Triplet training pairs with hard negatives
-│   ├── train/                   # 70% Training split
-│   ├── validation/              # 15% Validation split
-│   ├── test/                    # 15% Held-out benchmark test split
-│   ├── embeddings/              # Persisted numpy embeddings (tool_embeddings.npy)
-│   └── indexes/                 # Serialized FAISS index (faiss.index)
-│
-├── src/
-│   ├── data/
-│   │   ├── enrich.py            # Builds semantic documents from tool records
-│   │   ├── normalize.py         # Text, URL, tag, and schema sanitation
-│   │   ├── validate.py          # Data contract verification & schema checks
-│   │   └── split.py             # Leakage-free train/val/test data splitting
-│   ├── retrieval/
-│   │   ├── embed.py             # AuraEmbedder (SentenceTransformers encoding)
-│   │   ├── index.py             # AuraIndex (FAISS creation and persistence)
-│   │   ├── retrieve.py          # AuraRetriever (Query vector search)
-│   │   └── bm25_baseline.py     # Classical BM25 baseline retriever for comparison
-│   ├── ranking/
-│   │   ├── features.py          # Feature extraction pipeline (8 dense features)
-│   │   ├── train.py             # PyTorch MLP training script
-│   │   ├── predict.py           # Learned ranker inference
-│   │   └── rerank.py            # AuraReranker (Cross-Encoder deep re-scoring)
-│   ├── evaluation/
-│   │   ├── metrics.py           # Precision@K, Recall@K, MRR, NDCG@K formulas
-│   │   └── evaluate.py          # Automated experiment comparison runner
-│   ├── inference/
-│   │   ├── recommend.py         # Main clean inference interface + query expansion
-│   │   └── api.py               # Production FastAPI REST application
-│   └── utils/
-│       └── config.py            # Path resolution and YAML configuration loader
-│
-├── models/
-│   └── mlp_ranker.pt            # Trained PyTorch neural ranking model weights
-│
-└── tests/
-    ├── test_data.py             # Data normalization & enrichment tests
-    └── test_metrics.py          # Information retrieval metric unit tests
-```
 
 ---
 
@@ -340,100 +286,9 @@ The system was evaluated on a held-out benchmark of **30 ground-truth test queri
 | **NDCG@5 (Ranking Quality)** | 0.684 | 0.774 | **0.777** |
 | **Inference Latency (CPU)** | **0.7 ms** | **32.5 ms** | 519.0 ms |
 
-### Key Takeaway for Your Presentation:
+### Key Takeaway for Presentation:
 - **Semantic Vector Retrieval beats BM25 by +20% on Top-1 Accuracy** (83.3% vs 63.3%), proving that neural embeddings are vastly superior to keyword search for conversational user queries.
 - **Pure Semantic FAISS achieves the optimal trade-off**: 83.3% P@1 with only **~32 ms** latency, making it the ideal primary production model.
-
----
-
-## 💻 How to Run and Demonstrate the System
-
-### 1. Interactive Terminal Mode (Best for Live Viva / Demo)
-Runs in a continuous loop with models kept in RAM:
-```pwsh
-cd intelligence
-python main.py
-```
-- **Experience:** Type queries continuously at the `Query: ` prompt.
-- **Latency:** **~30–50ms** per query after instant one-time initialization.
-- **To Exit:** Type `exit` or `q`.
-
-### 2. Single Command CLI
-Run a single query directly:
-```pwsh
-cd intelligence
-python -m src.inference.recommend "i need to remove backgrounds from pictures"
-```
-
-### 3. Production REST API Server
-Start the FastAPI server:
-```pwsh
-cd intelligence
-python -m uvicorn src.inference.api:app --reload --port 8000
-```
-- **Interactive Swagger Documentation:** Open browser at `http://localhost:8000/docs`
-- **Health Check:** `http://localhost:8000/health`
-- **HTTP GET Recommendation:**
-  ```
-  http://localhost:8000/recommend?query=generate+AI+videos+from+text&top_k=3
-  ```
-
-### 4. Run Automated Unit Tests
-Verify pipeline integrity (all 34 tests pass):
-```pwsh
-cd intelligence
-python -m pytest
-```
-
-### 5. Run Experiment Benchmarks
-Reproduce the research paper comparison metrics table:
-```pwsh
-python -m src.evaluation.evaluate
-```
-
----
-
-## 📥 Input & Output Specifications
-
-### Input Schema
-- **Input Type:** Freeform natural language string.
-- **Supports:** Technical keywords, full sentences, questions, typos, informal slang, and multi-intent queries.
-
-### Output Schema (JSON)
-```json
-{
-  "query": "i ppt make edit tool",
-  "results": [
-    {
-      "rank": 1,
-      "tool_id": "t14",
-      "name": "Tome",
-      "category": "Productivity",
-      "description": "AI-powered presentation and storytelling tool that generates entire presentations from prompts...",
-      "url": "https://tome.app",
-      "semantic_score": 0.5195,
-      "reranker_score": null,
-      "ranking_score": null,
-      "reason": "Tome (Productivity): AI-powered presentation and storytelling tool that generates entire presentations from prompts..."
-    },
-    {
-      "rank": 2,
-      "tool_id": "t15",
-      "name": "Gamma",
-      "category": "Productivity",
-      "description": "AI presentation maker that creates polished presentations, documents, and webpages from text prompts...",
-      "url": "https://gamma.app",
-      "semantic_score": 0.4980,
-      "reranker_score": null,
-      "ranking_score": null,
-      "reason": "Gamma (Productivity): AI presentation maker that creates polished presentations..."
-    }
-  ],
-  "model_version": "aura-retriever-v1",
-  "latency_ms": 42.1,
-  "num_candidates_considered": 20
-}
-```
 
 ---
 
@@ -468,8 +323,22 @@ Use these exact answers during your project review or presentation:
 #### Q9: "How is AURA orchestrated with Docker, and how does it connect to local Ollama on the host?"
 > **Answer:** AURA uses an isolated multi-container architecture in `docker-compose.yml` with a bridge network (`aura-network`). To enable the Next.js container to communicate with local Ollama running on the developer's host machine, the web service includes `extra_hosts: ["host.docker.internal:host-gateway"]` and binds `OLLAMA_BASE_URL` to `http://host.docker.internal:11434`. Persistent named volumes (`aura-web-data` and `aura-model-cache`) guarantee zero data loss and eliminate redundant model weight downloads.
 
+#### Q10: "What is the Generative UI Engine, and how does it render interactive widgets?"
+> **Answer:** Traditional chatbots output unstructured markdown text. AURA's Generative UI Engine (`GenerativeUiRenderer.tsx`) parses structured execution plans into rich React components. It renders interactive comparison tables with highlight badges, and multi-step workflow pipelines showing sequential tool execution trees, complete with 1-click copy buttons and external tool links.
+
+#### Q11: "How does the Natural Voice Command Recognition work without repeating utterances?"
+> **Answer:** It uses the browser-native Web Speech API (`webkitSpeechRecognition`). To prevent repeating utterance loops caused by intermediate event streaming, AURA maintains a stable base input reference (`baseInputRef`) and calculates a clean single-session transcript from finalized result indices, paired with an animated pulsating audio wave UI.
+
+#### Q12: "How does the Floating Compare Dock work across the application?"
+> **Answer:** The compare dock (`CompareDock.tsx`) is driven by a global React Context (`CompareContext.tsx`) that stores up to 4 selected tools. Users can click "Compare" from any tool card, search spotlight, or assistant chat bubble. A sticky floating dock stays visible across routes and provides 1-click navigation directly to `/compare` with pre-filled selections.
+
+#### Q13: "What database architecture is used, and how are tools seeded?"
+> **Answer:** AURA uses Prisma ORM configured with LibSQL/SQLite for zero-configuration, production-ready local persistence. The schema defines `Tool`, `Workflow`, `WorkflowStep`, `User`, `Account`, `Bookmark`, and `Review` models. The database is seeded using `node prisma/seed.mjs`, which loads all 320 verified tools and workflow recipes directly into the database on startup.
+
+#### Q14: "Why did you eliminate child_process.spawn('python') from the Next.js API, and how does local semantic fallback work?"
+> **Answer:** Spawning Python subprocesses from a Node.js web server (`child_process.spawn`) is a severe concurrency bottleneck that can crash under concurrent traffic. We replaced it with an HTTP proxy to the pre-warmed FastAPI service and built an instant (< 2ms) local in-memory vector heuristic fallback in TypeScript that guarantees the web application remains responsive even if the Python service is rebooting.
+
 ---
 
-*Document prepared for AURA Major Project Presentation & Viva Defense.*
+*Document prepared for AURA Major Project Presentation & Viva Defense.*  
 *Official GitHub Repository: https://github.com/Pratik50205/AURA.ai*
-

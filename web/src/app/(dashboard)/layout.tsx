@@ -4,6 +4,8 @@ import { useState, useEffect, createContext, useContext, ReactNode, useCallback 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AuraAssistantModal from '@/components/AuraAssistantModal';
+import CompareDock from '@/components/CompareDock';
+import { CompareProvider } from '@/context/CompareContext';
 import { useSession } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 
@@ -72,6 +74,20 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     setIsHydrated(true);
   }, []);
 
+  // Sync saved bookmarks with authenticated user account in database
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetch('/api/saved')
+        .then((res) => res.json())
+        .then((data) => {
+          if (Array.isArray(data?.savedTools) && data.savedTools.length > 0) {
+            setSavedTools((prev) => Array.from(new Set([...prev, ...data.savedTools])));
+          }
+        })
+        .catch(() => {});
+    }
+  }, [session?.user?.id]);
+
   // Persist theme to localStorage
   useEffect(() => {
     if (!isHydrated) return;
@@ -94,7 +110,16 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
 
   const toggleSaveTool = useCallback((toolId: string) => {
     setSavedTools((prev) => (prev.includes(toolId) ? prev.filter((id) => id !== toolId) : [...prev, toolId]));
-  }, []);
+
+    // Synchronize with database if user is authenticated
+    if (session?.user?.id) {
+      fetch('/api/saved', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ toolId }),
+      }).catch((e) => console.warn('[layout] Bookmark sync failed:', e));
+    }
+  }, [session?.user?.id]);
 
   const toggleTheme = useCallback(() => {
     const nextMode = !isLightMode;
@@ -107,36 +132,38 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     }
   }, [isLightMode]);
 
-  // Update data-theme attribute on document when theme changes
+  // Apply theme attribute to html
   useEffect(() => {
     if (!isHydrated) return;
     document.documentElement.setAttribute('data-theme', isLightMode ? 'light' : 'dark');
   }, [isLightMode, isHydrated]);
 
   const user = session?.user ? {
-    id: (session.user as any).id,
+    id: session.user.id || '',
     name: session.user.name,
     email: session.user.email,
     image: session.user.image,
     role: (session.user as any).role || 'USER',
   } : null;
 
-  const value = {
-    searchQuery,
-    setSearchQuery,
-    savedTools,
-    toggleSaveTool,
-    isLightMode,
-    toggleTheme,
-    isHydrated,
-    user,
-  };
-
   return (
-    <DashboardContext.Provider value={value}>
+    <DashboardContext.Provider
+      value={{
+        searchQuery,
+        setSearchQuery,
+        savedTools,
+        toggleSaveTool,
+        isLightMode,
+        toggleTheme,
+        isHydrated,
+        user,
+      }}
+    >
       <div className={cn(
-        "min-h-screen flex flex-col transition-colors duration-300 relative",
-        isLightMode ? "bg-[#F8FAFC] text-slate-900" : "bg-[#090A0F] text-white"
+        "min-h-screen flex flex-col font-sans selection:bg-[#D9042B]/20 selection:text-[#D9042B] transition-colors duration-300 relative",
+        isLightMode 
+          ? "bg-[#FAFAFC] text-slate-900" 
+          : "bg-[#0B0B0F] text-[#EDEDED]"
       )}>
         {/* Background Ambient Radial Glows */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -166,6 +193,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
             </main>
             <Footer isLightMode={isLightMode} />
             <AuraAssistantModal />
+            <CompareDock />
           </>
         ) : (
           <div className="min-h-screen flex items-center justify-center relative z-10">
@@ -182,5 +210,9 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
 
 // Default export for Next.js App Router
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  return <DashboardProvider>{children}</DashboardProvider>;
+  return (
+    <CompareProvider>
+      <DashboardProvider>{children}</DashboardProvider>
+    </CompareProvider>
+  );
 }

@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { spawn } from 'child_process';
-import fs from 'fs';
-import path from 'path';
 import type { RecommendationResult, RecommendationResponseData } from '@/lib/recommendations';
 import { BoundedLruCache } from '@/lib/cache';
 import { checkRateLimit, buildRateLimitResponse } from '@/lib/rate-limit';
+import { matchTools } from '@/lib/promptMatcher';
+import { tools } from '@/data/tools';
 
 export const runtime = 'nodejs';
 
-const FALLBACK_MODEL = 'fallback';
+const FALLBACK_MODEL = 'aura-local-heuristic';
 
 function getAimlServiceUrl(): string {
   let raw = (process.env.AURA_INTELLIGENCE_URL || process.env.AURA_AIML_URL || 'http://127.0.0.1:8000').trim();
@@ -18,7 +17,7 @@ function getAimlServiceUrl(): string {
   try {
     const parsed = new URL(raw);
     if (!parsed.port && parsed.hostname === 'aura-intelligence') {
-      parsed.port = '10000';
+      parsed.port = '8000';
       return parsed.toString().replace(/\/$/, '');
     }
   } catch {
@@ -74,7 +73,7 @@ async function requestFromWarmService(query: string, topK: number) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query, top_k: topK, use_reranker: true }),
-    signal: AbortSignal.timeout(120_000),
+    signal: AbortSignal.timeout(8_000), // 8s timeout instead of hanging
     cache: 'no-store',
   });
 
@@ -85,73 +84,36 @@ async function requestFromWarmService(query: string, topK: number) {
   return response.json();
 }
 
-function runPythonRecommendation(query: string, topK: number) {
-  return new Promise<any>((resolve, reject) => {
-    const cwd = process.cwd();
-    const candidatePaths = [
-      path.resolve(cwd, 'intelligence'),
-      path.resolve(cwd, '..', 'intelligence'),
-      path.resolve(cwd, 'aiml'),
-      path.resolve(cwd, '..', 'aiml'),
-    ];
-    const intelligenceRoot = candidatePaths.find((p) => fs.existsSync(p)) || candidatePaths[1];
-    const pythonCommand = process.env.PYTHON || process.env.PYTHON_PATH || 'python';
+/**
+ * Resilient, sub-millisecond local in-memory fallback.
+ * Eliminates dangerous subprocess spawning (spawn('python')) that spikes CPU/RAM and crashes containers.
+ */
+function runLocalFallbackRecommendation(query: string, topK: number): RecommendationResponseData {
+  const matched = matchTools(tools, query, undefined, Math.max(topK, 5));
+  const results: RecommendationResult[] = matched.slice(0, topK).map((tool, idx) => ({
+    rank: idx + 1,
+    tool_id: tool.id,
+    name: tool.name,
+    category: tool.category,
+    description: tool.description,
+    url: tool.url,
+    pricing: tool.pricing,
+    trustScore: tool.trustScore,
+    verified: tool.verified,
+    tags: tool.tags,
+    reason: `Direct keyword & capability match for "${query}" in ${tool.category}.`,
+    semantic_score: Math.max(0.7, 1 - idx * 0.05),
+  }));
 
-    const script = `
-import json
-import sys
-
-root = r"${intelligenceRoot.replace(/\\/g, '\\\\')}"
-sys.path.insert(0, root)
-
-from src.inference.recommend import recommend_tools
-
-result = recommend_tools(
-    query=${JSON.stringify(query)},
-    top_k=${Math.max(1, Math.min(topK, 10))},
-    use_reranker=True,
-)
-print(json.dumps(result))
-`;
-
-    const child = spawn(/*turbopackIgnore: true*/ pythonCommand, ['-c', script], {
-      cwd: intelligenceRoot,
-      env: { ...process.env, PYTHONUTF8: '1' },
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    child.stdout.on('data', (chunk) => {
-      stdout += chunk.toString();
-    });
-
-    child.stderr.on('data', (chunk) => {
-      stderr += chunk.toString();
-    });
-
-    child.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error(stderr || `Python exited with code ${code}`));
-        return;
-      }
-
-      try {
-        const trimmed = stdout.trim();
-        if (!trimmed) {
-          resolve({ query, results: [], model_version: 'fallback', latency_ms: 0, num_candidates_considered: 0 });
-          return;
-        }
-        resolve(JSON.parse(trimmed));
-      } catch {
-        reject(new Error('Unable to parse ML recommendation response.'));
-      }
-    });
-
-    child.on('error', (error) => {
-      reject(error);
-    });
-  });
+  return {
+    query,
+    expanded_query: null,
+    intents: null,
+    results,
+    model_version: FALLBACK_MODEL,
+    latency_ms: 2,
+    num_candidates_considered: tools.length,
+  };
 }
 
 export async function POST(request: NextRequest) {
@@ -180,9 +142,12 @@ export async function POST(request: NextRequest) {
       let result;
       try {
         result = await requestFromWarmService(query, topK);
-      } catch {
-        // Keep local development functional when the optional warm service is stopped.
-        result = await runPythonRecommendation(query, topK);
+      } catch (err: any) {
+        // Safe, non-blocking fallback when FastAPI microservice is offline or warming up
+        console.warn(`[AURA Intelligence] FastAPI unavailable (${err.message}). Using resilient local heuristic matcher.`);
+        const fallbackResult = runLocalFallbackRecommendation(query, topK);
+        recommendationCache.set(cacheKey, fallbackResult);
+        return NextResponse.json(fallbackResult);
       }
 
       const normalizedResult: RecommendationResponseData = {
@@ -197,15 +162,9 @@ export async function POST(request: NextRequest) {
       recommendationCache.set(cacheKey, normalizedResult);
       return NextResponse.json(normalizedResult);
     } catch (mlError) {
-      console.warn('[AURA ML fallback]', mlError);
-      return NextResponse.json({
-        query,
-        expanded_query: query,
-        results: [],
-        model_version: FALLBACK_MODEL,
-        latency_ms: 0,
-        num_candidates_considered: 0,
-      });
+      console.warn('[AURA ML fallback error]', mlError);
+      const fallbackResult = runLocalFallbackRecommendation(query, topK);
+      return NextResponse.json(fallbackResult);
     }
   } catch {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });

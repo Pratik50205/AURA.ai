@@ -1,0 +1,893 @@
+{
+  "description": "AURA.ai Chatbot Intelligence Evaluation Dataset (105 test cases)",
+  "version": "1.0.0",
+  "categories": {
+    "A": "Tool Discovery (20 queries)",
+    "B": "Tool Comparison (15 queries)",
+    "C": "Workflow Design (15 queries)",
+    "D": "Prompt Engineering (15 queries)",
+    "E": "Alternatives & Evaluation (10 queries)",
+    "F": "Multi-Turn Contextual Scenarios (15 queries)",
+    "G": "Out-of-Scope Requests (15 queries)"
+  },
+  "test_cases": [
+    {
+      "id": "A01",
+      "category": "A",
+      "query": "Find free AI tools for video editing with auto subtitles",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "budget": "free", "useCase": "video editing" },
+      "ground_truth_tools": ["CapCut", "Descript", "Clipchamp"]
+    },
+    {
+      "id": "A02",
+      "category": "A",
+      "query": "Recommend AI tools for building landing pages and websites",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "useCase": "website building & UI generation" },
+      "ground_truth_tools": ["Framer AI", "v0 by Vercel", "Dora AI", "10Web"]
+    },
+    {
+      "id": "A03",
+      "category": "A",
+      "query": "Which AI tools can generate presentations from text?",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "useCase": "presentation & slide deck design" },
+      "ground_truth_tools": ["Gamma", "Tome", "Beautiful.ai", "SlidesAI"]
+    },
+    {
+      "id": "A04",
+      "category": "A",
+      "query": "Which AI tools are suitable for data analysis and CSV processing?",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "useCase": "data analysis & spreadsheets" },
+      "ground_truth_tools": ["Julius AI", "Rows", "ChatGPT Plus", "Polymer Search"]
+    },
+    {
+      "id": "A05",
+      "category": "A",
+      "query": "Find AI tools that support local LLM deployment offline",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "platform": "local" },
+      "ground_truth_tools": ["Ollama", "LM Studio", "Jan", "vLLM"]
+    },
+    {
+      "id": "A06",
+      "category": "A",
+      "query": "Best AI code autocomplete tools for VS Code",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "useCase": "coding & development" },
+      "ground_truth_tools": ["Cursor", "GitHub Copilot", "Supermaven", "Codeium"]
+    },
+    {
+      "id": "A07",
+      "category": "A",
+      "query": "AI voice generator tools for YouTube voiceovers",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "useCase": "voiceover & audio generation" },
+      "ground_truth_tools": ["ElevenLabs", "Murf AI", "Play.ht", "Speechify"]
+    },
+    {
+      "id": "A08",
+      "category": "A",
+      "query": "Show me open source image generation models and tools",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "budget": "opensource" },
+      "ground_truth_tools": ["Stable Diffusion", "FLUX", "ComfyUI", "Automatic1111"]
+    },
+    {
+      "id": "A09",
+      "category": "A",
+      "query": "Free AI meeting note taker and transcription software",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "budget": "free", "useCase": "audio transcription & meeting notes" },
+      "ground_truth_tools": ["Fireflies.ai", "Otter.ai", "Fathom", "Krisp"]
+    },
+    {
+      "id": "A10",
+      "category": "A",
+      "query": "Which AI tools support RAG for company documentation?",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "useCase": "knowledge base & document search" },
+      "ground_truth_tools": ["Dify", "Flowise", "Dust", "Kapa.ai"]
+    },
+    {
+      "id": "A11",
+      "category": "A",
+      "query": "Which tools can help me learn Python programming faster?",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "ground_truth_tools": ["ChatGPT", "Claude", "Cursor", "GitHub Copilot"]
+    },
+    {
+      "id": "A12",
+      "category": "A",
+      "query": "AI background remover tools for product photos",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "useCase": "image editing & cleanup" },
+      "ground_truth_tools": ["Remove.bg", "Photoroom", "Clipdrop", "Pixlr"]
+    },
+    {
+      "id": "A13",
+      "category": "A",
+      "query": "AI music generation tools for background game audio",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "ground_truth_tools": ["Suno", "Udio", "Soundraw", "AIVA"]
+    },
+    {
+      "id": "A14",
+      "category": "A",
+      "query": "AI logo maker and brand identity generator",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "ground_truth_tools": ["Looka", "Brandmark", "Canva AI", "LogoMaster"]
+    },
+    {
+      "id": "A15",
+      "category": "A",
+      "query": "Paid commercial AI tools for automated social media marketing",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "budget": "paid", "useCase": "content creation & marketing" },
+      "ground_truth_tools": ["Jasper", "Copy.ai", "Predis.ai", "Buffer AI"]
+    },
+    {
+      "id": "A16",
+      "category": "A",
+      "query": "Text to 3D model generation AI tools",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "ground_truth_tools": ["Luma AI", "Meshy", "Spline AI", "Tripo AI"]
+    },
+    {
+      "id": "A17",
+      "category": "A",
+      "query": "AI search engines with verified source citations",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "ground_truth_tools": ["Perplexity AI", "Consensus", "You.com", "Genspark"]
+    },
+    {
+      "id": "A18",
+      "category": "A",
+      "query": "AI spreadsheet formulas and Excel automation utilities",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "ground_truth_tools": ["Formula Bot", "Rows", "Ajelix", "SheetAI"]
+    },
+    {
+      "id": "A19",
+      "category": "A",
+      "query": "AI tools for podcast editing and audio noise cleanup",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "ground_truth_tools": ["Adobe Podcast AI", "Descript", "Auphonic", "Cleanvoice"]
+    },
+    {
+      "id": "A20",
+      "category": "A",
+      "query": "Free AI tools to convert PDF research papers into audio summaries",
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "budget": "free" },
+      "ground_truth_tools": ["NotebookLM", "Speechify", "ChatPDF", "Humata"]
+    },
+
+    {
+      "id": "B01",
+      "category": "B",
+      "query": "Compare Cursor and GitHub Copilot",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Cursor", "GitHub Copilot"]
+    },
+    {
+      "id": "B02",
+      "category": "B",
+      "query": "Cursor vs GitHub Copilot for coding",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Cursor", "GitHub Copilot"]
+    },
+    {
+      "id": "B03",
+      "category": "B",
+      "query": "Compare Claude 3.5 Sonnet vs ChatGPT Plus",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Claude", "ChatGPT"]
+    },
+    {
+      "id": "B04",
+      "category": "B",
+      "query": "Midjourney vs Stable Diffusion for realistic portrait photography",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Midjourney", "Stable Diffusion"]
+    },
+    {
+      "id": "B05",
+      "category": "B",
+      "query": "Runway Gen-3 vs Pika for generative video clips",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Runway", "Pika"]
+    },
+    {
+      "id": "B06",
+      "category": "B",
+      "query": "Compare ElevenLabs versus Murf AI for commercial narration",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["ElevenLabs", "Murf AI"]
+    },
+    {
+      "id": "B07",
+      "category": "B",
+      "query": "Gamma vs Beautiful.ai presentation maker comparison",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Gamma", "Beautiful.ai"]
+    },
+    {
+      "id": "B08",
+      "category": "B",
+      "query": "Perplexity AI vs Google Gemini for technical research",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Perplexity AI", "Google Gemini"]
+    },
+    {
+      "id": "B09",
+      "category": "B",
+      "query": "Compare Jasper and Copy.ai based on pricing and team features",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Jasper", "Copy.ai"]
+    },
+    {
+      "id": "B10",
+      "category": "B",
+      "query": "Descript versus CapCut for editing short-form video reels",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Descript", "CapCut"]
+    },
+    {
+      "id": "B11",
+      "category": "B",
+      "query": "Which is better: v0 by Vercel or Bolt.new for prototyping web apps?",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["v0 by Vercel", "Bolt.new"]
+    },
+    {
+      "id": "B12",
+      "category": "B",
+      "query": "Compare Suno and Udio for AI music generation fidelity",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Suno", "Udio"]
+    },
+    {
+      "id": "B13",
+      "category": "B",
+      "query": "Fireflies.ai vs Otter.ai for Google Meet transcription",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Fireflies.ai", "Otter.ai"]
+    },
+    {
+      "id": "B14",
+      "category": "B",
+      "query": "FLUX vs Midjourney v6 on text rendering quality",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["FLUX", "Midjourney"]
+    },
+    {
+      "id": "B15",
+      "category": "B",
+      "query": "Ollama vs LM Studio for hosting local LLMs on Mac",
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Ollama", "LM Studio"]
+    },
+
+    {
+      "id": "C01",
+      "category": "C",
+      "query": "Create an AI-powered content creation workflow",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C02",
+      "category": "C",
+      "query": "Suggest a combination of AI tools for automating social media management",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C03",
+      "category": "C",
+      "query": "Build an end-to-end AI video production pipeline",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C04",
+      "category": "C",
+      "query": "AI workflow to automate customer support ticket responses",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C05",
+      "category": "C",
+      "query": "How can I chain AI tools together to write and publish a weekly technical newsletter?",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C06",
+      "category": "C",
+      "query": "Design an automated podcast production pipeline from recording to short clips",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C07",
+      "category": "C",
+      "query": "Stack of AI tools for building a complete web app prototype in a weekend",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C08",
+      "category": "C",
+      "query": "Automated workflow to extract data from PDF invoices into Google Sheets",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C09",
+      "category": "C",
+      "query": "Combine AI tools to generate e-commerce product photos, descriptions, and ads",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C10",
+      "category": "C",
+      "query": "Workflow for legal contract review and risk summarization",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C11",
+      "category": "C",
+      "query": "AI pipeline to convert long research papers into executive slide presentations",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C12",
+      "category": "C",
+      "query": "Automated SEO blog creation workflow with keyword research and visual assets",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C13",
+      "category": "C",
+      "query": "Multi-tool pipeline for generating multilingual voiceovers for training videos",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C14",
+      "category": "C",
+      "query": "AI stack for automated competitor intelligence monitoring and summaries",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "C15",
+      "category": "C",
+      "query": "Process to automate customer onboarding emails using AI utilities",
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+
+    {
+      "id": "D01",
+      "category": "D",
+      "query": "Generate prompts for Midjourney to create photorealistic cyber cityscapes",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true,
+      "expected_entities": ["Midjourney"]
+    },
+    {
+      "id": "D02",
+      "category": "D",
+      "query": "Optimize my prompt for generating clean modern product mockups",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true
+    },
+    {
+      "id": "D03",
+      "category": "D",
+      "query": "Best prompt for Cursor to refactor legacy JavaScript into TypeScript",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true,
+      "expected_entities": ["Cursor"]
+    },
+    {
+      "id": "D04",
+      "category": "D",
+      "query": "Prompt template for ChatGPT to write high converting cold outbound emails",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true,
+      "expected_entities": ["ChatGPT"]
+    },
+    {
+      "id": "D05",
+      "category": "D",
+      "query": "How should I structure my prompt for Runway Gen-3 camera movement?",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true,
+      "expected_entities": ["Runway"]
+    },
+    {
+      "id": "D06",
+      "category": "D",
+      "query": "Craft a system prompt for customer support AI bot with strict tone limits",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true
+    },
+    {
+      "id": "D07",
+      "category": "D",
+      "query": "Midjourney negative prompt guidelines to prevent distorted hands",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true,
+      "expected_entities": ["Midjourney"]
+    },
+    {
+      "id": "D08",
+      "category": "D",
+      "query": "Prompt engineering framework for Claude 3.5 Sonnet complex reasoning",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true,
+      "expected_entities": ["Claude"]
+    },
+    {
+      "id": "D09",
+      "category": "D",
+      "query": "Prompt to generate pitch deck slides in Gamma",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true,
+      "expected_entities": ["Gamma"]
+    },
+    {
+      "id": "D10",
+      "category": "D",
+      "query": "Optimize this prompt to reduce hallucinations in LLM summaries",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true
+    },
+    {
+      "id": "D11",
+      "category": "D",
+      "query": "Prompt template for generating REST API documentation",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true
+    },
+    {
+      "id": "D12",
+      "category": "D",
+      "query": "Best prompt structure for FLUX image generator",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true,
+      "expected_entities": ["FLUX"]
+    },
+    {
+      "id": "D13",
+      "category": "D",
+      "query": "Prompting techniques for GitHub Copilot in complex codebases",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true,
+      "expected_entities": ["GitHub Copilot"]
+    },
+    {
+      "id": "D14",
+      "category": "D",
+      "query": "Create a few-shot prompt for extracting entities from messy customer reviews",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true
+    },
+    {
+      "id": "D15",
+      "category": "D",
+      "query": "How to write effective prompts for Suno AI to control musical genre and mood",
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true,
+      "expected_entities": ["Suno"]
+    },
+
+    {
+      "id": "E01",
+      "category": "E",
+      "query": "Find alternatives to ChatGPT with web browsing",
+      "expected_intent": "TOOL_ALTERNATIVES",
+      "expected_in_scope": true,
+      "expected_entities": ["ChatGPT"]
+    },
+    {
+      "id": "E02",
+      "category": "E",
+      "query": "Free alternatives to Midjourney for Discord-less image generation",
+      "expected_intent": "TOOL_ALTERNATIVES",
+      "expected_in_scope": true,
+      "expected_entities": ["Midjourney"],
+      "expected_constraints": { "budget": "free" }
+    },
+    {
+      "id": "E03",
+      "category": "E",
+      "query": "What are the best open source alternatives to GitHub Copilot?",
+      "expected_intent": "TOOL_ALTERNATIVES",
+      "expected_in_scope": true,
+      "expected_entities": ["GitHub Copilot"],
+      "expected_constraints": { "budget": "opensource" }
+    },
+    {
+      "id": "E04",
+      "category": "E",
+      "query": "Is Cursor worth the $20 monthly subscription?",
+      "expected_intent": "TOOL_EVALUATION",
+      "expected_in_scope": true,
+      "expected_entities": ["Cursor"]
+    },
+    {
+      "id": "E05",
+      "category": "E",
+      "query": "Evaluate ElevenLabs pricing and voice clone quality",
+      "expected_intent": "TOOL_EVALUATION",
+      "expected_in_scope": true,
+      "expected_entities": ["ElevenLabs"]
+    },
+    {
+      "id": "E06",
+      "category": "E",
+      "query": "Alternatives to Jasper for solo freelance copywriters on a budget",
+      "expected_intent": "TOOL_ALTERNATIVES",
+      "expected_in_scope": true,
+      "expected_entities": ["Jasper"]
+    },
+    {
+      "id": "E07",
+      "category": "E",
+      "query": "Review the trust score and privacy policies of Perplexity AI",
+      "expected_intent": "TOOL_EVALUATION",
+      "expected_in_scope": true,
+      "expected_entities": ["Perplexity AI"]
+    },
+    {
+      "id": "E08",
+      "category": "E",
+      "query": "Cheaper alternatives to Runway for commercial video generation",
+      "expected_intent": "TOOL_ALTERNATIVES",
+      "expected_in_scope": true,
+      "expected_entities": ["Runway"]
+    },
+    {
+      "id": "E09",
+      "category": "E",
+      "query": "Evaluate Descript pros and cons for YouTube podcast editing",
+      "expected_intent": "TOOL_EVALUATION",
+      "expected_in_scope": true,
+      "expected_entities": ["Descript"]
+    },
+    {
+      "id": "E10",
+      "category": "E",
+      "query": "Free replacement for Remove.bg with bulk export",
+      "expected_intent": "TOOL_ALTERNATIVES",
+      "expected_in_scope": true,
+      "expected_entities": ["Remove.bg"],
+      "expected_constraints": { "budget": "free" }
+    },
+
+    {
+      "id": "F01",
+      "category": "F",
+      "query": "Only free ones",
+      "context": {
+        "active_use_case": "video editing",
+        "previous_tools": ["Runway", "Descript", "CapCut"]
+      },
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "budget": "free" }
+    },
+    {
+      "id": "F02",
+      "category": "F",
+      "query": "Can you build a workflow using the first two?",
+      "context": {
+        "active_use_case": "video editing",
+        "previous_tools": ["CapCut", "Descript", "ElevenLabs"]
+      },
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true,
+      "expected_entities": ["CapCut", "Descript"]
+    },
+    {
+      "id": "F03",
+      "category": "F",
+      "query": "Compare them",
+      "context": {
+        "active_use_case": "coding & development",
+        "previous_tools": ["Cursor", "GitHub Copilot"]
+      },
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Cursor", "GitHub Copilot"]
+    },
+    {
+      "id": "F04",
+      "category": "F",
+      "query": "What about open source options?",
+      "context": {
+        "active_use_case": "image generation",
+        "previous_tools": ["Midjourney", "DALL-E"]
+      },
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "budget": "opensource" }
+    },
+    {
+      "id": "F05",
+      "category": "F",
+      "query": "For Mac only",
+      "context": {
+        "active_use_case": "local LLM deployment",
+        "previous_tools": ["Ollama", "LM Studio", "vLLM"]
+      },
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "platform": "mac" }
+    },
+    {
+      "id": "F06",
+      "category": "F",
+      "query": "Which of these two has a higher trust score?",
+      "context": {
+        "previous_tools": ["Synthesia", "HeyGen"]
+      },
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Synthesia", "HeyGen"]
+    },
+    {
+      "id": "F07",
+      "category": "F",
+      "query": "How much does the second tool cost?",
+      "context": {
+        "previous_tools": ["Claude", "ChatGPT Plus", "Perplexity Pro"]
+      },
+      "expected_intent": "TOOL_EVALUATION",
+      "expected_in_scope": true,
+      "expected_entities": ["ChatGPT Plus"]
+    },
+    {
+      "id": "F08",
+      "category": "F",
+      "query": "Show me alternatives to the first one",
+      "context": {
+        "previous_tools": ["Midjourney", "Flux"]
+      },
+      "expected_intent": "TOOL_ALTERNATIVES",
+      "expected_in_scope": true,
+      "expected_entities": ["Midjourney"]
+    },
+    {
+      "id": "F09",
+      "category": "F",
+      "query": "Suggest tested prompts for it",
+      "context": {
+        "previous_tools": ["Midjourney"]
+      },
+      "expected_intent": "PROMPT_ENGINEERING",
+      "expected_in_scope": true,
+      "expected_entities": ["Midjourney"]
+    },
+    {
+      "id": "F10",
+      "category": "F",
+      "query": "Chain these into a 3-step automation pipeline",
+      "context": {
+        "previous_tools": ["Perplexity AI", "Claude", "Gamma"]
+      },
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+    {
+      "id": "F11",
+      "category": "F",
+      "query": "Show paid plans with commercial licensing",
+      "context": {
+        "active_use_case": "voiceover & audio generation",
+        "previous_tools": ["ElevenLabs", "Murf AI"]
+      },
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true,
+      "expected_constraints": { "budget": "paid" }
+    },
+    {
+      "id": "F12",
+      "category": "F",
+      "query": "Can both of them run locally offline?",
+      "context": {
+        "previous_tools": ["Ollama", "LM Studio"]
+      },
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true
+    },
+    {
+      "id": "F13",
+      "category": "F",
+      "query": "Are there any that don't add watermarks?",
+      "context": {
+        "active_use_case": "video editing",
+        "previous_tools": ["CapCut", "InVideo", "Clipchamp"]
+      },
+      "expected_intent": "TOOL_DISCOVERY",
+      "expected_in_scope": true
+    },
+    {
+      "id": "F14",
+      "category": "F",
+      "query": "Compare the top two",
+      "context": {
+        "active_use_case": "presentation & slide deck design",
+        "previous_tools": ["Gamma", "Beautiful.ai", "Tome"]
+      },
+      "expected_intent": "TOOL_COMPARISON",
+      "expected_in_scope": true,
+      "expected_entities": ["Gamma", "Beautiful.ai"]
+    },
+    {
+      "id": "F15",
+      "category": "F",
+      "query": "Create an automated workflow connecting them",
+      "context": {
+        "active_use_case": "content creation & marketing",
+        "previous_tools": ["ChatGPT", "Canva AI", "Buffer AI"]
+      },
+      "expected_intent": "WORKFLOW_DESIGN",
+      "expected_in_scope": true
+    },
+
+    {
+      "id": "G01",
+      "category": "G",
+      "query": "What is photosynthesis?",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G02",
+      "category": "G",
+      "query": "Solve 25 multiplied by 14",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G03",
+      "category": "G",
+      "query": "Write a birthday poem for my friend Sarah",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G04",
+      "category": "G",
+      "query": "Explain Newton's third law of motion",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G05",
+      "category": "G",
+      "query": "What is the capital of France?",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G06",
+      "category": "G",
+      "query": "Teach me Python programming from scratch",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G07",
+      "category": "G",
+      "query": "Tell me a funny knock knock joke",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G08",
+      "category": "G",
+      "query": "Write an essay about the causes of the American Revolution",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G09",
+      "category": "G",
+      "query": "What is machine learning?",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G10",
+      "category": "G",
+      "query": "What is RAG?",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G11",
+      "category": "G",
+      "query": "Teach me Python loops and syntax",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G12",
+      "category": "G",
+      "query": "How do plants convert sunlight into glucose?",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G13",
+      "category": "G",
+      "query": "Calculate 15% of 240",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G14",
+      "category": "G",
+      "query": "Write a python script to reverse a string",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    },
+    {
+      "id": "G15",
+      "category": "G",
+      "query": "How to center a div in CSS?",
+      "expected_intent": "OUT_OF_SCOPE",
+      "expected_in_scope": false
+    }
+  ]
+}
+

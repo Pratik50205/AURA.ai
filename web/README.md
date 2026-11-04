@@ -1,20 +1,25 @@
 # AURA.ai Frontend Web Application
 **Intelligent AI Tool Discovery & Neural Recommendation Platform**
 
-This is the official Next.js 16 web application for **AURA.ai**. Built with the Next.js App Router, React 19, Tailwind CSS 4, and Framer Motion, it features an interactive **AI Assistant Chatbot Copilot**, real-time **side-by-side tool comparison matrices**, and a **Live ML Recommendation Core Telemetry Dashboard**.
+This is the official Next.js 16 web application for **AURA.ai**. Built with the Next.js App Router, React 19, Tailwind CSS 4, and Framer Motion, it features an interactive **AI Assistant Copilot with Generative UI**, **Natural Voice Input**, a **Global Floating Compare Dock**, real-time **side-by-side tool comparison matrices**, and a **Live ML Recommendation Core Telemetry Dashboard**.
 
 ---
 
 ## Key Highlights
 
-- **Multi-Provider AI Brain (`llmBrain.ts`)**: Assistant copilot equipped with client-level providers: **Google Gemini**, **Groq (Llama 3.3 70B)**, **OpenAI (GPT-4o mini)**, **Ollama (local)**, and Built-in fallback. Configurable via in-app slide drawer with live key testing.
+- **Interactive Generative UI (`GenerativeUiRenderer.tsx`)**: Replaces plain text with dynamic visual components:
+  - Dynamic comparison tables with winner highlights and pricing comparisons.
+  - Step-by-step workflow trees with actionable copyable snippets and direct links.
+  - 1-click in-chat bookmarking and compare dock actions.
+- **Natural Voice Input (Web Speech API)**: Microphone button with real-time waveform pulse animations, allowing natural voice queries with intelligent utterance deduplication.
+- **Global Floating Compare Dock (`CompareDock.tsx`)**: Persistent comparison dock tracking up to 4 tools across Discover, Search, and Assistant, with 1-click navigation to the dedicated `/compare` matrix.
+- **Multi-Provider AI Brain (`llmBrain.ts`)**: Assistant copilot equipped with client-level providers: **Google Gemini (1.5 Flash)**, **Groq (Llama 3.3 70B)**, **OpenAI (GPT-4o mini)**, **Ollama (local)**, and Built-in fallback. Configurable via in-modal slide drawer with live key testing.
 - **Zero-Spam Precision Engine**: Direct, accurate responses for Math, Code (with copy buttons), Science, and QA with zero unsolicited tool spamming.
 - **Windows Command Spotlight (`Ctrl+K`)**: Floating command search modal with full input visibility, prompt acceptance, category quick-jump, and direct discovery actions.
 - **Dynamic Catalog Discovery (`/discover`)**: Instant filtering across 23 AI categories, search with query expansion, and sortable tool cards.
 - **Detailed Tool Inspection (`/discover/[id]`)**: Deep-dive views showcasing verified trust scores, key features, pros & cons, example prompts, and alternatives.
-- **3-Slot Blank-by-Default Comparison Drawer**: Clean, uncluttered comparison slots allowing users to pick tools manually.
+- **Account-Synced Bookmarks (`/api/saved`)**: Synchronized cloud bookmarking for authenticated users with automatic fallback to browser localStorage for guests.
 - **Enterprise Admin Console (`/admin`)**: Real-time platform telemetry, user management, audit activity logs, and system health status.
-- **Saved Tools Workspace (`/saved`)**: Custom collection bookmarking with an interactive directory explorer empty state.
 - **Settings & ML Diagnostics (`/settings`)**: Live telemetry card showing model parameters (*all-MiniLM-L6-v2*, *384-d*, *FAISS FlatIP*, *latency ~32ms*), profile persistence, and dual-theme controls.
 - **Ultra-Smooth Theme Transitions**: Native CSS View Transitions API crossfading smoothly between **Dark Obsidian** and **Clean Light** themes.
 
@@ -79,6 +84,15 @@ This is the official Next.js 16 web application for **AURA.ai**. Built with the 
   - `host.docker.internal:host-gateway` enabling containerized web app to reach host Ollama instances.
   - Container healthchecks and automated SQLite database seeding.
 
+- [x] **Phase 11: Generative UI, Voice Commands & Floating Compare Dock**
+  - Interactive Generative UI Engine (`GenerativeUiRenderer.tsx`) with comparison tables and step-by-step workflow trees.
+  - Browser-native speech recognition via Web Speech API with audio pulse waveforms and utterance deduplication.
+  - Global Floating Compare Dock (`CompareDock.tsx` and `CompareContext.tsx`) syncing up to 4 tools across pages.
+  - Unified single-modal Copilot experience (removed redundant standalone `/bot` tab).
+  - Database persistence for `Tool`, `Workflow`, `WorkflowStep` with automated LibSQL seeding (`seed.mjs`).
+  - Account-synced bookmark API endpoint (`/api/saved`).
+  - Subprocess-free local vector heuristic fallback replacing runtime Python spawns in Next.js.
+
 ---
 
 ## Tech Stack Overview
@@ -90,9 +104,10 @@ This is the official Next.js 16 web application for **AURA.ai**. Built with the 
 | **Language** | TypeScript 5 |
 | **Styling** | Tailwind CSS 4, Vanilla CSS Custom Properties |
 | **Motion** | Framer Motion 12 |
+| **Voice** | Web Speech API |
 | **Icons** | Lucide React |
 | **Auth** | NextAuth.js v5 (beta 32) |
-| **Database** | Prisma ORM 7, LibSQL / SQLite / Supabase |
+| **Database** | Prisma ORM 7, LibSQL / SQLite / PostgreSQL |
 
 ---
 
@@ -119,16 +134,19 @@ AURA_INTELLIGENCE_URL="http://127.0.0.1:8000"
 # 1. Install dependencies
 npm install
 
-# 2. Run local development server
+# 2. Seed SQLite database with 320 tools & workflows
+node prisma/seed.mjs
+
+# 3. Run local development server
 npm run dev
 
-# 3. Synchronize tools from ML pipeline
+# 4. Synchronize tools from ML pipeline
 npm run sync:tools
 
-# 4. Production build
+# 5. Production build
 npm run build
 
-# 5. Start production server
+# 6. Start production server
 npm run start
 ```
 

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { 
   ArrowLeftRight, 
@@ -15,15 +16,41 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { useDashboard } from '@/app/(dashboard)/layout';
+import { useCompare } from '@/context/CompareContext';
 import { cn } from '@/lib/utils';
 import { tools } from '@/data/tools';
 import type { Tool } from '@/lib/site';
 
-export default function ComparePage() {
+function CompareContent() {
   const { isLightMode } = useDashboard();
+  const { selectedTools } = useCompare();
+  const searchParams = useSearchParams();
   
-  // Exactly three comparison slots on the right, starting BLANK with no presets as requested
+  // Exactly three comparison slots on the right, starting BLANK or populated from selection
   const [slotToolIds, setSlotToolIds] = useState<(string | null)[]>([null, null, null]);
+
+  useEffect(() => {
+    const idsParam = searchParams.get('ids');
+    if (idsParam) {
+      const parsedIds = idsParam.split(',').map((s) => s.trim()).filter(Boolean);
+      if (parsedIds.length > 0) {
+        setSlotToolIds([
+          parsedIds[0] || null,
+          parsedIds[1] || null,
+          parsedIds[2] || null,
+        ]);
+        return;
+      }
+    }
+
+    if (selectedTools.length > 0) {
+      setSlotToolIds([
+        selectedTools[0]?.id || null,
+        selectedTools[1]?.id || null,
+        selectedTools[2]?.id || null,
+      ]);
+    }
+  }, [searchParams, selectedTools]);
 
   const handleSelectTool = (slotIndex: number, toolId: string) => {
     setSlotToolIds((prev) => {
@@ -329,5 +356,18 @@ export default function ComparePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ComparePage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-7xl mx-auto px-4 py-16 text-center text-muted">
+        <div className="w-6 h-6 border-2 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <span className="text-sm font-medium">Loading comparison matrix...</span>
+      </div>
+    }>
+      <CompareContent />
+    </Suspense>
   );
 }

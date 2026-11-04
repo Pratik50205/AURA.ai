@@ -16,22 +16,25 @@ Stop searching endlessly through unorganized directories. Tell AURA what you nee
 
 | Dimension | Traditional Search (e.g. Google) | AURA.ai Intelligence Platform |
 |---|---|---|
-| **Input** | Keywords and exact phrases | Natural language human intent & workflow context |
-| **Understanding** | Lexical token matching | 384-dimensional dense semantic vector space |
-| **Output** | 10 blue links, sponsored ads, SEO blogs | Verified tool cards with trust scores, pricing, and pros/cons |
+| **Input** | Keywords and exact phrases | Natural language human intent & workflow context (Text or Voice) |
+| **Understanding** | Lexical token matching | 384-dimensional dense semantic vector space + BM25 Fusion |
+| **Output** | 10 blue links, sponsored ads, SEO blogs | Interactive Generative UI cards, trust scores, pricing, pros/cons |
 | **Explainability** | None | Real-time rationale ("Why recommended: 94% semantic match, free tier") |
-| **Comparison** | Open 15 browser tabs manually | Direct side-by-side comparison matrix with winner highlights |
-| **AI Assistant** | None or generic web summaries | Interactive Copilot with live vector retrieval and 1-click bookmarks |
+| **Comparison** | Open 15 browser tabs manually | Direct side-by-side matrix + Floating 4-tool compare dock |
+| **AI Assistant** | Generic web summaries | Unified Copilot with multi-provider LLM brains & Generative UI |
 
 ---
 
 ## Key System Features
 
-### 1. 🤖 Multi-Provider AI Assistant Copilot & Custom Brains
-- **Multi-Provider LLM Brain (`llmBrain.ts`)**: Connect your assistant to **Google Gemini (1.5 Flash)**, **Groq (Llama 3.3 70B)**, **OpenAI (GPT-4o mini)**, or local host **Ollama (Llama 3)** with 1-click in-app model drawer and live key validation.
+### 1. 🤖 Unified AI Assistant Copilot & Multi-Provider Brains
+- **Multi-Provider LLM Brain (`llmBrain.ts`)**: Connect your assistant to **Google Gemini (1.5 Flash)**, **Groq (Llama 3.3 70B)**, **OpenAI (GPT-4o mini)**, or local host **Ollama (Llama 3)** with an in-modal configuration drawer and live key validation.
+- **Interactive Generative UI (`GenerativeUiRenderer.tsx`)**: Replaces static plain text with dynamic visual components:
+  - **Dynamic Tool Comparison Cards**: Rich feature tables with winner badges and pricing breakdowns.
+  - **Step-by-Step Workflow Trees**: Multi-tool sequential pipelines with actionable steps and copyable code snippets.
+  - **1-Click Actions**: Bookmarking and dock comparisons directly inside chat messages.
+- **Natural Voice Input (Web Speech API)**: Microphone button with real-time waveform pulse animations, allowing natural voice queries with intelligent utterance deduplication.
 - **Zero-Spam Precision Engine**: Strictly separates conversational intent — answers Math, Code (with copy button), Science, and general QA directly with zero unsolicited tool recommendations.
-- **Direct Side-by-Side Comparison**: Automatically generates comparison matrices comparing pricing, trust scores, primary strengths, and budget winners (e.g., *"Compare Cursor vs GitHub Copilot"*).
-- **1-Click Bookmarking**: Save tools to your workspace collection directly from inside the chat bubble.
 - **Dynamic Suggested Inquiries**: Horizontal scrolling prompt chips for seamless multi-turn exploration.
 
 ### 2. ⚡ Sub-40ms Hybrid Retrieval Engine (Dense FAISS + Sparse BM25 Fusion)
@@ -40,15 +43,17 @@ Stop searching endlessly through unorganized directories. Tell AURA what you nee
 - **Sparse Lexical Engine**: Okapi BM25 index over all tool documents for 100% exact keyword, entity, and version matching.
 - **Reciprocal Rank Fusion (RRF)**: Merges dense semantic relevance and sparse keyword ranks into a unified candidate pool.
 - **Learned Ranking**: Supervised PyTorch MLP Ranker trained on 930 graded query-tool relevance judgments.
-- **Query Preprocessing**: Boundary-enforced query expansion resolving domain slang (*ppt*, *bg*, *sub*, *tts*, *cv*, *ui/ux*).
+- **Boundary-Enforced Expansion**: Resolves domain slang and abbreviations (*ppt*, *bg*, *sub*, *tts*, *cv*, *ui/ux*).
+- **Subprocess-Free Local Semantic Fallback**: Zero-latency local vector heuristic scoring if the ML microservice is initializing.
 
-### 3. 🔍 Windows Command Spotlight Search (`Ctrl+K`)
-- **Interactive Command Palette**: Press `Ctrl+K` (or `Cmd+K` on Mac) for a focused, floating search spotlight.
-- **Accepts Natural Language Prompts**: Input full requirements like *"generate python code for web scraper"* or *"tools for audio noise cancellation"* with category fast-jump tags.
+### 3. 🔍 Floating Compare Dock & Command Spotlight (`Ctrl+K`)
+- **Global Floating Compare Dock (`CompareDock.tsx`)**: Persistent comparison dock tracking up to 4 tools across Discover, Search, and Assistant, with 1-click navigation to the dedicated `/compare` matrix.
+- **Command Spotlight Search**: Press `Ctrl+K` (or `Cmd+K` on Mac) for a focused, floating search spotlight accepting natural language prompts and category tags.
 
-### 4. ⚖️ 3-Slot Blank-by-Default Comparison & Admin Console
-- **Unbiased Comparison Workspace**: 3-slot comparison drawer without intrusive presets, giving users complete freedom of choice.
-- **Enterprise Admin Console (`/admin`)**: Real-time telemetry, user management, audit activity stream, and backend system health monitors.
+### 4. 🗄️ Database Persistence & Seeded Models
+- **Prisma ORM Architecture**: Schema definitions for `Tool`, `Workflow`, `WorkflowStep`, `User`, `Account`, `Bookmark`, and `Review`.
+- **Automated LibSQL / SQLite Seeding (`seed.mjs`)**: Seeds 320 verified tools and multi-step workflows directly into the local or cloud database.
+- **Account-Synced Bookmarks (`/api/saved`)**: Synchronized cloud bookmarking for authenticated users with automatic fallback to browser localStorage for guests.
 
 ### 5. 🐳 Production Multi-Container Docker Deployment
 - **Isolated Microservice Architecture**: Next.js 16 frontend and FastAPI PyTorch engine linked via internal bridge network `aura-network`.
@@ -56,18 +61,16 @@ Stop searching endlessly through unorganized directories. Tell AURA what you nee
 - **Persistent Volumes**: Named volumes `aura-web-data` (SQLite database) and `aura-model-cache` (HuggingFace vector weights).
 - **Automated Healthchecks**: Automatic readiness dependency checks and startup health probing.
 
-### 6. 📊 Live Engine Diagnostics & Telemetry
-- Embedded in the Settings dashboard (`/settings`), providing live visibility into embedding dimensions, index parameters, catalog size, and FastAPI connection health.
-
-### 7. 🌓 Dual-Theme System with View Transitions API
-- Smooth 350ms native crossfade transitions between **Dark Obsidian** and **Clean Light** themes with zero layout shifts.
+### 6. 📊 Live Engine Diagnostics & Dual Themes
+- **Live ML Telemetry (`/settings`)**: Live visibility into embedding dimensions, index parameters, catalog size, and FastAPI connection health.
+- **Dual-Theme System with View Transitions API**: Smooth 350ms native crossfade transitions between **Dark Obsidian** and **Clean Light** themes with zero layout shifts.
 
 ---
 
 ## System Architecture
 
 ```text
-User Query (Chat or Search Bar)
+User Query (Text or Voice Speech)
        │
        ▼
 ┌───────────────────────────────────────────────┐
@@ -100,7 +103,7 @@ User Query (Chat or Search Bar)
                         │
                         ▼
 ┌───────────────────────────────────────────────┐
-│ AURA Assistant & Comparison Matrix            │  Explainable Rationale & Actions
+│ Generative UI Copilot & Compare Matrix        │  Interactive Widgets, Workflows & Dock
 └───────────────────────────────────────────────┘
 ```
 
@@ -115,8 +118,8 @@ The project is structured into **3 core modules**:
 │       web/ (Web Application)    │ ◄────────────────► │  intelligence/ (Neural Engine)  │
 │   Next.js 16 • React 19 • UI    │    (Port 8000)     │  PyTorch • FAISS • Embeddings   │
 │   • Interactive Discovery       │                    │  • Sentence Transformers        │
-│   • AI Assistant Chatbot Copilot│                    │  • 384-d Vector Retrieval       │
-│   • Dual Theme & Settings       │                    │  • Interactive Terminal CLI     │
+│   • Generative UI AI Copilot    │                    │  • 384-d Vector Retrieval       │
+│   • Floating Compare Dock       │                    │  • Interactive Terminal CLI     │
 └─────────────────────────────────┘                    └─────────────────────────────────┘
                  │                                                      │
                  └───────────────────────┬──────────────────────────────┘
@@ -128,28 +131,23 @@ The project is structured into **3 core modules**:
                                └───────────────────┘
 ```
 
-### Module Breakdown
-
-| Directory | Core Role | Primary Technologies | Key Entry Point |
-|---|---|---|---|
-| **`web/`** | **Full-Stack Web App** | Next.js 16, React 19, Tailwind CSS 4, Framer Motion | Run `npm run dev` (Port 3000) |
-| **`intelligence/`** | **Neural Intelligence Engine** | Python 3.14, PyTorch, FAISS, Sentence-Transformers | Run `python main.py` or FastAPI (Port 8000) |
-| **`docs/`** | **Engineering Hub** | Markdown Documentation | Read `ARCHITECTURE.md` & `WALKTHROUGH.md` |
-| **`scripts/`** | **Sync Utilities** | Node.js, Python | Syncs ML dataset with frontend catalog |
-
----
-
 ### Clean Directory Map
 
 ```text
 AURA.ai/
 │
 ├── web/                               # Web Application (Frontend + Gateway + Auth)
-│   ├── src/app/                       # App Router pages (Dashboard, Discover, Saved, Settings)
+│   ├── src/app/                       # App Router pages (Discover, Compare, Saved, Settings, Admin)
 │   ├── src/app/api/assistant/         # Conversational AI assistant endpoint
-│   ├── src/app/api/recommend/         # Recommendations API proxy
-│   ├── src/components/                # UI components (AuraAssistantModal, ToolCard, Header)
+│   ├── src/app/api/recommend/         # Recommendations API proxy with sub-ms local fallback
+│   ├── src/app/api/saved/             # Account-synced bookmark persistence API
+│   ├── src/components/                # UI components (AuraAssistantModal, CompareDock, ToolCard, Header)
+│   ├── src/components/chat/           # GenerativeUiRenderer (Widgets, Workflows, Comparisons)
+│   ├── src/context/                   # Global state (CompareContext for floating tool dock)
 │   ├── src/data/tools.ts              # 320 verified AI tools catalog
+│   ├── src/lib/llmBrain.ts            # Multi-provider client LLM brain (Gemini, Groq, OpenAI, Ollama)
+│   ├── prisma/schema.prisma           # Prisma ORM schema (Tool, Workflow, Bookmark, User, Review)
+│   ├── prisma/seed.mjs                # Automated LibSQL database seeding script
 │   └── package.json                   # Frontend dependencies
 │
 ├── intelligence/                      # AI/ML Neural Recommendation Engine
@@ -183,10 +181,11 @@ AURA.ai/
 | **Backend API** | FastAPI / Uvicorn | Python 3.14 ASGI server |
 | **Frontend Framework** | Next.js | 16.3.1 (Turbopack, App Router) |
 | **UI & Styling** | React 19 / Tailwind CSS 4 | Custom glassmorphism design system |
+| **Interactive Chat UI** | Generative UI Engine | Dynamic React widgets, comparison tables & workflow trees |
+| **Voice Processing** | Web Speech API | Browser-native speech recognition with soundwave pulse |
 | **Animations** | Framer Motion | Smooth layout transitions & drawer physics |
-| **Icons** | Lucide React | Clean SVG icon set |
 | **Authentication** | NextAuth.js | v5 (GitHub, Google, Credentials) |
-| **Database** | Prisma ORM | LibSQL / PostgreSQL / SQLite |
+| **Database & ORM** | Prisma ORM | LibSQL / SQLite / PostgreSQL |
 | **Testing** | Pytest | 34 automated pipeline unit tests |
 
 ---
@@ -224,6 +223,11 @@ API Documentation will be live at `http://127.0.0.1:8000/docs`.
 ```bash
 cd web
 npm install
+
+# Seed the SQLite database with 320 tools & workflows:
+node prisma/seed.mjs
+
+# Run local development server:
 npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
@@ -244,7 +248,6 @@ docker compose up -d --build
 - **Engine Health Endpoint:** [http://localhost:8000/health](http://localhost:8000/health)
 - **View Container Logs:** `docker compose logs -f`
 - **Stop Containers:** `docker compose down`
-*(Data persists in named volume `aura-web-data` across restarts)*
 
 ---
 
